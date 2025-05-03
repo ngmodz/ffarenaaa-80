@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   Trophy, 
@@ -43,28 +44,19 @@ interface DesktopSidebarProps {
 }
 
 const DesktopSidebar = ({ currentPath }: DesktopSidebarProps) => {
+  // Always default to collapsed
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Check if the screen is mobile
-  const isMobile = () => window.innerWidth < 768;
-
+  // We'll maintain the collapsed state always true at initialization
   useEffect(() => {
-    // On initial load, keep the sidebar expanded on larger screens
-    setIsCollapsed(isMobile());
-
-    const handleResize = () => {
-      // Don't auto-collapse on mobile devices
-      if (!isMobile()) {
-        setIsCollapsed(true);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    // No need to adjust collapse state based on window size anymore
+    // Just ensure it's always collapsed on initial load
+    setIsCollapsed(true);
   }, []);
 
-  const sidebarWidth = isHovered || !isCollapsed ? "w-56" : "w-16";
+  // Sidebar width is determined by hover state
+  const sidebarWidth = isHovered ? "w-56" : "w-16";
 
   return (
     <div 
@@ -74,14 +66,14 @@ const DesktopSidebar = ({ currentPath }: DesktopSidebarProps) => {
     >
       <div className={cn(
         "transition-all flex flex-col h-full",
-        isHovered || !isCollapsed ? "w-56" : "w-16"
+        isHovered ? "w-56" : "w-16"
       )}>
         {/* Brand */}
         <div className="p-4 flex items-center">
           <div className="w-8 h-8 bg-gaming-primary rounded-md flex items-center justify-center">
             <Trophy size={18} className="text-white" />
           </div>
-          {(isHovered || !isCollapsed) && <span className="ml-2 font-bold text-lg text-glow">FireArena</span>}
+          {isHovered && <span className="ml-2 font-bold text-lg text-glow">FireArena</span>}
         </div>
 
         {/* Navigation */}
@@ -91,42 +83,42 @@ const DesktopSidebar = ({ currentPath }: DesktopSidebarProps) => {
             label="Home" 
             to="/" 
             isActive={currentPath === "/"} 
-            isCollapsed={!isHovered && isCollapsed}
+            isCollapsed={!isHovered}
           />
           <SidebarItem 
             icon={<Trophy size={18} />} 
             label="Tournaments" 
             to="/tournaments" 
             isActive={currentPath.startsWith("/tournaments")} 
-            isCollapsed={!isHovered && isCollapsed}
+            isCollapsed={!isHovered}
           />
           <SidebarItem 
             icon={<Calendar size={18} />} 
             label="Schedule" 
             to="/schedule" 
             isActive={currentPath === "/schedule"} 
-            isCollapsed={!isHovered && isCollapsed}
+            isCollapsed={!isHovered}
           />
           <SidebarItem 
             icon={<Wallet size={18} />} 
             label="Wallet" 
             to="/wallet" 
             isActive={currentPath === "/wallet"} 
-            isCollapsed={!isHovered && isCollapsed}
+            isCollapsed={!isHovered}
           />
           <SidebarItem 
             icon={<User size={18} />} 
             label="Profile" 
             to="/profile" 
             isActive={currentPath === "/profile"} 
-            isCollapsed={!isHovered && isCollapsed}
+            isCollapsed={!isHovered}
           />
           <SidebarItem 
             icon={<Settings size={18} />} 
             label="Settings" 
             to="/settings" 
             isActive={currentPath === "/settings"} 
-            isCollapsed={!isHovered && isCollapsed}
+            isCollapsed={!isHovered}
           />
         </div>
 
@@ -136,24 +128,15 @@ const DesktopSidebar = ({ currentPath }: DesktopSidebarProps) => {
             to="/create-tournament"
             className={cn(
               "btn-gaming-accent flex items-center justify-center rounded-md",
-              !isHovered && isCollapsed ? "p-2" : "px-4 py-2"
+              !isHovered ? "p-2" : "px-4 py-2"
             )}
           >
             <Plus size={18} />
-            {(isHovered || !isCollapsed) && <span className="ml-2">Create Tournament</span>}
+            {isHovered && <span className="ml-2">Create Tournament</span>}
           </Link>
         </div>
 
-        {/* Collapse toggle */}
-        <div className="px-3 py-2 mt-auto border-t border-gaming-border">
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="flex items-center justify-center w-full p-2 text-gaming-muted hover:text-gaming-text rounded-md hover:bg-gaming-card"
-          >
-            <Menu size={18} />
-            {(isHovered || !isCollapsed) && <span className="ml-2 text-sm">Collapse</span>}
-          </button>
-        </div>
+        {/* Collapse toggle - removed since we're now always using hover */}
       </div>
     </div>
   );

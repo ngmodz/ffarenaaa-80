@@ -40,7 +40,7 @@ const Layout = () => {
           !isMobile ? "lg:ml-16" : ""
         } overflow-hidden`}
         animate={{
-          marginLeft: !isMobile ? (isHovered ? "14rem" : "4rem") : "0",
+          marginLeft: !isMobile ? (isHovered ? "16rem" : "4rem") : "0", // Updated from 14rem to 16rem
         }}
         transition={{
           type: "spring",

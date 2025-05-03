@@ -99,7 +99,7 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
     <motion.div 
       className="hidden lg:flex flex-col fixed left-0 top-0 h-full bg-gaming-card border-r border-gaming-border z-40 shadow-lg"
       animate={{ 
-        width: isHovered ? "14rem" : "4rem",
+        width: isHovered ? "16rem" : "4rem", // Increased from 14rem to 16rem for more space
       }}
       transition={{
         type: "spring",
@@ -126,7 +126,7 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.3 }}
-                className="ml-3 font-bold text-lg text-glow whitespace-nowrap overflow-hidden"
+                className="ml-3 font-bold text-base text-glow whitespace-nowrap overflow-hidden"
               >
                 Freefire Tournaments
               </motion.span>

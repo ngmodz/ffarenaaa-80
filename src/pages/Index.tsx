@@ -121,7 +121,7 @@ const Index = () => {
         </div>}
       
       {/* Tournament List */}
-      <div>
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base sm:text-lg font-semibold">
             {filter === "all" ? "All Tournaments" : filter === "live" ? "Live Tournaments" : filter === "upcoming" ? "Upcoming Tournaments" : "Completed Tournaments"}

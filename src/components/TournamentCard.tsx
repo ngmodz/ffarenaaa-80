@@ -39,11 +39,11 @@ const TournamentCard = ({
   const isFullyBooked = spotsLeft === 0;
   
   return (
-    <Card className="overflow-hidden bg-gaming-card border-gaming-border hover:border-gaming-primary/50 transition-all flex flex-col h-full">
+    <Card className="overflow-hidden bg-gaming-card border-gaming-border hover:border-gaming-primary/50 transition-all flex flex-col h-full w-full">
       <div className="relative">
         {/* Status Badge */}
         <div className={cn(
-          "absolute top-2 right-2 text-xs px-2 py-1 rounded text-white font-medium z-10",
+          "absolute top-2 right-2 text-2xs sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-white font-medium z-10",
           statusColors[status]
         )}>
           {status === 'live' ? 'LIVE NOW' : status.toUpperCase()}
@@ -53,44 +53,44 @@ const TournamentCard = ({
         <img 
           src={image} 
           alt={title} 
-          className="h-32 sm:h-36 w-full object-cover"
+          className="h-28 sm:h-32 w-full object-cover"
           loading="lazy"
         />
         
         {/* Prize Money */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 flex justify-between items-center">
+        <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-1.5 sm:p-2 flex justify-between items-center">
           <div className="flex items-center">
-            <Trophy size={16} className="text-gaming-accent mr-1" />
-            <span className="font-bold text-sm">₹{prizeMoney}</span>
+            <Trophy size={14} className="text-gaming-accent mr-1" />
+            <span className="font-bold text-xs sm:text-sm">₹{prizeMoney}</span>
           </div>
-          <div className="text-xs bg-gaming-primary px-2 py-1 rounded">
+          <div className="text-2xs sm:text-xs bg-gaming-primary px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
             ₹{entryFee} Entry
           </div>
         </div>
       </div>
       
-      <div className="p-3 flex flex-col flex-grow">
+      <div className="p-2.5 flex flex-col flex-grow">
         {/* Title */}
-        <h3 className="font-bold text-gaming-text mb-2 line-clamp-1">{title}</h3>
+        <h3 className="font-bold text-sm sm:text-base text-gaming-text mb-1.5 sm:mb-2 line-clamp-1">{title}</h3>
         
         {/* Details */}
-        <div className="space-y-2 flex-grow">
-          <div className="flex text-xs items-center text-gaming-muted">
-            <Calendar size={14} className="mr-1 flex-shrink-0" />
+        <div className="space-y-1.5 sm:space-y-2 flex-grow">
+          <div className="flex text-2xs sm:text-xs items-center text-gaming-muted">
+            <Calendar size={12} className="mr-1 flex-shrink-0" />
             <span className="truncate">{date}</span>
-            <Clock size={14} className="ml-2 mr-1 flex-shrink-0" />
+            <Clock size={12} className="ml-1.5 mr-1 flex-shrink-0" />
             <span className="truncate">{time}</span>
           </div>
           
-          <div className="flex items-center text-xs text-gaming-muted">
-            <Users size={14} className="mr-1 flex-shrink-0" />
+          <div className="flex items-center text-2xs sm:text-xs text-gaming-muted">
+            <Users size={12} className="mr-1 flex-shrink-0" />
             <span className="truncate">
               {filledSpots}/{totalSpots} Participants
             </span>
           </div>
           
           {/* Progress Bar */}
-          <div className="w-full bg-gaming-border h-1.5 rounded-full overflow-hidden">
+          <div className="w-full bg-gaming-border h-1 sm:h-1.5 rounded-full overflow-hidden">
             <div 
               className={cn(
                 "h-full",
@@ -104,7 +104,7 @@ const TournamentCard = ({
         {/* Action Button */}
         <Link 
           to={`/tournaments/${id}`}
-          className="btn-gaming-primary w-full mt-3 text-center text-sm"
+          className="btn-gaming-primary w-full mt-2.5 text-center text-xs sm:text-sm"
         >
           {status === 'completed' ? 'View Results' : spotsLeft > 0 ? 'Join Tournament' : 'Fully Booked'}
         </Link>

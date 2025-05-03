@@ -66,28 +66,28 @@ const Index = () => {
   return (
     <Layout>
       {/* Header */}
-      <div className="mb-5">
-        <h1 className="text-2xl font-bold mb-2 text-gaming-text">
+      <div className="mb-4 px-2 sm:px-0">
+        <h1 className="text-xl sm:text-2xl font-bold mb-2 text-gaming-text">
           <span className="text-gaming-primary">Freefire</span> Tournaments
         </h1>
         <p className="text-gaming-muted text-sm">Join competitive tournaments and win real rewards</p>
       </div>
       
       {/* Search and Filters */}
-      <div className="mb-5">
+      <div className="mb-4 px-2 sm:px-0">
         <div className="relative mb-3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gaming-muted" size={18} />
           <input
             type="text"
             placeholder="Search tournaments..."
-            className="w-full pl-10 pr-4 py-3 bg-gaming-card border border-gaming-border rounded-lg text-gaming-text focus:outline-none focus:ring-2 focus:ring-gaming-primary/50"
+            className="w-full pl-10 pr-4 py-2.5 bg-gaming-card border border-gaming-border rounded-lg text-gaming-text focus:outline-none focus:ring-2 focus:ring-gaming-primary/50"
           />
         </div>
         
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           <button
             onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
               filter === "all"
                 ? "bg-gaming-primary text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
@@ -97,7 +97,7 @@ const Index = () => {
           </button>
           <button
             onClick={() => setFilter("live")}
-            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 flex items-center ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 flex items-center ${
               filter === "live"
                 ? "bg-gaming-accent text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
@@ -108,7 +108,7 @@ const Index = () => {
           </button>
           <button
             onClick={() => setFilter("upcoming")}
-            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
               filter === "upcoming"
                 ? "bg-gaming-primary text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
@@ -118,7 +118,7 @@ const Index = () => {
           </button>
           <button
             onClick={() => setFilter("completed")}
-            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
               filter === "completed"
                 ? "bg-gaming-primary text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
@@ -127,7 +127,7 @@ const Index = () => {
             Completed
           </button>
           <button
-            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20 flex items-center`}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20 flex items-center`}
           >
             <Filter size={14} className="mr-1" /> More Filters
           </button>
@@ -136,35 +136,35 @@ const Index = () => {
       
       {/* Featured Tournament */}
       {filter !== "completed" && (
-        <div className="mb-6">
+        <div className="mb-5 px-2 sm:px-0">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold">Featured Tournament</h2>
           </div>
           
-          <div className="relative w-full h-44 sm:h-48 md:h-64 rounded-xl overflow-hidden">
+          <div className="relative w-full h-40 sm:h-48 md:h-56 rounded-xl overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
             <img 
               src="https://images.unsplash.com/photo-1548345680-f5475ea5df84?auto=format&fit=crop&q=80&w=1200" 
               alt="Featured Tournament" 
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4 z-20">
-              <div className="flex items-center mb-2">
-                <div className="bg-gaming-accent text-white text-xs font-bold px-2 py-1 rounded mr-2">
+            <div className="absolute bottom-0 left-0 w-full p-3 z-20">
+              <div className="flex items-center mb-1.5 sm:mb-2">
+                <div className="bg-gaming-accent text-white text-xs font-bold px-2 py-0.5 sm:py-1 rounded mr-2">
                   PREMIUM
                 </div>
-                <div className="bg-red-500 text-white text-xs px-2 py-1 rounded flex items-center">
-                  <span className="w-2 h-2 bg-white rounded-full mr-1 animate-pulse"></span>
+                <div className="bg-red-500 text-white text-xs px-2 py-0.5 sm:py-1 rounded flex items-center">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full mr-1 animate-pulse"></span>
                   LIVE
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-white mb-1">Free Fire Championship Finals</h3>
-              <div className="flex items-center text-white/80 text-xs sm:text-sm mb-3">
-                <Trophy size={16} className="mr-1 text-gaming-accent" />
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Free Fire Championship Finals</h3>
+              <div className="flex items-center text-white/80 text-xs mb-2 sm:mb-3">
+                <Trophy size={14} className="mr-1 text-gaming-accent" />
                 <span className="font-bold mr-3">₹50,000 Prize Pool</span>
-                <span className="text-xs bg-white/20 px-2 py-0.5 rounded">256 Teams</span>
+                <span className="text-2xs sm:text-xs bg-white/20 px-2 py-0.5 rounded">256 Teams</span>
               </div>
-              <button className="bg-gaming-accent hover:bg-gaming-accent/90 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
+              <button className="bg-gaming-accent hover:bg-gaming-accent/90 text-white px-3 py-1 sm:px-4 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all">
                 Watch Live
               </button>
             </div>
@@ -173,16 +173,16 @@ const Index = () => {
       )}
       
       {/* Tournament List */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">
+      <div className="px-2 sm:px-0">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base sm:text-lg font-semibold">
             {filter === "all" ? "All Tournaments" : 
              filter === "live" ? "Live Tournaments" :
              filter === "upcoming" ? "Upcoming Tournaments" : "Completed Tournaments"}
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
           {filteredTournaments.map(tournament => (
             <TournamentCard 
               key={tournament.id} 
@@ -191,9 +191,9 @@ const Index = () => {
           ))}
           
           {filteredTournaments.length === 0 && (
-            <div className="col-span-full flex flex-col items-center justify-center p-8 text-center">
-              <Trophy size={48} className="text-gaming-muted mb-4" />
-              <h3 className="text-xl font-bold mb-2">No tournaments found</h3>
+            <div className="col-span-full flex flex-col items-center justify-center p-5 sm:p-8 text-center">
+              <Trophy size={40} className="text-gaming-muted mb-4" />
+              <h3 className="text-lg sm:text-xl font-bold mb-2">No tournaments found</h3>
               <p className="text-gaming-muted mb-4">There are no tournaments matching your filters</p>
               <button 
                 onClick={() => setFilter("all")}

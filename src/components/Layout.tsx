@@ -14,12 +14,14 @@ const Layout = ({ children }: LayoutProps) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="min-h-screen bg-gaming-bg flex">
+    <div className="min-h-screen bg-gaming-bg flex w-full">
       {!isMobile && <DesktopSidebar currentPath={currentPath} />}
       
-      <div className={`flex-1 ${!isMobile ? "lg:ml-16 xl:ml-56" : ""}`}>
-        <div className="p-4 pb-24 lg:pb-4 min-h-screen max-w-7xl mx-auto container-padding">
-          {children}
+      <div className={`flex-1 w-full ${!isMobile ? "lg:ml-16 xl:ml-56" : ""}`}>
+        <div className="p-2 sm:p-4 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto">
+          <div className="w-full overflow-x-hidden">
+            {children}
+          </div>
         </div>
       </div>
       

@@ -45,7 +45,7 @@ interface MobileNavbarProps {
 const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg">
-      <div className="grid grid-cols-5 max-w-md mx-auto">
+      <nav className="grid grid-cols-5 max-w-md mx-auto">
         <NavItem 
           icon={<Home size={18} />} 
           label="Home" 
@@ -76,7 +76,7 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
           to="/profile"
           isActive={currentPath === "/profile"} 
         />
-      </div>
+      </nav>
     </div>
   );
 };

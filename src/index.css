@@ -36,15 +36,15 @@
   }
 
   * {
-    @apply border-border selection:bg-gaming-primary/20 selection:text-gaming-text;
+    @apply border-border selection:bg-gaming-primary/20 selection:text-gaming-text box-border;
   }
   
   body {
-    @apply bg-gaming-bg text-gaming-text antialiased;
+    @apply bg-gaming-bg text-gaming-text antialiased overflow-x-hidden;
   }
 
   html {
-    @apply scroll-smooth;
+    @apply scroll-smooth overflow-x-hidden;
   }
 }
 
@@ -71,20 +71,20 @@
   }
 
   .btn-gaming-primary {
-    @apply bg-gaming-primary hover:bg-gaming-primary/90 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition-all text-sm;
+    @apply bg-gaming-primary hover:bg-gaming-primary/90 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition-all text-xs sm:text-sm;
   }
 
   .btn-gaming-accent {
-    @apply bg-gaming-accent hover:bg-gaming-accent/90 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition-all text-sm;
+    @apply bg-gaming-accent hover:bg-gaming-accent/90 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition-all text-xs sm:text-sm;
   }
   
   /* Responsive container utilities */
   .container-padding {
-    @apply px-3 sm:px-4 md:px-6;
+    @apply px-2 sm:px-3 md:px-4 lg:px-6;
   }
   
   .section-padding {
-    @apply py-4 sm:py-6 md:py-8;
+    @apply py-3 sm:py-4 md:py-6 lg:py-8;
   }
   
   .mobile-only {
@@ -96,18 +96,18 @@
   }
   
   .responsive-text {
-    @apply text-sm sm:text-base;
+    @apply text-xs sm:text-sm md:text-base;
   }
   
   .responsive-heading {
-    @apply text-lg sm:text-xl md:text-2xl;
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl;
   }
   
   .responsive-padding {
-    @apply p-2 sm:p-3 md:p-4;
+    @apply p-1.5 sm:p-2 md:p-3 lg:p-4;
   }
   
   .responsive-margin {
-    @apply my-2 sm:my-3 md:my-4;
+    @apply my-1.5 sm:my-2 md:my-3 lg:my-4;
   }
 }

@@ -8,10 +8,12 @@ interface PWALayoutWrapperProps {
 
 const PWALayoutWrapper: React.FC<PWALayoutWrapperProps> = ({ children }) => {
   return (
-    <>
+    <div className="min-h-screen bg-gaming-bg flex flex-col">
       <NotchHeader />
-      {children}
-    </>
+      <div className="flex-1 pt-[calc(env(safe-area-inset-top)+48px)]">
+        {children}
+      </div>
+    </div>
   );
 };
 

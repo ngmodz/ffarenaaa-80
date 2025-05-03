@@ -32,12 +32,13 @@ const NotchHeader: React.FC<NotchHeaderProps> = ({
       style={{
         backgroundColor,
         paddingTop: 'env(safe-area-inset-top)',
-        height: 'calc(env(safe-area-inset-top) + 0px)' // Just enough height for the notch
+        height: 'calc(env(safe-area-inset-top) + 48px)' // Increased height to show the title
       }}
-      aria-hidden="true"
     >
-      <div className="text-white text-center text-xs opacity-0">
-        {pageTitle}
+      <div className="h-full flex items-end justify-center pb-2">
+        <div className="text-white text-xl font-medium">
+          {pageTitle}
+        </div>
       </div>
     </div>
   );

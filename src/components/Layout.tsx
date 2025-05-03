@@ -48,7 +48,7 @@ const Layout = () => {
           damping: 30
         }}
       >
-        <div className="p-2 sm:p-4 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto">
+        <div className="px-0 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

@@ -30,23 +30,23 @@ const ProfileTabs = ({
   return (
     <Tabs defaultValue="joined" className="w-full">
       <div className="flex flex-col gap-4">
-        {/* TabsList - Modified to be full width and scrollable on mobile */}
-        <TabsList className="bg-[#111827] w-full h-auto flex flex-nowrap overflow-x-auto scrollbar-none p-1">
+        {/* TabsList - Modified to fit in one frame without scrolling */}
+        <TabsList className="bg-[#111827] w-full grid grid-cols-3 p-1">
           <TabsTrigger 
             value="joined" 
-            className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm"
+            className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] text-xs sm:text-sm"
           >
-            Joined Tournaments
+            Joined
           </TabsTrigger>
           <TabsTrigger 
             value="hosted" 
-            className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm"
+            className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] text-xs sm:text-sm"
           >
-            Hosted Tournaments
+            Hosted
           </TabsTrigger>
           <TabsTrigger 
             value="winnings" 
-            className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm"
+            className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] text-xs sm:text-sm"
           >
             Winnings
           </TabsTrigger>

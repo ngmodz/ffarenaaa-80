@@ -48,7 +48,8 @@ const Layout = () => {
           damping: 30
         }}
       >
-        <div className="px-0 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto">
+        {/* Removed width constraint to allow full width on mobile */}
+        <div className="px-0 pb-20 md:pb-4 min-h-screen w-full mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

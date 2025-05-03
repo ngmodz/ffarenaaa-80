@@ -17,9 +17,9 @@ const PWALayoutWrapper: React.FC<PWALayoutWrapperProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gaming-bg flex flex-col">
+    <div className="min-h-screen bg-gaming-bg flex flex-col w-full">
       <NotchHeader />
-      <div className={`flex-1 ${isPWA ? 'pt-[env(safe-area-inset-top)]' : ''}`}>
+      <div className={`flex-1 w-full ${isPWA ? 'pt-[env(safe-area-inset-top)]' : ''}`}>
         {children}
       </div>
     </div>

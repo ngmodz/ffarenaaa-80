@@ -1,3 +1,4 @@
+
 #root {
   width: 100%;
   min-height: 100vh;
@@ -5,6 +6,8 @@
   padding: 0;
   text-align: center;
 }
+
+/* Removed max-width and margin constraints that could be limiting the content width */
 
 .logo {
   height: 6em;

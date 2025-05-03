@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Search, Filter, Trophy } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -63,9 +64,9 @@ const Index = () => {
     : sampleTournaments.filter(tournament => tournament.status === filter);
   
   return (
-    <>
-      {/* Header */}
-      <div className="mb-4 px-2 sm:px-0">
+    <div className="w-full px-4 sm:px-6 md:px-8">
+      {/* Header - Centered on mobile */}
+      <div className="mb-4 text-center sm:text-left">
         <h1 className="text-xl sm:text-2xl font-bold mb-2 text-gaming-text">
           <span className="text-gaming-primary">Freefire</span> Tournaments
         </h1>
@@ -73,7 +74,7 @@ const Index = () => {
       </div>
       
       {/* Search and Filters */}
-      <div className="mb-4 px-2 sm:px-0">
+      <div className="mb-4">
         <div className="relative mb-3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gaming-muted" size={18} />
           <input
@@ -135,7 +136,7 @@ const Index = () => {
       
       {/* Featured Tournament */}
       {filter !== "completed" && (
-        <div className="mb-5 px-2 sm:px-0">
+        <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold">Featured Tournament</h2>
           </div>
@@ -172,7 +173,7 @@ const Index = () => {
       )}
       
       {/* Tournament List */}
-      <div className="px-2 sm:px-0">
+      <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base sm:text-lg font-semibold">
             {filter === "all" ? "All Tournaments" : 
@@ -181,7 +182,7 @@ const Index = () => {
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredTournaments.map(tournament => (
             <TournamentCard 
               key={tournament.id} 
@@ -204,7 +205,7 @@ const Index = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

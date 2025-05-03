@@ -49,7 +49,7 @@ const TournamentCard = ({
         boxShadow: "0 0 15px rgba(155, 135, 245, 0.5)",
         transition: { duration: 0.3 } 
       }}
-      className="h-full"
+      className="h-full w-full"
     >
       <Card className="overflow-hidden bg-gaming-card border-gaming-border hover:border-gaming-primary/50 transition-all duration-300 flex flex-col h-full w-full transform">
         <div className="relative">

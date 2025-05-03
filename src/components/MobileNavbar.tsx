@@ -23,7 +23,7 @@ const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false }: N
     >
       <div
         className={cn(
-          "flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full mb-1 transition-all",
+          "flex items-center justify-center w-7 h-7 sm:w-10 sm:h-10 rounded-full mb-0.5 transition-all",
           isHighlighted 
             ? "bg-gaming-accent animate-pulse-glow" 
             : isActive 
@@ -33,7 +33,7 @@ const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false }: N
       >
         {icon}
       </div>
-      <span className="truncate text-xs">{label}</span>
+      <span className="truncate text-[10px] sm:text-xs">{label}</span>
     </Link>
   );
 };
@@ -47,31 +47,31 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg">
       <nav className="grid grid-cols-5 max-w-md mx-auto">
         <NavItem 
-          icon={<Home size={18} />} 
+          icon={<Home size={16} />} 
           label="Home" 
           to="/" 
           isActive={currentPath === "/"} 
         />
         <NavItem 
-          icon={<Trophy size={18} />} 
+          icon={<Trophy size={16} />} 
           label="Tournaments" 
           to="/tournaments"
           isActive={currentPath.startsWith("/tournaments")} 
         />
         <NavItem 
-          icon={<Plus size={18} />} 
+          icon={<Plus size={16} />} 
           label="Create" 
           to="/create-tournament" 
           isHighlighted={true}
         />
         <NavItem 
-          icon={<Calendar size={18} />} 
+          icon={<Calendar size={16} />} 
           label="Schedule" 
           to="/schedule"
           isActive={currentPath === "/schedule"} 
         />
         <NavItem 
-          icon={<User size={18} />} 
+          icon={<User size={16} />} 
           label="Profile" 
           to="/profile"
           isActive={currentPath === "/profile"} 

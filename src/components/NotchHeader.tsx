@@ -11,16 +11,20 @@ const NotchHeader: React.FC<NotchHeaderProps> = ({
   title = "Free Fire Arena",
   backgroundColor = "#172554" // Dark blue that matches the app theme
 }) => {
-  const location = useLocation();
-  const path = location.pathname;
+  // We'll use a try-catch to handle potential usage outside Router context
+  let pageTitle = title;
+  try {
+    const location = useLocation();
+    const path = location.pathname;
 
-  // Dynamically set the title based on the current route
-  const getPageTitle = () => {
-    if (path === '/') return "Free Fire Arena";
-    if (path.includes('/tournament/')) return "Tournament Details";
-    if (path === '/auth') return "Authentication";
-    return title;
-  };
+    // Dynamically set the title based on the current route
+    if (path === '/') pageTitle = "Free Fire Arena";
+    if (path.includes('/tournament/')) pageTitle = "Tournament Details";
+    if (path === '/auth') pageTitle = "Authentication";
+  } catch (error) {
+    // If useLocation fails, we'll fall back to the default title
+    console.log("Using default title as Router context not available");
+  }
 
   return (
     <div 
@@ -33,7 +37,7 @@ const NotchHeader: React.FC<NotchHeaderProps> = ({
       aria-hidden="true"
     >
       <div className="text-white text-center text-xs opacity-0">
-        {getPageTitle()}
+        {pageTitle}
       </div>
     </div>
   );

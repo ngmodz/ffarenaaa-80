@@ -1,4 +1,3 @@
-
 import { useLocation } from "react-router-dom";
 import MobileNavbar from "./MobileNavbar";
 import TopPwaNavbar from "./TopPwaNavbar";
@@ -72,7 +71,7 @@ const Layout = ({ children }: LayoutProps) => {
         }}
       >
         <div className={`p-2 sm:p-4 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto ${
-          isMobile ? "pt-16" : ""
+          isMobile ? "pt-14" : ""
         }`}>
           <AnimatePresence mode="wait">
             <motion.div

@@ -29,9 +29,7 @@ const ProfileTabs = ({
         {/* TabsList - Modified to be full width and scrollable on mobile */}
         <TabsList className="bg-[#111827] w-full h-auto flex flex-nowrap overflow-x-auto scrollbar-none p-1">
           <TabsTrigger value="joined" className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm">Joined </TabsTrigger>
-          <TabsTrigger value="hosted" className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm">
-            Hosted Tournaments
-          </TabsTrigger>
+          <TabsTrigger value="hosted" className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm">Hosted </TabsTrigger>
           <TabsTrigger value="winnings" className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm">
             Winnings
           </TabsTrigger>

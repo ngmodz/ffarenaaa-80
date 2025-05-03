@@ -29,14 +29,14 @@ const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false, ind
         className={cn(
           "flex flex-col items-center justify-center text-2xs font-medium transition-colors duration-300",
           isActive ? "text-gaming-primary" : "text-gaming-muted hover:text-gaming-text",
-          "px-1 py-1 w-full"
+          "px-1 py-1.5 w-full" // Increased vertical padding
         )}
       >
         <motion.div
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className={cn(
-            "flex items-center justify-center w-8 h-8 rounded-full mb-0.5 transition-all duration-300",
+            "flex items-center justify-center w-10 h-10 rounded-full mb-1 transition-all duration-300", // Increased size from w-8 h-8 to w-10 h-10 and added more bottom margin
             isHighlighted 
               ? "bg-gaming-accent shadow-glow-accent" 
               : isActive 
@@ -44,10 +44,11 @@ const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false, ind
                 : "bg-gaming-card hover:bg-gaming-card/80"
           )}
         >
-          {icon}
+          {/* Increased icon size */}
+          {React.cloneElement(icon as React.ReactElement, { size: 22 })}
         </motion.div>
         <motion.span 
-          className="truncate text-xs transition-all duration-300"
+          className="truncate text-sm transition-all duration-300" // Increased text size from text-xs to text-sm
           animate={{ y: isActive ? -2 : 0 }}
         >
           {label}
@@ -106,7 +107,7 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg py-1" // Added padding-y
     >
       <nav className="grid grid-cols-5 max-w-md mx-auto">
         {navItems.map((item, index) => (

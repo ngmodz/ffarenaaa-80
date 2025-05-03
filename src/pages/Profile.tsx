@@ -6,7 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import { User, Edit } from "lucide-react";
+import { User, Edit, Calendar, Trophy, Users, Clock, Search } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import TournamentActivityList from "@/components/profile/TournamentActivityList";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -15,6 +18,8 @@ const Profile = () => {
     email: "player@example.com",
   });
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   // Mock user data - would come from Supabase in the future
   const user = {
@@ -23,6 +28,62 @@ const Profile = () => {
     avatar_url: avatar,
     isPremium: true,
   };
+
+  // Mock tournament data - would come from Supabase in the future
+  const mockJoinedTournaments = [
+    {
+      id: "t1",
+      title: "Weekend Booyah Challenge",
+      date: "June 15, 2023",
+      time: "6:00 PM IST",
+      status: "completed",
+      entryFee: 50,
+      prizeMoney: 500,
+      position: 2,
+    },
+    {
+      id: "t2",
+      title: "Solo Survivor Showdown",
+      date: "June 20, 2023", 
+      time: "7:30 PM IST",
+      status: "upcoming",
+      entryFee: 100,
+      prizeMoney: 1000,
+    },
+    {
+      id: "t3",
+      title: "Squad Domination Cup",
+      date: "June 25, 2023",
+      time: "8:00 PM IST", 
+      status: "upcoming",
+      entryFee: 75,
+      prizeMoney: 750,
+    }
+  ];
+  
+  const mockHostedTournaments = [
+    {
+      id: "h1",
+      title: "Friday Night Firefight",
+      date: "June 10, 2023",
+      time: "9:00 PM IST",
+      status: "completed",
+      entryFee: 25,
+      prizeMoney: 250,
+      participants: 45,
+      totalSpots: 50,
+    }
+  ];
+  
+  const mockWinnings = [
+    {
+      id: "w1",
+      title: "Weekend Booyah Challenge",
+      date: "June 15, 2023",
+      prize: 200,
+      position: 2
+    }
+  ];
 
   const handleEditToggle = () => {
     if (isEditing) {
@@ -56,6 +117,33 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Filter tournaments by status
+  const filterTournaments = (tournaments: any[], filter: string | null) => {
+    if (!filter) return tournaments;
+    return tournaments.filter(t => t.status === filter);
+  };
+
+  // Search tournaments by title
+  const searchTournaments = (tournaments: any[], query: string) => {
+    if (!query.trim()) return tournaments;
+    const lowercasedQuery = query.toLowerCase();
+    return tournaments.filter(t => 
+      t.title.toLowerCase().includes(lowercasedQuery)
+    );
+  };
+
+  // Combined filter and search
+  const getFilteredTournaments = (tournaments: any[]) => {
+    return searchTournaments(
+      filterTournaments(tournaments, activeFilter),
+      searchQuery
+    );
+  };
+
+  const handleFilterChange = (filter: string | null) => {
+    setActiveFilter(filter === activeFilter ? null : filter);
   };
 
   return (
@@ -157,18 +245,107 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Placeholder for Future Sections */}
+        {/* Tournament Activity Section */}
         <Card className="bg-[#1F2937] border-gaming-border">
           <CardHeader>
             <CardTitle className="text-xl">Tournament Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-[#A0AEC0]">
-              Tournament activity section coming soon...
-            </p>
+            <Tabs defaultValue="joined" className="w-full">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
+                <TabsList className="bg-[#111827] w-full sm:w-auto">
+                  <TabsTrigger 
+                    value="joined" 
+                    className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0]"
+                  >
+                    Joined Tournaments
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="hosted" 
+                    className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0]"
+                  >
+                    Hosted Tournaments
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="winnings" 
+                    className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0]"
+                  >
+                    Winnings
+                  </TabsTrigger>
+                </TabsList>
+                
+                <div className="relative w-full sm:w-64">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-[#A0AEC0]" />
+                  <Input
+                    placeholder="Search tournaments..."
+                    className="pl-9 bg-[#111827] border-gaming-border text-white w-full"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-2 mb-4 flex-wrap">
+                <Badge 
+                  onClick={() => handleFilterChange('upcoming')}
+                  className={`cursor-pointer ${activeFilter === 'upcoming' 
+                    ? 'bg-blue-600 hover:bg-blue-700' 
+                    : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
+                >
+                  Upcoming
+                </Badge>
+                <Badge 
+                  onClick={() => handleFilterChange('ongoing')}
+                  className={`cursor-pointer ${activeFilter === 'ongoing' 
+                    ? 'bg-gaming-accent hover:bg-gaming-accent/90' 
+                    : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
+                >
+                  Live
+                </Badge>
+                <Badge 
+                  onClick={() => handleFilterChange('completed')}
+                  className={`cursor-pointer ${activeFilter === 'completed' 
+                    ? 'bg-gray-600 hover:bg-gray-700' 
+                    : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
+                >
+                  Completed
+                </Badge>
+                {activeFilter && (
+                  <Badge 
+                    onClick={() => setActiveFilter(null)}
+                    variant="destructive"
+                    className="cursor-pointer"
+                  >
+                    Clear Filter
+                  </Badge>
+                )}
+              </div>
+
+              <TabsContent value="joined" className="mt-2">
+                <TournamentActivityList 
+                  tournaments={getFilteredTournaments(mockJoinedTournaments)} 
+                  type="joined"
+                />
+              </TabsContent>
+              
+              <TabsContent value="hosted" className="mt-2">
+                <TournamentActivityList 
+                  tournaments={getFilteredTournaments(mockHostedTournaments)} 
+                  type="hosted"
+                />
+              </TabsContent>
+              
+              <TabsContent value="winnings" className="mt-2">
+                <TournamentActivityList 
+                  tournaments={getFilteredTournaments(mockWinnings)} 
+                  type="winnings"
+                />
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
 
+        {/* Placeholder Cards */}
         <Card className="bg-[#1F2937] border-gaming-border">
           <CardHeader>
             <CardTitle className="text-xl">Wallet</CardTitle>

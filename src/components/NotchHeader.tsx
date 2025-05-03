@@ -1,14 +1,12 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 
 interface NotchHeaderProps {
-  title?: string;
   backgroundColor?: string;
 }
 
 const NotchHeader: React.FC<NotchHeaderProps> = ({ 
-  backgroundColor = "#172554" // Dark blue that matches the app theme
+  backgroundColor = "#9b87f5" // Changed from blue to purple to match app theme
 }) => {
   // Check if the app is running in standalone mode (PWA)
   const isPWA = window.matchMedia('(display-mode: standalone)').matches || 

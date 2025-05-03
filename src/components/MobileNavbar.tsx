@@ -108,7 +108,7 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg py-1" // Added padding-y
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg py-2 pb-safe" // Added py-2 for more padding and pb-safe for iOS devices
     >
       <nav className="grid grid-cols-5 max-w-md mx-auto">
         {navItems.map((item, index) => (

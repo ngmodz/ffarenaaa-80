@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -44,6 +45,16 @@
 
   html {
     @apply scroll-smooth overflow-x-hidden;
+  }
+  
+  /* Enable iOS safe area support */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    .pt-safe {
+      padding-top: env(safe-area-inset-top);
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
   }
 }
 

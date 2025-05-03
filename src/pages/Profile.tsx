@@ -6,10 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import { User, Edit, Calendar, Trophy, Users, Clock, Search } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import TournamentActivityList from "@/components/profile/TournamentActivityList";
+import { User, Edit } from "lucide-react";
+import ProfileTabs from "@/components/profile/ProfileTabs";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -245,103 +243,22 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Tournament Activity Section */}
+        {/* Tournament Activity Section - Now using the ProfileTabs component */}
         <Card className="bg-[#1F2937] border-gaming-border">
           <CardHeader>
             <CardTitle className="text-xl">Tournament Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="joined" className="w-full">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
-                <TabsList className="bg-[#111827] w-full sm:w-auto">
-                  <TabsTrigger 
-                    value="joined" 
-                    className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0]"
-                  >
-                    Joined Tournaments
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="hosted" 
-                    className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0]"
-                  >
-                    Hosted Tournaments
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="winnings" 
-                    className="data-[state=active]:bg-[#1E3A8A] data-[state=active]:text-white text-[#A0AEC0]"
-                  >
-                    Winnings
-                  </TabsTrigger>
-                </TabsList>
-                
-                <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-[#A0AEC0]" />
-                  <Input
-                    placeholder="Search tournaments..."
-                    className="pl-9 bg-[#111827] border-gaming-border text-white w-full"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </div>
-              
-              <div className="flex gap-2 mb-4 flex-wrap">
-                <Badge 
-                  onClick={() => handleFilterChange('upcoming')}
-                  className={`cursor-pointer ${activeFilter === 'upcoming' 
-                    ? 'bg-blue-600 hover:bg-blue-700' 
-                    : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
-                >
-                  Upcoming
-                </Badge>
-                <Badge 
-                  onClick={() => handleFilterChange('ongoing')}
-                  className={`cursor-pointer ${activeFilter === 'ongoing' 
-                    ? 'bg-gaming-accent hover:bg-gaming-accent/90' 
-                    : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
-                >
-                  Live
-                </Badge>
-                <Badge 
-                  onClick={() => handleFilterChange('completed')}
-                  className={`cursor-pointer ${activeFilter === 'completed' 
-                    ? 'bg-gray-600 hover:bg-gray-700' 
-                    : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
-                >
-                  Completed
-                </Badge>
-                {activeFilter && (
-                  <Badge 
-                    onClick={() => setActiveFilter(null)}
-                    variant="destructive"
-                    className="cursor-pointer"
-                  >
-                    Clear Filter
-                  </Badge>
-                )}
-              </div>
-
-              <TabsContent value="joined" className="mt-2">
-                <TournamentActivityList 
-                  tournaments={getFilteredTournaments(mockJoinedTournaments)} 
-                  type="joined"
-                />
-              </TabsContent>
-              
-              <TabsContent value="hosted" className="mt-2">
-                <TournamentActivityList 
-                  tournaments={getFilteredTournaments(mockHostedTournaments)} 
-                  type="hosted"
-                />
-              </TabsContent>
-              
-              <TabsContent value="winnings" className="mt-2">
-                <TournamentActivityList 
-                  tournaments={getFilteredTournaments(mockWinnings)} 
-                  type="winnings"
-                />
-              </TabsContent>
-            </Tabs>
+            <ProfileTabs
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              activeFilter={activeFilter}
+              handleFilterChange={handleFilterChange}
+              mockJoinedTournaments={mockJoinedTournaments}
+              mockHostedTournaments={mockHostedTournaments}
+              mockWinnings={mockWinnings}
+              getFilteredTournaments={getFilteredTournaments}
+            />
           </CardContent>
         </Card>
 

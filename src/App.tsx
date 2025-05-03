@@ -18,6 +18,7 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="tournament/:id" element={<TournamentDetails />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Profile />} /> {/* Temporarily pointing to Profile */}
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<NotFound />} />

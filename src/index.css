@@ -208,4 +208,28 @@
       transform: scale(1.05);
     }
   }
+  
+  /* Additional utilities for horizontal scrolling tabs */
+  .tabs-scrollable {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  .tabs-scrollable::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  .horizontal-scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+  
+  .horizontal-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
 }

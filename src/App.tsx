@@ -6,6 +6,7 @@ import TournamentDetails from "./pages/TournamentDetails";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import PWALayoutWrapper from "./components/PWALayoutWrapper";
+import { Toaster } from "./components/ui/toaster";
 import "./App.css";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Toaster />
     </PWALayoutWrapper>
   );
 }

@@ -71,16 +71,16 @@
   }
 
   .btn-gaming-primary {
-    @apply bg-gaming-primary hover:bg-gaming-primary/90 text-white font-medium py-2 px-4 rounded-md transition-all;
+    @apply bg-gaming-primary hover:bg-gaming-primary/90 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition-all text-sm;
   }
 
   .btn-gaming-accent {
-    @apply bg-gaming-accent hover:bg-gaming-accent/90 text-white font-medium py-2 px-4 rounded-md transition-all;
+    @apply bg-gaming-accent hover:bg-gaming-accent/90 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition-all text-sm;
   }
   
   /* Responsive container utilities */
   .container-padding {
-    @apply px-4 sm:px-6 md:px-8;
+    @apply px-3 sm:px-4 md:px-6;
   }
   
   .section-padding {
@@ -93,5 +93,21 @@
   
   .desktop-only {
     @apply hidden md:block;
+  }
+  
+  .responsive-text {
+    @apply text-sm sm:text-base;
+  }
+  
+  .responsive-heading {
+    @apply text-lg sm:text-xl md:text-2xl;
+  }
+  
+  .responsive-padding {
+    @apply p-2 sm:p-3 md:p-4;
+  }
+  
+  .responsive-margin {
+    @apply my-2 sm:my-3 md:my-4;
   }
 }

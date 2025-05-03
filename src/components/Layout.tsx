@@ -18,7 +18,7 @@ const Layout = ({ children }: LayoutProps) => {
       {!isMobile && <DesktopSidebar currentPath={currentPath} />}
       
       <div className={`flex-1 ${!isMobile ? "lg:ml-16 xl:ml-56" : ""}`}>
-        <div className="p-4 pb-24 lg:pb-4 min-h-screen max-w-7xl mx-auto">
+        <div className="p-4 pb-24 lg:pb-4 min-h-screen max-w-7xl mx-auto container-padding">
           {children}
         </div>
       </div>

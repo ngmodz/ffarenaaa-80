@@ -66,7 +66,7 @@ const Index = () => {
   return (
     <Layout>
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-5">
         <h1 className="text-2xl font-bold mb-2 text-gaming-text">
           <span className="text-gaming-primary">Freefire</span> Tournaments
         </h1>
@@ -74,8 +74,8 @@ const Index = () => {
       </div>
       
       {/* Search and Filters */}
-      <div className="mb-6">
-        <div className="relative mb-4">
+      <div className="mb-5">
+        <div className="relative mb-3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gaming-muted" size={18} />
           <input
             type="text"
@@ -84,10 +84,10 @@ const Index = () => {
           />
         </div>
         
-        <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           <button
             onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
+            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
               filter === "all"
                 ? "bg-gaming-primary text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
@@ -97,18 +97,18 @@ const Index = () => {
           </button>
           <button
             onClick={() => setFilter("live")}
-            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap flex items-center ${
+            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 flex items-center ${
               filter === "live"
                 ? "bg-gaming-accent text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
             }`}
           >
-            <span className={`inline-block w-2 h-2 rounded-full mr-2 ${filter === "live" ? "bg-white" : "bg-red-500"}`}></span>
+            <span className={`inline-block w-2 h-2 rounded-full mr-1 ${filter === "live" ? "bg-white" : "bg-red-500"}`}></span>
             Live Now
           </button>
           <button
             onClick={() => setFilter("upcoming")}
-            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
+            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
               filter === "upcoming"
                 ? "bg-gaming-primary text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
@@ -118,7 +118,7 @@ const Index = () => {
           </button>
           <button
             onClick={() => setFilter("completed")}
-            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
+            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
               filter === "completed"
                 ? "bg-gaming-primary text-white"
                 : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"
@@ -127,7 +127,7 @@ const Index = () => {
             Completed
           </button>
           <button
-            className="px-4 py-2 rounded-full text-sm whitespace-nowrap bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20 flex items-center"
+            className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20 flex items-center`}
           >
             <Filter size={14} className="mr-1" /> More Filters
           </button>
@@ -136,19 +136,19 @@ const Index = () => {
       
       {/* Featured Tournament */}
       {filter !== "completed" && (
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold">Featured Tournament</h2>
           </div>
           
-          <div className="relative w-full h-48 md:h-64 rounded-xl overflow-hidden">
+          <div className="relative w-full h-44 sm:h-48 md:h-64 rounded-xl overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
             <img 
               src="https://images.unsplash.com/photo-1548345680-f5475ea5df84?auto=format&fit=crop&q=80&w=1200" 
               alt="Featured Tournament" 
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-0 left-0 w-full p-4 z-20">
+            <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4 z-20">
               <div className="flex items-center mb-2">
                 <div className="bg-gaming-accent text-white text-xs font-bold px-2 py-1 rounded mr-2">
                   PREMIUM
@@ -159,12 +159,12 @@ const Index = () => {
                 </div>
               </div>
               <h3 className="text-xl font-bold text-white mb-1">Free Fire Championship Finals</h3>
-              <div className="flex items-center text-white/80 text-sm mb-3">
+              <div className="flex items-center text-white/80 text-xs sm:text-sm mb-3">
                 <Trophy size={16} className="mr-1 text-gaming-accent" />
                 <span className="font-bold mr-3">₹50,000 Prize Pool</span>
                 <span className="text-xs bg-white/20 px-2 py-0.5 rounded">256 Teams</span>
               </div>
-              <button className="bg-gaming-accent hover:bg-gaming-accent/90 text-white px-4 py-2 rounded-md font-medium transition-all">
+              <button className="bg-gaming-accent hover:bg-gaming-accent/90 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
                 Watch Live
               </button>
             </div>

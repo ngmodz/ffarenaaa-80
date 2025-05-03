@@ -43,7 +43,7 @@ const TournamentCard = ({
       <div className="relative">
         {/* Status Badge */}
         <div className={cn(
-          "absolute top-2 right-2 text-xs px-2 py-1 rounded text-white font-medium",
+          "absolute top-2 right-2 text-xs px-2 py-1 rounded text-white font-medium z-10",
           statusColors[status]
         )}>
           {status === 'live' ? 'LIVE NOW' : status.toUpperCase()}
@@ -53,14 +53,15 @@ const TournamentCard = ({
         <img 
           src={image} 
           alt={title} 
-          className="h-36 w-full object-cover"
+          className="h-32 sm:h-36 w-full object-cover"
+          loading="lazy"
         />
         
         {/* Prize Money */}
         <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 flex justify-between items-center">
           <div className="flex items-center">
             <Trophy size={16} className="text-gaming-accent mr-1" />
-            <span className="font-bold">₹{prizeMoney}</span>
+            <span className="font-bold text-sm">₹{prizeMoney}</span>
           </div>
           <div className="text-xs bg-gaming-primary px-2 py-1 rounded">
             ₹{entryFee} Entry
@@ -75,15 +76,15 @@ const TournamentCard = ({
         {/* Details */}
         <div className="space-y-2 flex-grow">
           <div className="flex text-xs items-center text-gaming-muted">
-            <Calendar size={14} className="mr-1" />
-            <span>{date}</span>
-            <Clock size={14} className="ml-3 mr-1" />
-            <span>{time}</span>
+            <Calendar size={14} className="mr-1 flex-shrink-0" />
+            <span className="truncate">{date}</span>
+            <Clock size={14} className="ml-2 mr-1 flex-shrink-0" />
+            <span className="truncate">{time}</span>
           </div>
           
           <div className="flex items-center text-xs text-gaming-muted">
-            <Users size={14} className="mr-1" />
-            <span>
+            <Users size={14} className="mr-1 flex-shrink-0" />
+            <span className="truncate">
               {filledSpots}/{totalSpots} Participants
             </span>
           </div>
@@ -103,7 +104,7 @@ const TournamentCard = ({
         {/* Action Button */}
         <Link 
           to={`/tournaments/${id}`}
-          className="btn-gaming-primary w-full mt-4 text-center text-sm"
+          className="btn-gaming-primary w-full mt-3 text-center text-sm"
         >
           {status === 'completed' ? 'View Results' : spotsLeft > 0 ? 'Join Tournament' : 'Fully Booked'}
         </Link>

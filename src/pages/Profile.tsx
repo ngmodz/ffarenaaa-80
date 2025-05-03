@@ -8,6 +8,9 @@ import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { User, Edit } from "lucide-react";
 import ProfileTabs from "@/components/profile/ProfileTabs";
+import WalletSection from "@/components/profile/WalletSection";
+import AchievementsSection from "@/components/profile/AchievementsSection";
+import LogoutButton from "@/components/profile/LogoutButton";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -227,7 +230,8 @@ const Profile = () => {
             </div>
 
             {/* Edit Button */}
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 flex justify-between">
+              <LogoutButton />
               <Button 
                 className={`flex items-center gap-2 ${
                   isEditing 
@@ -262,28 +266,11 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Placeholder Cards */}
-        <Card className="bg-[#1F2937] border-gaming-border">
-          <CardHeader>
-            <CardTitle className="text-xl">Wallet</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-[#A0AEC0]">
-              Wallet section coming soon...
-            </p>
-          </CardContent>
-        </Card>
+        {/* Wallet Section - Now using the WalletSection component */}
+        <WalletSection />
 
-        <Card className="bg-[#1F2937] border-gaming-border">
-          <CardHeader>
-            <CardTitle className="text-xl">Achievements</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-[#A0AEC0]">
-              Achievements section coming soon...
-            </p>
-          </CardContent>
-        </Card>
+        {/* Achievements Section - Now using the AchievementsSection component */}
+        <AchievementsSection />
       </motion.div>
     </div>
   );

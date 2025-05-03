@@ -4,6 +4,7 @@ import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import TournamentDetails from "./pages/TournamentDetails";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import PWALayoutWrapper from "./components/PWALayoutWrapper";
@@ -18,7 +19,7 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="tournament/:id" element={<TournamentDetails />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Profile />} /> {/* Temporarily pointing to Profile */}
+          <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<NotFound />} />

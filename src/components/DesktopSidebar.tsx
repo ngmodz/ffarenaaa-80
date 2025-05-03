@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   Trophy, 
@@ -6,12 +5,12 @@ import {
   User, 
   Wallet, 
   Settings, 
-  Plus, 
-  Menu
+  Plus
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -19,107 +18,137 @@ interface SidebarItemProps {
   to: string;
   isActive?: boolean;
   isCollapsed: boolean;
+  delay?: number;
 }
 
-const SidebarItem = ({ icon, label, to, isActive = false, isCollapsed }: SidebarItemProps) => {
+const SidebarItem = ({ icon, label, to, isActive = false, isCollapsed, delay = 0 }: SidebarItemProps) => {
   return (
     <Link
       to={to}
       className={cn(
         "flex items-center px-3 py-3 rounded-md transition-all duration-300",
-        isActive ? "bg-gaming-primary/20 text-gaming-primary" : "text-gaming-muted hover:text-gaming-text hover:bg-gaming-card",
+        isActive ? "bg-gaming-primary/20 text-gaming-primary" : "text-gaming-muted hover:text-gaming-text hover:bg-gaming-card/80",
         "my-1"
       )}
     >
-      <div className={cn(
-        "flex items-center justify-center w-8 h-8",
-        "transition-all duration-300 transform",
-        isActive && "scale-110"
-      )}>
+      <motion.div 
+        whileHover={{ scale: 1.1, rotate: isActive ? 0 : 5 }}
+        whileTap={{ scale: 0.9 }}
+        className="flex items-center justify-center w-8 h-8 transition-all duration-300"
+      >
         {icon}
-      </div>
-      {!isCollapsed && (
-        <span className="ml-3 text-sm font-medium opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 animate-in">
-          {label}
-        </span>
-      )}
+      </motion.div>
+      <AnimatePresence>
+        {!isCollapsed && (
+          <motion.span
+            initial={{ opacity: 0, width: 0, x: -10 }}
+            animate={{ 
+              opacity: 1, 
+              width: "auto", 
+              x: 0,
+              transition: { delay: delay * 0.05, duration: 0.3 } 
+            }}
+            exit={{ opacity: 0, width: 0, x: -10 }}
+            className="ml-3 text-sm font-medium overflow-hidden whitespace-nowrap"
+          >
+            {label}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </Link>
   );
 };
 
 interface DesktopSidebarProps {
   currentPath: string;
+  onHoverChange?: (hovered: boolean) => void;
 }
 
-const DesktopSidebar = ({ currentPath }: DesktopSidebarProps) => {
+const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => {
   // Always default to collapsed
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
 
-  // We'll maintain the collapsed state always true at initialization
   useEffect(() => {
-    // No need to adjust collapse state based on window size anymore
-    // Just ensure it's always collapsed on initial load
+    // Keep sidebar collapsed by default
     setIsCollapsed(true);
   }, []);
 
-  // Sidebar width is determined by hover state
-  const sidebarWidth = isHovered ? "w-56" : "w-16";
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onHoverChange?.(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onHoverChange?.(false);
+  };
+
+  // Navigation items with icons and labels
+  const navItems = [
+    { icon: <Home size={20} />, label: "Home", to: "/" },
+    { icon: <Trophy size={20} />, label: "Tournaments", to: "/tournaments" },
+    { icon: <Calendar size={20} />, label: "Schedule", to: "/schedule" },
+    { icon: <Wallet size={20} />, label: "Wallet", to: "/wallet" },
+    { icon: <User size={20} />, label: "Profile", to: "/profile" },
+    { icon: <Settings size={20} />, label: "Settings", to: "/settings" }
+  ];
 
   return (
-    <div 
-      className={`hidden lg:flex flex-col fixed left-0 top-0 h-full bg-gaming-card border-r border-gaming-border z-40 ${sidebarWidth} transition-all duration-300 ease-in-out`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+    <motion.div 
+      className="hidden lg:flex flex-col fixed left-0 top-0 h-full bg-gaming-card border-r border-gaming-border z-40 shadow-lg"
+      animate={{ 
+        width: isHovered ? "14rem" : "4rem",
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 500,
+        damping: 40
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <div className={cn(
-        "transition-all duration-300 flex flex-col h-full",
-        isHovered ? "w-56" : "w-16"
-      )}>
+      <div className="flex flex-col h-full">
         {/* Brand */}
-        <div className="p-4 flex items-center group">
-          <div className={cn(
-            "w-8 h-8 bg-gaming-primary rounded-md flex items-center justify-center",
-            "transition-all duration-300",
-            isHovered && "shadow-glow"
-          )}>
-            <Trophy size={18} className={cn(
-              "text-white",
-              "transition-transform duration-500",
-              isHovered && "animate-pulse"
-            )} />
-          </div>
-          {isHovered && (
-            <span className="ml-2 font-bold text-lg text-glow opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
-              FireArena
-            </span>
-          )}
+        <div className="p-4 flex items-center">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+            className="w-8 h-8 bg-gaming-primary rounded-md flex items-center justify-center shadow-glow"
+          >
+            <Trophy size={18} className="text-white" />
+          </motion.div>
+          <AnimatePresence>
+            {isHovered && (
+              <motion.span
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.3 }}
+                className="ml-3 font-bold text-lg text-glow whitespace-nowrap overflow-hidden"
+              >
+                FireArena
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Navigation */}
         <div className="flex-1 px-2">
-          {[
-            { icon: <Home size={18} className="transition-transform duration-300 hover:scale-110" />, label: "Home", to: "/", isActive: currentPath === "/" },
-            { icon: <Trophy size={18} className="transition-transform duration-300 hover:scale-110" />, label: "Tournaments", to: "/tournaments", isActive: currentPath.startsWith("/tournaments") },
-            { icon: <Calendar size={18} className="transition-transform duration-300 hover:scale-110" />, label: "Schedule", to: "/schedule", isActive: currentPath === "/schedule" },
-            { icon: <Wallet size={18} className="transition-transform duration-300 hover:scale-110" />, label: "Wallet", to: "/wallet", isActive: currentPath === "/wallet" },
-            { icon: <User size={18} className="transition-transform duration-300 hover:scale-110" />, label: "Profile", to: "/profile", isActive: currentPath === "/profile" },
-            { icon: <Settings size={18} className="transition-transform duration-300 hover:scale-110" />, label: "Settings", to: "/settings", isActive: currentPath === "/settings" }
-          ].map((item, index) => (
-            <div key={item.to} className={cn(
-              "opacity-0 transform translate-y-2 group",
-              "animate-in transition-all duration-300",
-              `delay-[${index * 50}ms]`,
-              "opacity-100 translate-y-0"
-            )}>
-              <SidebarItem 
-                icon={item.icon} 
-                label={item.label} 
-                to={item.to} 
-                isActive={item.isActive} 
-                isCollapsed={!isHovered}
-              />
-            </div>
+          {navItems.map((item, index) => (
+            <SidebarItem 
+              key={item.to} 
+              icon={item.icon} 
+              label={item.label} 
+              to={item.to} 
+              isActive={
+                item.to === "/" 
+                  ? currentPath === "/" 
+                  : currentPath.startsWith(item.to)
+              } 
+              isCollapsed={!isHovered}
+              delay={index}
+            />
           ))}
         </div>
 
@@ -128,17 +157,33 @@ const DesktopSidebar = ({ currentPath }: DesktopSidebarProps) => {
           <Link
             to="/create-tournament"
             className={cn(
-              "btn-gaming-accent flex items-center justify-center rounded-md",
-              "transition-all duration-300 hover:shadow-glow-accent transform hover:translate-y-[-2px]",
-              !isHovered ? "p-2" : "px-4 py-2"
+              "btn-gaming-accent flex items-center justify-center rounded-md transition-all duration-300",
+              isHovered ? "px-4 py-2" : "p-2"
             )}
           >
-            <Plus size={18} className="transition-transform duration-300" />
-            {isHovered && <span className="ml-2 opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">Create Tournament</span>}
+            <motion.div
+              whileHover={{ rotate: 90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Plus size={20} className="transition-transform duration-300" />
+            </motion.div>
+            <AnimatePresence>
+              {isHovered && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "auto" }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="ml-2 whitespace-nowrap overflow-hidden"
+                >
+                  Create Tournament
+                </motion.span>
+              )}
+            </AnimatePresence>
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

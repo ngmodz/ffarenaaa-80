@@ -2,6 +2,7 @@
 import { Home, Trophy, Calendar, User, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -9,32 +10,50 @@ interface NavItemProps {
   to: string;
   isActive?: boolean;
   isHighlighted?: boolean;
+  index: number;
 }
 
-const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false }: NavItemProps) => {
+const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false, index }: NavItemProps) => {
   return (
-    <Link
-      to={to}
-      className={cn(
-        "flex flex-col items-center justify-center text-2xs font-medium transition-colors duration-300",
-        isActive ? "text-gaming-primary" : "text-gaming-muted hover:text-gaming-text",
-        "px-1 py-1 w-full"
-      )}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.4,
+        delay: index * 0.1,
+        ease: [0.25, 0.1, 0.25, 1.0]
+      }}
     >
-      <div
+      <Link
+        to={to}
         className={cn(
-          "flex items-center justify-center w-7 h-7 sm:w-10 sm:h-10 rounded-full mb-0.5 transition-all duration-300",
-          isHighlighted 
-            ? "bg-gaming-accent animate-pulse-glow" 
-            : isActive 
-              ? "bg-gaming-primary/20 transform hover:scale-110" 
-              : "bg-gaming-card hover:bg-gaming-card/80"
+          "flex flex-col items-center justify-center text-2xs font-medium transition-colors duration-300",
+          isActive ? "text-gaming-primary" : "text-gaming-muted hover:text-gaming-text",
+          "px-1 py-1 w-full"
         )}
       >
-        {icon}
-      </div>
-      <span className="truncate text-[10px] sm:text-xs transition-all duration-300">{label}</span>
-    </Link>
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className={cn(
+            "flex items-center justify-center w-8 h-8 rounded-full mb-0.5 transition-all duration-300",
+            isHighlighted 
+              ? "bg-gaming-accent shadow-glow-accent" 
+              : isActive 
+                ? "bg-gaming-primary/20 shadow-glow" 
+                : "bg-gaming-card hover:bg-gaming-card/80"
+          )}
+        >
+          {icon}
+        </motion.div>
+        <motion.span 
+          className="truncate text-xs transition-all duration-300"
+          animate={{ y: isActive ? -2 : 0 }}
+        >
+          {label}
+        </motion.span>
+      </Link>
+    </motion.div>
   );
 };
 
@@ -43,28 +62,66 @@ interface MobileNavbarProps {
 }
 
 const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
+  // Navigation items with their properties
+  const navItems = [
+    { 
+      icon: <Home size={18} />, 
+      label: "Home", 
+      to: "/", 
+      isActive: currentPath === "/",
+      isHighlighted: false 
+    },
+    { 
+      icon: <Trophy size={18} />, 
+      label: "Tournaments", 
+      to: "/tournaments", 
+      isActive: currentPath.startsWith("/tournaments"),
+      isHighlighted: false
+    },
+    { 
+      icon: <Plus size={18} />, 
+      label: "Create", 
+      to: "/create-tournament", 
+      isActive: false,
+      isHighlighted: true
+    },
+    { 
+      icon: <Calendar size={18} />, 
+      label: "Schedule", 
+      to: "/schedule", 
+      isActive: currentPath === "/schedule",
+      isHighlighted: false
+    },
+    { 
+      icon: <User size={18} />, 
+      label: "Profile", 
+      to: "/profile", 
+      isActive: currentPath === "/profile",
+      isHighlighted: false
+    }
+  ];
+
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg transform transition-transform duration-300">
+    <motion.div 
+      initial={{ y: 100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg"
+    >
       <nav className="grid grid-cols-5 max-w-md mx-auto">
-        {[
-          { icon: <Home size={16} className="transition-transform duration-300 hover:scale-110" />, label: "Home", to: "/", isActive: currentPath === "/" },
-          { icon: <Trophy size={16} className="transition-transform duration-300 hover:scale-110" />, label: "Tournaments", to: "/tournaments", isActive: currentPath.startsWith("/tournaments") },
-          { icon: <Plus size={16} className="transition-transform duration-300 hover:scale-110" />, label: "Create", to: "/create-tournament", isHighlighted: true },
-          { icon: <Calendar size={16} className="transition-transform duration-300 hover:scale-110" />, label: "Schedule", to: "/schedule", isActive: currentPath === "/schedule" },
-          { icon: <User size={16} className="transition-transform duration-300 hover:scale-110" />, label: "Profile", to: "/profile", isActive: currentPath === "/profile" }
-        ].map((item, index) => (
-          <div key={item.to} className={`transform transition-all duration-300 delay-[${index * 50}ms]`}>
-            <NavItem 
-              icon={item.icon}
-              label={item.label}
-              to={item.to}
-              isActive={item.isActive}
-              isHighlighted={item.isHighlighted}
-            />
-          </div>
+        {navItems.map((item, index) => (
+          <NavItem 
+            key={item.to}
+            icon={item.icon}
+            label={item.label}
+            to={item.to}
+            isActive={item.isActive}
+            isHighlighted={item.isHighlighted}
+            index={index}
+          />
         ))}
       </nav>
-    </div>
+    </motion.div>
   );
 };
 

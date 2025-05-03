@@ -43,67 +43,88 @@ const TournamentCard = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0] }}
+      whileHover={{ 
+        scale: 1.03, 
+        boxShadow: "0 0 15px rgba(155, 135, 245, 0.5)",
+        transition: { duration: 0.3 } 
+      }}
+      className="h-full"
     >
-      <Card className="overflow-hidden bg-gaming-card border-gaming-border hover:border-gaming-primary/50 transition-all duration-300 flex flex-col h-full w-full transform hover:shadow-glow">
+      <Card className="overflow-hidden bg-gaming-card border-gaming-border hover:border-gaming-primary/50 transition-all duration-300 flex flex-col h-full w-full transform">
         <div className="relative">
           {/* Status Badge */}
-          <div className={cn(
-            "absolute top-2 right-2 text-2xs sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-white font-medium z-10 transition-all duration-300",
-            statusColors[status]
-          )}>
+          <motion.div 
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className={cn(
+              "absolute top-2 right-2 text-2xs font-bold sm:text-xs px-2 py-1 rounded-md text-white z-10",
+              statusColors[status]
+            )}
+          >
             {status === 'live' ? 'LIVE NOW' : status.toUpperCase()}
-          </div>
+          </motion.div>
           
           {/* Tournament Image */}
-          <img 
-            src={image} 
-            alt={title} 
-            className="h-28 sm:h-32 w-full object-cover transition-all duration-300 hover:brightness-110"
-            loading="lazy"
-          />
+          <div className="overflow-hidden">
+            <motion.img 
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.5 }}
+              src={image} 
+              alt={title} 
+              className="h-32 w-full object-cover"
+              loading="lazy"
+            />
+          </div>
           
           {/* Prize Money */}
-          <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-1.5 sm:p-2 flex justify-between items-center transition-all duration-300 hover:bg-black/70">
+          <div className="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm text-white p-2 flex justify-between items-center">
             <div className="flex items-center">
-              <Trophy size={14} className="text-gaming-accent mr-1 transition-transform duration-300 hover:scale-110" />
-              <span className="font-bold text-xs sm:text-sm">${prizeMoney}</span>
+              <Trophy size={16} className="text-gaming-accent mr-1.5" />
+              <span className="font-bold text-sm sm:text-base">${prizeMoney}</span>
             </div>
-            <div className="text-2xs sm:text-xs bg-gaming-primary px-1.5 sm:px-2 py-0.5 sm:py-1 rounded transition-all duration-300 hover:bg-gaming-primary/90">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="text-xs font-bold bg-gaming-primary px-2 py-1 rounded-md"
+            >
               ${entryFee} Entry
-            </div>
+            </motion.div>
           </div>
         </div>
         
-        <div className="p-2.5 flex flex-col flex-grow">
+        <div className="p-3 flex flex-col flex-grow">
           {/* Title */}
-          <h3 className="font-bold text-sm sm:text-base text-gaming-text mb-1.5 sm:mb-2 line-clamp-1 transition-all duration-300">{title}</h3>
+          <h3 className="font-bold text-sm sm:text-base text-gaming-text mb-2 line-clamp-1">{title}</h3>
           
           {/* Details */}
-          <div className="space-y-1.5 sm:space-y-2 flex-grow">
-            <div className="flex text-2xs sm:text-xs items-center text-gaming-muted">
-              <Calendar size={12} className="mr-1 flex-shrink-0 transition-all duration-300" />
+          <div className="space-y-2 flex-grow">
+            <div className="flex text-xs items-center text-gaming-muted">
+              <Calendar size={14} className="mr-1.5 flex-shrink-0" />
               <span className="truncate">{date}</span>
-              <Clock size={12} className="ml-1.5 mr-1 flex-shrink-0 transition-all duration-300" />
+              <Clock size={14} className="ml-2 mr-1.5 flex-shrink-0" />
               <span className="truncate">{time}</span>
             </div>
             
-            <div className="flex items-center text-2xs sm:text-xs text-gaming-muted">
-              <Users size={12} className="mr-1 flex-shrink-0 transition-all duration-300" />
+            <div className="flex items-center text-xs text-gaming-muted">
+              <Users size={14} className="mr-1.5 flex-shrink-0" />
               <span className="truncate">
                 {filledSpots}/{totalSpots} Participants
               </span>
             </div>
             
-            {/* Progress Bar */}
-            <div className="w-full bg-gaming-border h-1 sm:h-1.5 rounded-full overflow-hidden">
+            {/* Progress Bar with improved animation */}
+            <div className="w-full bg-gaming-border/50 h-1.5 rounded-full overflow-hidden mt-1">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${(filledSpots / totalSpots) * 100}%` }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{ 
+                  duration: 1.2, 
+                  ease: [0.34, 1.56, 0.64, 1], 
+                  delay: 0.3 
+                }}
                 className={cn(
-                  "h-full",
+                  "h-full rounded-full",
                   isFullyBooked ? "bg-red-500" : "bg-gaming-primary"
                 )}
               />
@@ -111,12 +132,18 @@ const TournamentCard = ({
           </div>
           
           {/* Action Button */}
-          <Link 
-            to={`/tournaments/${id}`}
-            className="btn-gaming-primary w-full mt-2.5 text-center text-xs sm:text-sm transition-all duration-300 hover:shadow-glow transform hover:translate-y-[-2px]"
+          <motion.div
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="mt-3"
           >
-            {status === 'completed' ? 'View Results' : spotsLeft > 0 ? 'Join Tournament' : 'Fully Booked'}
-          </Link>
+            <Link 
+              to={`/tournaments/${id}`}
+              className="btn-gaming-primary w-full flex justify-center items-center text-center font-bold py-2.5 text-sm"
+            >
+              {status === 'completed' ? 'View Results' : spotsLeft > 0 ? 'Join Tournament' : 'Fully Booked'}
+            </Link>
+          </motion.div>
         </div>
       </Card>
     </motion.div>

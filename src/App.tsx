@@ -12,8 +12,8 @@ function App() {
   return (
     <PWALayoutWrapper>
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Index />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Index />} />
           <Route path="tournament/:id" element={<TournamentDetails />} />
         </Route>
         <Route path="/auth" element={<Auth />} />

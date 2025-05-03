@@ -1,16 +1,12 @@
 
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import MobileNavbar from "./MobileNavbar";
 import DesktopSidebar from "./DesktopSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-const Layout = ({ children }: LayoutProps) => {
+const Layout = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const isMobile = useIsMobile();
@@ -65,7 +61,7 @@ const Layout = ({ children }: LayoutProps) => {
               }}
               className="w-full overflow-x-hidden"
             >
-              {children}
+              <Outlet />
             </motion.div>
           </AnimatePresence>
         </div>

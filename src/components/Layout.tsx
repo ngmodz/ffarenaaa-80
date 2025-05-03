@@ -17,7 +17,7 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="min-h-screen bg-gaming-bg flex w-full overflow-hidden">
       {!isMobile && <DesktopSidebar currentPath={currentPath} />}
       
-      <div className={`flex-1 w-full ${!isMobile ? "lg:ml-16 xl:ml-56" : ""} overflow-hidden`}>
+      <div className={`flex-1 w-full ${!isMobile ? "lg:ml-16 transition-all duration-300" : ""} overflow-hidden`}>
         <div className="p-2 sm:p-4 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto">
           <div className="w-full overflow-x-hidden">
             {children}

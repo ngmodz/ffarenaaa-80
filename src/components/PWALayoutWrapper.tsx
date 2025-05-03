@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import NotchHeader from './NotchHeader';
 
 interface PWALayoutWrapperProps {
@@ -7,10 +7,19 @@ interface PWALayoutWrapperProps {
 }
 
 const PWALayoutWrapper: React.FC<PWALayoutWrapperProps> = ({ children }) => {
+  const [isPWA, setIsPWA] = useState(false);
+  
+  useEffect(() => {
+    // Check if app is running in standalone mode (PWA)
+    const isPWAMode = window.matchMedia('(display-mode: standalone)').matches || 
+                     (window.navigator as any).standalone === true;
+    setIsPWA(isPWAMode);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gaming-bg flex flex-col">
       <NotchHeader />
-      <div className="flex-1 pt-[calc(env(safe-area-inset-top)+48px)]">
+      <div className={`flex-1 ${isPWA ? 'pt-[env(safe-area-inset-top)]' : ''}`}>
         {children}
       </div>
     </div>

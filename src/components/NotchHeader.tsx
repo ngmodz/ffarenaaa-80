@@ -8,23 +8,14 @@ interface NotchHeaderProps {
 }
 
 const NotchHeader: React.FC<NotchHeaderProps> = ({ 
-  title = "Free Fire Arena",
   backgroundColor = "#172554" // Dark blue that matches the app theme
 }) => {
-  // We'll use a try-catch to handle potential usage outside Router context
-  let pageTitle = title;
-  try {
-    const location = useLocation();
-    const path = location.pathname;
-
-    // Dynamically set the title based on the current route
-    if (path === '/') pageTitle = "Free Fire Arena";
-    if (path.includes('/tournament/')) pageTitle = "Tournament Details";
-    if (path === '/auth') pageTitle = "Authentication";
-  } catch (error) {
-    // If useLocation fails, we'll fall back to the default title
-    console.log("Using default title as Router context not available");
-  }
+  // Check if the app is running in standalone mode (PWA)
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+                (window.navigator as any).standalone === true;
+  
+  // Don't render anything if not in PWA mode
+  if (!isPWA) return null;
 
   return (
     <div 
@@ -32,14 +23,11 @@ const NotchHeader: React.FC<NotchHeaderProps> = ({
       style={{
         backgroundColor,
         paddingTop: 'env(safe-area-inset-top)',
-        height: 'calc(env(safe-area-inset-top) + 48px)' // Increased height to show the title
+        height: 'env(safe-area-inset-top)' // Just enough height for the notch
       }}
+      aria-hidden="true"
     >
-      <div className="h-full flex items-end justify-center pb-2">
-        <div className="text-white text-xl font-medium">
-          {pageTitle}
-        </div>
-      </div>
+      {/* Empty header - just for the notch area */}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 
+import * as React from "react";
 import { Home, Trophy, Calendar, User, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";

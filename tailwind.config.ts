@@ -58,6 +58,14 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Add gaming-specific colors
+        gaming: {
+          primary: "#9b87f5",
+          secondary: "#7E69AB",
+          accent: "#f97316",
+          bg: "#0A0A0A",
+          text: "#FFFFFF",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

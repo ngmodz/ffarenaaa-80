@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,18 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Custom gaming themed colors
+				gaming: {
+					bg: '#1A1F2C',
+					primary: '#9b87f5',
+					secondary: '#7E69AB',
+					accent: '#F97316',
+					text: '#F1F1F1',
+					muted: '#8E9196',
+					card: '#242938',
+					border: '#353A4A'
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +96,20 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+				'pulse-glow': {
+					'0%, 100%': { 
+						boxShadow: '0 0 4px 2px rgba(155, 135, 245, 0.4)'
+					},
+					'50%': { 
+						boxShadow: '0 0 8px 4px rgba(155, 135, 245, 0.6)'
+					},
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-glow': 'pulse-glow 2s infinite',
 			}
 		}
 	},

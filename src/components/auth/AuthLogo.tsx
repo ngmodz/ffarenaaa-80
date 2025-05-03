@@ -8,7 +8,7 @@ const AuthLogo = () => {
         <Trophy size={32} className="text-white" />
       </div>
       <h1 className="text-3xl font-bold text-gaming-text">
-        <span className="text-gaming-primary text-glow">Fire</span>Arena
+        <span className="text-gaming-primary text-glow">Free</span>fire Tournaments
       </h1>
       <p className="text-gaming-text/70 mt-2">
         Join competitive Free Fire tournaments and win real rewards

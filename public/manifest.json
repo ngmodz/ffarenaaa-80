@@ -1,8 +1,8 @@
 
 {
-  "name": "Free Fire Arena Guide",
-  "short_name": "FF Arena",
-  "description": "Your guide to Free Fire tournaments and arenas",
+  "name": "Freefire Tournaments",
+  "short_name": "Freefire Tournaments",
+  "description": "Your guide to Free Fire tournaments and competitions",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#141415",

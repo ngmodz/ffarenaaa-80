@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   Trophy, 
@@ -127,7 +128,7 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
                 transition={{ duration: 0.3 }}
                 className="ml-3 font-bold text-lg text-glow whitespace-nowrap overflow-hidden"
               >
-                FireArena
+                Freefire Tournaments
               </motion.span>
             )}
           </AnimatePresence>

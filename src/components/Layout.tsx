@@ -1,7 +1,6 @@
 
 import { useLocation } from "react-router-dom";
 import MobileNavbar from "./MobileNavbar";
-import TopPwaNavbar from "./TopPwaNavbar";
 import DesktopSidebar from "./DesktopSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
@@ -16,27 +15,11 @@ const Layout = ({ children }: LayoutProps) => {
   const currentPath = location.pathname;
   const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
-  const [pageTitle, setPageTitle] = useState("Free Fire Arena");
 
   // Listen for hover state changes from the sidebar
   const handleSidebarHover = (hovered: boolean) => {
     setIsHovered(hovered);
   };
-
-  // Set page title based on current path
-  useEffect(() => {
-    if (currentPath === "/") {
-      setPageTitle("Free Fire Arena");
-    } else if (currentPath.startsWith("/tournaments")) {
-      setPageTitle("Tournaments");
-    } else if (currentPath === "/create-tournament") {
-      setPageTitle("Create Tournament");
-    } else if (currentPath === "/schedule") {
-      setPageTitle("Schedule");
-    } else if (currentPath === "/profile") {
-      setPageTitle("Profile");
-    }
-  }, [currentPath]);
 
   // Page transition effect
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
@@ -56,8 +39,6 @@ const Layout = ({ children }: LayoutProps) => {
         />
       )}
       
-      {isMobile && <TopPwaNavbar title={pageTitle} />}
-      
       <motion.div 
         className={`flex-1 w-full transition-all duration-300 ease-out ${
           !isMobile ? "lg:ml-16" : ""
@@ -71,9 +52,7 @@ const Layout = ({ children }: LayoutProps) => {
           damping: 30
         }}
       >
-        <div className={`p-2 sm:p-4 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto ${
-          isMobile ? "pt-safe pt-14" : ""
-        }`}>
+        <div className="p-2 sm:p-4 pb-20 md:pb-4 min-h-screen w-full max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

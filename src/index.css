@@ -70,6 +70,14 @@
     text-shadow: 0 0 8px rgba(155, 135, 245, 0.6);
   }
 
+  .shadow-glow {
+    box-shadow: 0 0 8px 2px rgba(155, 135, 245, 0.6);
+  }
+
+  .shadow-glow-accent {
+    box-shadow: 0 0 8px 2px rgba(249, 115, 22, 0.6);
+  }
+  
   .btn-gaming-primary {
     @apply bg-gaming-primary hover:bg-gaming-primary/90 text-white font-medium py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition-all text-xs sm:text-sm;
   }
@@ -109,5 +117,36 @@
   
   .responsive-margin {
     @apply my-1.5 sm:my-2 md:my-3 lg:my-4;
+  }
+
+  /* Animation utilities */
+  .animate-in {
+    animation: animateIn 0.3s ease-out forwards;
+  }
+
+  .animate-out {
+    animation: animateOut 0.3s ease-out forwards;
+  }
+
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes animateOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+    }
   }
 }

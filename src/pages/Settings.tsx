@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Settings as SettingsIcon, Bell, Lock, GameController, ChevronRight } from "lucide-react";
+import { Settings as SettingsIcon, Bell, Lock, Gamepad, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
@@ -294,7 +293,7 @@ const Settings = () => {
         <Card className="bg-[#1F2937] border-gaming-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <GameController size={20} className="text-gaming-primary" />
+              <Gamepad size={20} className="text-gaming-primary" />
               Game Connection
             </CardTitle>
           </CardHeader>

@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router-dom";
 import { 
   Calendar, 
@@ -12,7 +11,6 @@ import {
   Info,
   Share2
 } from "lucide-react";
-import Layout from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -60,11 +58,9 @@ const TournamentDetails = () => {
   // Check if tournament is loaded
   if (!tournament) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center h-96">
-          <p>Tournament not found</p>
-        </div>
-      </Layout>
+      <div className="flex items-center justify-center h-96">
+        <p>Tournament not found</p>
+      </div>
     );
   }
   
@@ -73,7 +69,7 @@ const TournamentDetails = () => {
   const spotsLeft = tournament.totalSpots - tournament.filledSpots;
   
   return (
-    <Layout>
+    <>
       {/* Back button */}
       <Link to="/" className="inline-flex items-center text-gaming-muted hover:text-gaming-text mb-4">
         <ArrowLeft size={18} className="mr-1" /> Back to tournaments
@@ -453,7 +449,7 @@ const TournamentDetails = () => {
           </Card>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

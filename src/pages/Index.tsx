@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Search, Filter, Trophy } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -64,7 +63,7 @@ const Index = () => {
     : sampleTournaments.filter(tournament => tournament.status === filter);
   
   return (
-    <Layout>
+    <>
       {/* Header */}
       <div className="mb-4 px-2 sm:px-0">
         <h1 className="text-xl sm:text-2xl font-bold mb-2 text-gaming-text">
@@ -205,7 +204,7 @@ const Index = () => {
           )}
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

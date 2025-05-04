@@ -19,14 +19,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SettingsItem from "@/components/settings/SettingsItem";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import ContactDeveloperDialog from "@/components/settings/ContactDeveloperDialog";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [openSheet, setOpenSheet] = useState<string | null>(null);
-  const [contactDialogOpen, setContactDialogOpen] = useState(false);
 
   // Mock user data - would come from Supabase in the future
   const user = {
@@ -90,7 +88,10 @@ const Settings = () => {
       icon: <MessageSquare size={20} className="text-[#8b5cf6]" />,
       title: "Contact Developer",
       description: "Help & support",
-      onClick: () => setContactDialogOpen(true),
+      onClick: () => toast({
+        title: "Contact Info",
+        description: "Please email support@example.com for assistance"
+      }),
     },
   ];
 
@@ -162,16 +163,6 @@ const Settings = () => {
           </button>
         </Card>
       </motion.div>
-
-      {/* Contact Developer Dialog */}
-      <ContactDeveloperDialog 
-        open={contactDialogOpen}
-        onOpenChange={setContactDialogOpen}
-        userInfo={{
-          name: user.name,
-          email: user.email
-        }}
-      />
 
       {/* Sheet for Profile */}
       <Sheet open={openSheet === "profile"} onOpenChange={handleCloseSheet}>

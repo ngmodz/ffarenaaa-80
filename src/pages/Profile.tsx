@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import { User, Edit } from "lucide-react";
+import { User, Edit, Settings as SettingsIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import ProfileTabs from "@/components/profile/ProfileTabs";
 import WalletSection from "@/components/profile/WalletSection";
 import AchievementsSection from "@/components/profile/AchievementsSection";
@@ -156,10 +156,14 @@ const Profile = () => {
       >
         {/* Personal Information Card */}
         <Card className="bg-[#1F2937] border-gaming-border">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-xl text-center sm:text-left">
               Profile Information
             </CardTitle>
+            <Link to="/settings" className="flex items-center gap-1 text-sm text-gaming-primary hover:text-gaming-primary/80 transition-colors">
+              <SettingsIcon size={16} />
+              <span className="hidden sm:inline">Settings</span>
+            </Link>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row items-center gap-6">

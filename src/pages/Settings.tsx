@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Bell, Lock, Gamepad } from "lucide-react";
+import { User, Bell, Lock, Gamepad, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import AccountSettings from "@/components/settings/AccountSettings";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import PrivacySettings from "@/components/settings/PrivacySettings";
@@ -34,7 +35,13 @@ const Settings = () => {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6 max-w-3xl mx-auto"
       >
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Settings</h1>
+          <Link to="/profile" className="flex items-center gap-1 text-sm text-gaming-primary hover:text-gaming-primary/80 transition-colors">
+            <ArrowLeft size={16} />
+            <span className="hidden sm:inline">Back to Profile</span>
+          </Link>
+        </div>
         
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid grid-cols-4 bg-gaming-card mb-6">

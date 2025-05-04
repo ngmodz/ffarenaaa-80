@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SettingsIcon } from "lucide-react";
+import { SettingsIcon, AlertCircle, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const AccountSettings = () => {
@@ -15,30 +15,73 @@ const AccountSettings = () => {
     confirmPassword: ""
   });
   
+  const [formErrors, setFormErrors] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  
+  const validateForm = () => {
+    let isValid = true;
+    const errors = {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: ""
+    };
+    
+    // Validate current password
+    if (!accountForm.currentPassword) {
+      errors.currentPassword = "Current password is required";
+      isValid = false;
+    }
+    
+    // Validate new password
+    if (!accountForm.newPassword) {
+      errors.newPassword = "New password is required";
+      isValid = false;
+    } else if (accountForm.newPassword.length < 8) {
+      errors.newPassword = "Password must be at least 8 characters";
+      isValid = false;
+    }
+    
+    // Validate confirm password
+    if (accountForm.newPassword !== accountForm.confirmPassword) {
+      errors.confirmPassword = "Passwords don't match";
+      isValid = false;
+    }
+    
+    setFormErrors(errors);
+    return isValid;
+  };
+  
   const handleAccountFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountForm({
       ...accountForm,
       [e.target.name]: e.target.value
     });
+    
+    // Clear error when user types
+    if (formErrors[e.target.name as keyof typeof formErrors]) {
+      setFormErrors({
+        ...formErrors,
+        [e.target.name]: ""
+      });
+    }
   };
   
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
-    if (accountForm.newPassword !== accountForm.confirmPassword) {
-      toast({
-        title: "Passwords don't match",
-        description: "New password and confirmation must match",
-        variant: "destructive"
-      });
+    // Validate form
+    if (!validateForm()) {
       return;
     }
     
     // Success case - in future would connect to Supabase
     toast({
       title: "Password updated",
-      description: "Your password has been updated successfully"
+      description: "Your password has been updated successfully",
+      icon: <Check className="h-4 w-4 text-green-500" />
     });
     
     // Reset form
@@ -67,10 +110,15 @@ const AccountSettings = () => {
               type="password"
               value={accountForm.currentPassword}
               onChange={handleAccountFormChange}
-              className="bg-gaming-card border-gaming-border text-white"
+              className={`bg-gaming-card border-gaming-border text-white ${formErrors.currentPassword ? "border-red-500" : ""}`}
               placeholder="Enter your current password"
-              required
             />
+            {formErrors.currentPassword && (
+              <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
+                <AlertCircle size={12} />
+                {formErrors.currentPassword}
+              </p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -81,10 +129,15 @@ const AccountSettings = () => {
               type="password"
               value={accountForm.newPassword}
               onChange={handleAccountFormChange}
-              className="bg-gaming-card border-gaming-border text-white"
+              className={`bg-gaming-card border-gaming-border text-white ${formErrors.newPassword ? "border-red-500" : ""}`}
               placeholder="Enter your new password"
-              required
             />
+            {formErrors.newPassword && (
+              <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
+                <AlertCircle size={12} />
+                {formErrors.newPassword}
+              </p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -95,13 +148,21 @@ const AccountSettings = () => {
               type="password"
               value={accountForm.confirmPassword}
               onChange={handleAccountFormChange}
-              className="bg-gaming-card border-gaming-border text-white"
+              className={`bg-gaming-card border-gaming-border text-white ${formErrors.confirmPassword ? "border-red-500" : ""}`}
               placeholder="Confirm your new password"
-              required
             />
+            {formErrors.confirmPassword && (
+              <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
+                <AlertCircle size={12} />
+                {formErrors.confirmPassword}
+              </p>
+            )}
           </div>
           
-          <Button type="submit" className="bg-[#22C55E] hover:bg-[#22C55E]/90">
+          <Button 
+            type="submit" 
+            className="bg-[#22C55E] hover:bg-[#22C55E]/90 w-full sm:w-auto"
+          >
             Update Password
           </Button>
         </form>

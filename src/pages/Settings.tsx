@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,8 +7,6 @@ import {
   Settings as SettingsIcon,
   Edit,
   Trophy,
-  Bookmark,
-  Download,
   Lock,
   MessageSquare,
   LogOut,
@@ -71,26 +68,6 @@ const Settings = () => {
       title: "My Tournaments",
       description: "Tournaments you've joined or hosted",
       onClick: () => navigate("/profile"),
-    },
-    {
-      id: "bookmarks",
-      icon: <Bookmark size={20} className="text-[#f59e0b]" />,
-      title: "Bookmarked Tournaments",
-      description: "Your saved tournaments",
-      onClick: () => toast({
-        title: "Coming soon",
-        description: "This feature is under development"
-      }),
-    },
-    {
-      id: "downloads",
-      icon: <Download size={20} className="text-[#10b981]" />,
-      title: "Downloaded Content",
-      description: "Manage your offline content",
-      onClick: () => toast({
-        title: "Coming soon",
-        description: "This feature is under development"
-      }),
     },
     {
       id: "app-settings",

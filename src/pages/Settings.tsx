@@ -1,31 +1,122 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Lock, ArrowLeft, Settings as SettingsIcon } from "lucide-react";
-import { Link } from "react-router-dom";
-import AccountSettings from "@/components/settings/AccountSettings";
-import PrivacySettings from "@/components/settings/PrivacySettings";
-import ProfileSettings from "@/components/settings/ProfileSettings";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { 
+  User, 
+  ArrowLeft, 
+  Settings as SettingsIcon,
+  Edit,
+  Trophy,
+  Bookmark,
+  Download,
+  Lock,
+  MessageSquare,
+  LogOut,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import SettingsItem from "@/components/settings/SettingsItem";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Get tab from URL or default to "profile"
-  const getTabFromUrl = () => {
-    const urlParams = new URLSearchParams(location.search);
-    return urlParams.get("tab") || "profile";
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
+  const [openSheet, setOpenSheet] = useState<string | null>(null);
+
+  // Mock user data - would come from Supabase in the future
+  const user = {
+    name: "ElitePlayer123",
+    email: "player@example.com",
+    avatar_url: null,
+    isPremium: true,
+    joinDate: "May 2023",
   };
-  
-  const [activeTab, setActiveTab] = useState(getTabFromUrl());
-  
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    // Update URL without page refresh
-    navigate(`/settings?tab=${value}`, { replace: true });
+
+  const handleLogout = () => {
+    // Show a success message
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account"
+    });
+    
+    // Redirect to login page
+    navigate("/auth");
   };
+
+  const handleOpenSheet = (id: string) => {
+    setOpenSheet(id);
+  };
+
+  const handleCloseSheet = () => {
+    setOpenSheet(null);
+  };
+
+  const settingsOptions = [
+    {
+      id: "profile",
+      icon: <Edit size={20} className="text-gaming-primary" />,
+      title: "Edit Profile",
+      description: "Update your personal information",
+      onClick: () => handleOpenSheet("profile"),
+    },
+    {
+      id: "tournaments",
+      icon: <Trophy size={20} className="text-gaming-accent" />,
+      title: "My Tournaments",
+      description: "Tournaments you've joined or hosted",
+      onClick: () => navigate("/profile"),
+    },
+    {
+      id: "bookmarks",
+      icon: <Bookmark size={20} className="text-[#f59e0b]" />,
+      title: "Bookmarked Tournaments",
+      description: "Your saved tournaments",
+      onClick: () => toast({
+        title: "Coming soon",
+        description: "This feature is under development"
+      }),
+    },
+    {
+      id: "downloads",
+      icon: <Download size={20} className="text-[#10b981]" />,
+      title: "Downloaded Content",
+      description: "Manage your offline content",
+      onClick: () => toast({
+        title: "Coming soon",
+        description: "This feature is under development"
+      }),
+    },
+    {
+      id: "app-settings",
+      icon: <SettingsIcon size={20} className="text-[#6366f1]" />,
+      title: "App Settings",
+      description: "Notifications, language, theme",
+      onClick: () => handleOpenSheet("app-settings"),
+    },
+    {
+      id: "password",
+      icon: <Lock size={20} className="text-[#ec4899]" />,
+      title: "Change Password",
+      description: "Update your password",
+      onClick: () => handleOpenSheet("password"),
+    },
+    {
+      id: "contact",
+      icon: <MessageSquare size={20} className="text-[#8b5cf6]" />,
+      title: "Contact Developer",
+      description: "Help & support",
+      onClick: () => toast({
+        title: "Contact Info",
+        description: "Please email support@example.com for assistance"
+      }),
+    },
+  ];
 
   return (
     <div className="container-padding py-4 min-h-screen">
@@ -42,35 +133,146 @@ const Settings = () => {
           </Link>
         </div>
         
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="grid grid-cols-3 bg-gaming-card mb-6">
-            <TabsTrigger value="profile" className="flex items-center gap-2 data-[state=active]:bg-gaming-primary/20">
-              <User size={16} />
-              <span className="hidden md:inline">Profile</span>
-            </TabsTrigger>
-            <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-gaming-primary/20">
-              <SettingsIcon size={16} />
-              <span className="hidden md:inline">Account</span>
-            </TabsTrigger>
-            <TabsTrigger value="privacy" className="flex items-center gap-2 data-[state=active]:bg-gaming-primary/20">
-              <Lock size={16} />
-              <span className="hidden md:inline">Privacy</span>
-            </TabsTrigger>
-          </TabsList>
+        {/* Profile Card */}
+        <Card className="p-4 bg-gaming-card border-gaming-border shadow-glow">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16 border-2 border-gaming-primary shadow-glow">
+              {user.avatar_url ? (
+                <AvatarImage src={user.avatar_url} alt={user.name} />
+              ) : (
+                <AvatarFallback className="bg-gaming-primary/20 text-gaming-primary text-xl font-semibold">
+                  {user.name.substring(0, 2).toUpperCase()}
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <div className="flex-1">
+              <div className="flex items-center">
+                <h2 className="text-xl font-bold text-white">{user.name}</h2>
+                {user.isPremium && (
+                  <span className="ml-2 bg-[#FFD700]/20 text-[#FFD700] text-xs px-2 py-0.5 rounded-full">
+                    Premium
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-gaming-muted">{user.email}</p>
+              <p className="text-xs text-gaming-muted mt-1">Member since {user.joinDate}</p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Settings Options List */}
+        <Card className="divide-y divide-gaming-border bg-gaming-card border-gaming-border shadow-glow">
+          {settingsOptions.map((option) => (
+            <SettingsItem
+              key={option.id}
+              icon={option.icon}
+              title={option.title}
+              description={option.description}
+              onClick={option.onClick}
+            />
+          ))}
           
-          <TabsContent value="profile" className="space-y-4 animate-in fade-in-50">
-            <ProfileSettings />
-          </TabsContent>
-          
-          <TabsContent value="account" className="space-y-4 animate-in fade-in-50">
-            <AccountSettings />
-          </TabsContent>
-          
-          <TabsContent value="privacy" className="space-y-4 animate-in fade-in-50">
-            <PrivacySettings />
-          </TabsContent>
-        </Tabs>
+          <button 
+            className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-colors"
+            onClick={handleLogout}
+          >
+            <div className="h-10 w-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-500">
+              <LogOut size={20} />
+            </div>
+            <div>
+              <h3 className="font-medium text-white">Logout</h3>
+              <p className="text-sm text-gaming-muted">Sign out of your account</p>
+            </div>
+          </button>
+        </Card>
       </motion.div>
+
+      {/* Sheet for Profile */}
+      <Sheet open={openSheet === "profile"} onOpenChange={handleCloseSheet}>
+        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+          <div className="h-full flex flex-col">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-white">Edit Profile</h2>
+              <p className="text-sm text-gaming-muted">Update your personal information</p>
+            </div>
+            
+            <div className="flex-1 overflow-auto">
+              {/* We'll reuse the existing ProfileSettings component */}
+              <iframe 
+                src="/settings?tab=profile" 
+                className="w-full h-full border-0"
+                style={{ display: "none" }}
+              />
+              {/* For now we'll show a placeholder message */}
+              <div className="text-center py-8">
+                <p className="text-gaming-muted">Edit your profile information here</p>
+                <Button 
+                  className="mt-4 bg-gaming-primary hover:bg-gaming-primary/90"
+                  onClick={handleCloseSheet}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Sheet for App Settings */}
+      <Sheet open={openSheet === "app-settings"} onOpenChange={handleCloseSheet}>
+        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+          <div className="h-full flex flex-col">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-white">App Settings</h2>
+              <p className="text-sm text-gaming-muted">Customize your app experience</p>
+            </div>
+            
+            <div className="flex-1 overflow-auto">
+              {/* For now we'll show a placeholder message */}
+              <div className="text-center py-8">
+                <p className="text-gaming-muted">App settings will be available here</p>
+                <Button 
+                  className="mt-4 bg-gaming-primary hover:bg-gaming-primary/90"
+                  onClick={handleCloseSheet}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Sheet for Password */}
+      <Sheet open={openSheet === "password"} onOpenChange={handleCloseSheet}>
+        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+          <div className="h-full flex flex-col">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-white">Change Password</h2>
+              <p className="text-sm text-gaming-muted">Update your account password</p>
+            </div>
+            
+            <div className="flex-1 overflow-auto">
+              {/* We'll reuse the existing AccountSettings component */}
+              <iframe 
+                src="/settings?tab=account" 
+                className="w-full h-full border-0"
+                style={{ display: "none" }}
+              />
+              {/* For now we'll show a placeholder message */}
+              <div className="text-center py-8">
+                <p className="text-gaming-muted">Change your password here</p>
+                <Button 
+                  className="mt-4 bg-gaming-primary hover:bg-gaming-primary/90"
+                  onClick={handleCloseSheet}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

@@ -17,7 +17,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
           <Route path="tournament/:id" element={<TournamentDetails />} />
-          <Route path="/profile" element={<Navigate to="/settings?tab=profile" replace />} />
+          <Route path="/profile" element={<Navigate to="/settings" replace />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="/auth" element={<Auth />} />

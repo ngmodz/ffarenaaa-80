@@ -1,9 +1,8 @@
 
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import TournamentDetails from "./pages/TournamentDetails";
-import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
@@ -18,7 +17,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
           <Route path="tournament/:id" element={<TournamentDetails />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Navigate to="/settings?tab=profile" replace />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="/auth" element={<Auth />} />

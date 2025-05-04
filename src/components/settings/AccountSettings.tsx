@@ -81,7 +81,6 @@ const AccountSettings = () => {
     toast({
       title: "Password updated",
       description: "Your password has been updated successfully",
-      icon: <Check className="h-4 w-4 text-green-500" />
     });
     
     // Reset form

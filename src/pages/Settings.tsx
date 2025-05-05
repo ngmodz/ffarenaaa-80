@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SettingsItem from "@/components/settings/SettingsItem";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import ContactDeveloperForm from "@/components/settings/ContactDeveloperForm";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -88,10 +89,7 @@ const Settings = () => {
       icon: <MessageSquare size={20} className="text-[#8b5cf6]" />,
       title: "Contact Developer",
       description: "Help & support",
-      onClick: () => toast({
-        title: "Contact Info",
-        description: "Please email support@example.com for assistance"
-      }),
+      onClick: () => handleOpenSheet("contact"),
     },
   ];
 
@@ -246,6 +244,22 @@ const Settings = () => {
                   Close
                 </Button>
               </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Sheet for Contact Developer */}
+      <Sheet open={openSheet === "contact"} onOpenChange={handleCloseSheet}>
+        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+          <div className="h-full flex flex-col">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-white">Contact Developer</h2>
+              <p className="text-sm text-gaming-muted">Questions, feedback, or bug reports</p>
+            </div>
+            
+            <div className="flex-1 overflow-auto">
+              <ContactDeveloperForm onClose={handleCloseSheet} />
             </div>
           </div>
         </SheetContent>

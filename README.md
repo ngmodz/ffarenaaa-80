@@ -1,73 +1,230 @@
-# Welcome to your Lovable project
+# Contact Developer Functionality Implementation
 
-## Project info
+This README provides instructions for implementing the contact developer functionality in the Freefire Tournaments app.
 
-**URL**: https://lovable.dev/projects/6f7bd52c-67d5-4c08-88b4-9e51a0b242e2
+## Files to Create/Modify
 
-## How can I edit this code?
+### 1. Create a new file: `src/components/settings/ContactDeveloperForm.tsx`
 
-There are several ways of editing your application.
+```tsx
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Send } from "lucide-react";
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
-**Use Lovable**
+// Define form schema with Zod
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address",
+  }),
+  subject: z.string().min(5, {
+    message: "Subject must be at least 5 characters",
+  }),
+  message: z.string().min(10, {
+    message: "Message must be at least 10 characters",
+  }),
+});
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6f7bd52c-67d5-4c08-88b4-9e51a0b242e2) and start prompting.
+type FormValues = z.infer<typeof formSchema>;
 
-Changes made via Lovable will be committed automatically to this repo.
+interface ContactDeveloperFormProps {
+  onClose: () => void;
+}
 
-**Use your preferred IDE**
+const ContactDeveloperForm = ({ onClose }: ContactDeveloperFormProps) => {
+  const { toast } = useToast();
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    },
+  });
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+  const onSubmit = (data: FormValues) => {
+    console.log("Form submitted:", data);
+    // Here you would typically send the data to your backend
+    // For now, we'll just show a success toast
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+    toast({
+      title: "Message sent successfully",
+      description: "Thank you for your message. We'll respond soon!",
+    });
+    
+    onClose();
+  };
 
-Follow these steps:
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gaming-text">Your Name</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Enter your name" 
+                  className="bg-gaming-card border-gaming-border text-gaming-text" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gaming-text">Email Address</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Enter your email" 
+                  className="bg-gaming-card border-gaming-border text-gaming-text" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+        <FormField
+          control={form.control}
+          name="subject"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gaming-text">Subject</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="What's this about?" 
+                  className="bg-gaming-card border-gaming-border text-gaming-text" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
 
-# Step 3: Install the necessary dependencies.
-npm i
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gaming-text">Message</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="How can we help you?" 
+                  className="bg-gaming-card border-gaming-border text-gaming-text min-h-[120px]" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+        <div className="flex gap-3 justify-end pt-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onClose}
+            className="border-gaming-border text-gaming-muted hover:bg-gaming-card/50"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit"
+            className="bg-gaming-primary hover:bg-gaming-primary/90 text-white"
+          >
+            <Send size={16} className="mr-2" />
+            Send Message
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+};
+
+export default ContactDeveloperForm;
 ```
 
-**Edit a file directly in GitHub**
+### 2. Update the file: `src/pages/Settings.tsx`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Make these changes to your Settings.tsx file:
 
-**Use GitHub Codespaces**
+1. Add import at the top of the file:
+```tsx
+import ContactDeveloperForm from "@/components/settings/ContactDeveloperForm";
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. Update the contact option in the settingsOptions array:
+```tsx
+{
+  id: "contact",
+  icon: <MessageSquare size={20} className="text-[#8b5cf6]" />,
+  title: "Contact Developer",
+  description: "Help & support",
+  onClick: () => handleOpenSheet("contact"),
+},
+```
 
-## What technologies are used for this project?
+3. Add the Contact Developer sheet at the end of the file before the closing `</div>`:
+```tsx
+{/* Sheet for Contact Developer */}
+<Sheet open={openSheet === "contact"} onOpenChange={handleCloseSheet}>
+  <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+    <div className="h-full flex flex-col">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-white">Contact Developer</h2>
+        <p className="text-sm text-gaming-muted">Questions, feedback, or bug reports</p>
+      </div>
+      
+      <div className="flex-1 overflow-auto">
+        <ContactDeveloperForm onClose={handleCloseSheet} />
+      </div>
+    </div>
+  </SheetContent>
+</Sheet>
+```
 
-This project is built with:
+## Push Changes to GitHub
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Once you've made these changes, you can push them to GitHub:
 
-## How can I deploy this project?
+```bash
+# Stage your changes
+git add src/components/settings/ContactDeveloperForm.tsx
+git add src/pages/Settings.tsx
 
-Simply open [Lovable](https://lovable.dev/projects/6f7bd52c-67d5-4c08-88b4-9e51a0b242e2) and click on Share -> Publish.
+# Commit your changes
+git commit -m "Add contact developer functionality"
 
-## Can I connect a custom domain to my Lovable project?
+# Push to GitHub
+git push origin main
+```
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This will implement a contact developer form that appears when the user clicks on the Contact Developer option in the settings page. 

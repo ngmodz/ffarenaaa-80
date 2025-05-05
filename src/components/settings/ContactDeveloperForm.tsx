@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
-// Define form schema with Zod
+// Define form schema with Zod for contact developer form
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters",
@@ -71,11 +71,11 @@ const ContactDeveloperForm = ({ onClose }: ContactDeveloperFormProps) => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gaming-text">Your Name</FormLabel>
+              <FormLabel className="text-white">Your Name</FormLabel>
               <FormControl>
                 <Input 
                   placeholder="Enter your name" 
-                  className="bg-gaming-card border-gaming-border text-gaming-text" 
+                  className="bg-gaming-bg border-gaming-border text-white placeholder:text-gray-500" 
                   {...field} 
                 />
               </FormControl>
@@ -89,11 +89,11 @@ const ContactDeveloperForm = ({ onClose }: ContactDeveloperFormProps) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gaming-text">Email Address</FormLabel>
+              <FormLabel className="text-white">Email Address</FormLabel>
               <FormControl>
                 <Input 
                   placeholder="Enter your email" 
-                  className="bg-gaming-card border-gaming-border text-gaming-text" 
+                  className="bg-gaming-bg border-gaming-border text-white placeholder:text-gray-500" 
                   {...field} 
                 />
               </FormControl>
@@ -107,11 +107,11 @@ const ContactDeveloperForm = ({ onClose }: ContactDeveloperFormProps) => {
           name="subject"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gaming-text">Subject</FormLabel>
+              <FormLabel className="text-white">Subject</FormLabel>
               <FormControl>
                 <Input 
                   placeholder="What's this about?" 
-                  className="bg-gaming-card border-gaming-border text-gaming-text" 
+                  className="bg-gaming-bg border-gaming-border text-white placeholder:text-gray-500" 
                   {...field} 
                 />
               </FormControl>
@@ -125,11 +125,11 @@ const ContactDeveloperForm = ({ onClose }: ContactDeveloperFormProps) => {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gaming-text">Message</FormLabel>
+              <FormLabel className="text-white">Message</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="How can we help you?" 
-                  className="bg-gaming-card border-gaming-border text-gaming-text min-h-[120px]" 
+                  className="bg-gaming-bg border-gaming-border text-white placeholder:text-gray-500 min-h-[120px]" 
                   {...field} 
                 />
               </FormControl>
@@ -143,7 +143,7 @@ const ContactDeveloperForm = ({ onClose }: ContactDeveloperFormProps) => {
             type="button" 
             variant="outline" 
             onClick={onClose}
-            className="border-gaming-border text-gaming-muted hover:bg-gaming-card/50"
+            className="border-gaming-border text-white hover:bg-gaming-bg/50"
           >
             Cancel
           </Button>

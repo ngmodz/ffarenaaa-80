@@ -318,75 +318,77 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
       <Separator className="my-6 bg-gaming-border" />
       
       {/* Personal Information */}
-      <div className="space-y-4 mt-32">
+      <div className="space-y-4">
         <h3 className="text-lg font-medium text-white">Personal Information</h3>
         
-        <div className="space-y-2">
-          <Label htmlFor="fullName" className="text-sm text-gaming-muted">
-            Full Name
-          </Label>
-          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-            <div className="flex items-center bg-[#1a1a1a]">
-              <div className="px-3 py-2">
-                <User className="h-4 w-4 text-gaming-primary" />
+        <div className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <Label htmlFor="fullName" className="text-sm text-gaming-muted">
+              Full Name
+            </Label>
+            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+              <div className="flex items-center bg-[#1a1a1a]">
+                <div className="px-3 py-2">
+                  <User className="h-4 w-4 text-gaming-primary" />
+                </div>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                  placeholder="Your full name"
+                />
               </div>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleInputChange}
-                className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
-                placeholder="Your full name"
-              />
             </div>
           </div>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="email" className="text-sm text-gaming-muted">
-            Email Address
-          </Label>
-          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-            <div className="flex items-center bg-[#1a1a1a]">
-              <div className="px-3 py-2">
-                <Mail className="h-4 w-4 text-gaming-primary" />
+          
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm text-gaming-muted">
+              Email Address
+            </Label>
+            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+              <div className="flex items-center bg-[#1a1a1a]">
+                <div className="px-3 py-2">
+                  <Mail className="h-4 w-4 text-gaming-primary" />
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                  placeholder="Your email address"
+                />
               </div>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
-                placeholder="Your email address"
-              />
             </div>
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
-          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="phone" className="text-sm text-gaming-muted">
-            Phone Number
-          </Label>
-          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-            <div className="flex items-center bg-[#1a1a1a]">
-              <div className="px-3 py-2">
-                <Phone className="h-4 w-4 text-gaming-primary" />
+          
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-sm text-gaming-muted">
+              Phone Number
+            </Label>
+            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+              <div className="flex items-center bg-[#1a1a1a]">
+                <div className="px-3 py-2">
+                  <Phone className="h-4 w-4 text-gaming-primary" />
+                </div>
+                <input
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                  placeholder="Your phone number"
+                />
               </div>
-              <input
-                type="text"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
-                placeholder="Your phone number"
-              />
             </div>
+            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
           </div>
-          {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
         </div>
       </div>
       

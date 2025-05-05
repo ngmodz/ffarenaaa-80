@@ -72,13 +72,6 @@ const Settings = () => {
       onClick: () => navigate("/profile"),
     },
     {
-      id: "app-settings",
-      icon: <SettingsIcon size={20} className="text-[#6366f1]" />,
-      title: "App Settings",
-      description: "Notifications, language, theme",
-      onClick: () => handleOpenSheet("app-settings"),
-    },
-    {
       id: "password",
       icon: <Lock size={20} className="text-[#ec4899]" />,
       title: "Change Password",
@@ -174,31 +167,6 @@ const Settings = () => {
             
             <div className="flex-1 overflow-auto">
               <ProfileEditForm onClose={handleCloseSheet} />
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* Sheet for App Settings */}
-      <Sheet open={openSheet === "app-settings"} onOpenChange={handleCloseSheet}>
-        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
-          <div className="h-full flex flex-col">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-white">App Settings</h2>
-              <p className="text-sm text-gaming-muted">Customize your app experience</p>
-            </div>
-            
-            <div className="flex-1 overflow-auto">
-              {/* For now we'll show a placeholder message */}
-              <div className="text-center py-8">
-                <p className="text-gaming-muted">App settings will be available here</p>
-                <Button 
-                  className="mt-4 bg-gaming-primary hover:bg-gaming-primary/90"
-                  onClick={handleCloseSheet}
-                >
-                  Close
-                </Button>
-              </div>
             </div>
           </div>
         </SheetContent>

@@ -20,6 +20,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import SettingsItem from "@/components/settings/SettingsItem";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import ContactDeveloperForm from "@/components/settings/ContactDeveloperForm";
+import ProfileEditForm from "@/components/settings/ProfileEditForm";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -172,22 +173,7 @@ const Settings = () => {
             </div>
             
             <div className="flex-1 overflow-auto">
-              {/* We'll reuse the existing ProfileSettings component */}
-              <iframe 
-                src="/settings?tab=profile" 
-                className="w-full h-full border-0"
-                style={{ display: "none" }}
-              />
-              {/* For now we'll show a placeholder message */}
-              <div className="text-center py-8">
-                <p className="text-gaming-muted">Edit your profile information here</p>
-                <Button 
-                  className="mt-4 bg-gaming-primary hover:bg-gaming-primary/90"
-                  onClick={handleCloseSheet}
-                >
-                  Close
-                </Button>
-              </div>
+              <ProfileEditForm onClose={handleCloseSheet} />
             </div>
           </div>
         </SheetContent>

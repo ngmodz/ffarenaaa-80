@@ -1,25 +1,34 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { signOut } from "@/lib/firebase";
 
 const LogoutButton = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const handleLogout = () => {
-    // In the future, this would handle Supabase logout
-    
-    // Show a success message
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account"
-    });
-    
-    // Redirect to login page
-    navigate("/auth");
+  const handleLogout = async () => {
+    try {
+      // Use Firebase signOut
+      await signOut();
+      
+      // Show a success message
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account"
+      });
+      
+      // Redirect to login page
+      navigate("/auth");
+    } catch (error) {
+      toast({
+        title: "Logout failed",
+        description: error instanceof Error ? error.message : "An error occurred while logging out",
+        variant: "destructive"
+      });
+    }
   };
   
   return (

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 interface RegisterFormProps {
   setActiveTab: (tab: string) => void;
@@ -187,13 +188,12 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
         </div>
         <span className="text-xs text-gaming-text/70">
           By registering, you agree to our{" "}
-          <Button 
-            variant="link" 
-            className="p-0 h-auto text-xs text-gaming-primary hover:underline"
-            onClick={() => window.open("/terms-and-privacy", "_blank")}
+          <Link 
+            to="/terms-and-privacy"
+            className="text-gaming-primary hover:underline"
           >
             Terms of Service and Privacy Policy
-          </Button>
+          </Link>
         </span>
       </div>
       

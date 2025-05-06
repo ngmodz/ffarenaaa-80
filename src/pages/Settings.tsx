@@ -38,16 +38,18 @@ const Settings = () => {
   };
 
   const handleLogout = () => {
-    // Show a success message
-    toast({
+    // Show a success message with shorter duration
+    const { dismiss } = toast({
       title: "Logged out successfully",
       description: "You have been logged out of your account"
     });
     
-    // Redirect to login page after a slight delay to ensure toast is shown
+    // Redirect to login page with shorter delay
     setTimeout(() => {
+      // Force dismiss the toast
+      dismiss();
       navigate("/auth");
-    }, 300);
+    }, 200);
   };
 
   const handleOpenSheet = (id: string) => {

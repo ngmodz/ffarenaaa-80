@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
@@ -65,6 +64,9 @@ const config = {
           accent: "#f97316",
           bg: "#0A0A0A",
           text: "#FFFFFF",
+          muted: "#888888",
+          card: "#121212",
+          border: "#2A2A2A",
         },
       },
       borderRadius: {

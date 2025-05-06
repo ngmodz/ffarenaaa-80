@@ -1,6 +1,5 @@
-
 import * as React from "react";
-import { Home, Trophy, Calendar, Settings as SettingsIcon, Plus } from "lucide-react";
+import { Home, Trophy, Wallet, Settings as SettingsIcon, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -88,10 +87,10 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       isHighlighted: true
     },
     { 
-      icon: <Calendar size={18} />, 
-      label: "Schedule", 
-      to: "/schedule", 
-      isActive: currentPath === "/schedule",
+      icon: <Wallet size={18} />, 
+      label: "Wallet", 
+      to: "/wallet", 
+      isActive: currentPath === "/wallet",
       isHighlighted: false
     },
     { 

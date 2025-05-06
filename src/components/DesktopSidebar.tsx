@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   Trophy, 
@@ -89,7 +88,6 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
   const navItems = [
     { icon: <Home size={20} />, label: "Home", to: "/" },
     { icon: <Trophy size={20} />, label: "Tournaments", to: "/tournaments" },
-    { icon: <Calendar size={20} />, label: "Schedule", to: "/schedule" },
     { icon: <Wallet size={20} />, label: "Wallet", to: "/wallet" },
     { icon: <User size={20} />, label: "Profile", to: "/profile" },
     { icon: <Settings size={20} />, label: "Settings", to: "/settings" }

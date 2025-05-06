@@ -65,7 +65,7 @@ const Index = () => {
       <div className="mb-4">
         <div className="relative mb-3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gaming-muted" size={18} />
-          <input type="text" placeholder="Search tournaments..." className="w-full pl-10 pr-4 py-2.5 bg-gaming-card border border-gaming-border rounded-lg text-gaming-text focus:outline-none focus:ring-2 focus:ring-gaming-primary/50" />
+          <input type="text" placeholder="Search tournaments..." className="w-full pl-10 pr-4 py-2.5 bg-gaming-card border border-gaming-border rounded-lg text-white placeholder-gaming-muted/70 focus:outline-none focus:ring-2 focus:ring-gaming-primary/50" />
         </div>
         
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">

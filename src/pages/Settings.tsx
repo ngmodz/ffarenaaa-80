@@ -28,7 +28,7 @@ const Settings = () => {
   const isMobile = useIsMobile();
   const [openSheet, setOpenSheet] = useState<string | null>(null);
 
-  // Mock user data - would come from Supabase in the future
+  // Mock user data - would come from Firebase in the future
   const user = {
     name: "ElitePlayer123",
     email: "player@example.com",

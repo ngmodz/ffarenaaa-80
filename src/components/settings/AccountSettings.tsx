@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -77,7 +76,7 @@ const AccountSettings = () => {
       return;
     }
     
-    // Success case - in future would connect to Supabase
+    // Success case - in future would connect to Firebase
     toast({
       title: "Password updated",
       description: "Your password has been updated successfully",

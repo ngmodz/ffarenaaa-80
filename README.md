@@ -21,7 +21,7 @@ A modern web application for browsing, joining, and managing Freefire gaming tou
 - **Routing**: React Router DOM
 - **Form Handling**: React Hook Form with Zod validation
 - **State Management**: React Query for server state
-- **Authentication & Database**: Firebase and Supabase
+- **Authentication & Database**: Firebase
 - **Icons**: Lucide React
 - **Animation**: Framer Motion
 - **Date Handling**: date-fns
@@ -107,8 +107,6 @@ VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
 VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
 VITE_FIREBASE_APP_ID=your_firebase_app_id
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ## 🤝 Contributing

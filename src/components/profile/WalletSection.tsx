@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Wallet, PlusCircle, MinusCircle, ArrowDown, ArrowUp } from "lucide-reac
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-// Mock wallet data - would come from Supabase in the future
+// Mock wallet data - would come from Firebase in the future
 const mockWalletData = {
   balance: 1250,
   transactions: [

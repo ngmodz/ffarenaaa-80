@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -18,7 +17,7 @@ const ProfileSettings = () => {
   });
   const [avatar, setAvatar] = useState<string | null>(null);
   
-  // Mock user data - would come from Supabase in the future
+  // Mock user data - would come from Firebase in the future
   const user = {
     ign: formData.ign,
     email: formData.email,
@@ -28,7 +27,7 @@ const ProfileSettings = () => {
   
   const handleEditToggle = () => {
     if (isEditing) {
-      // Save changes here (would call Supabase in the future)
+      // Save changes here (would call Firebase in the future)
       toast({
         title: "Profile updated",
         description: "Your profile information has been updated successfully",

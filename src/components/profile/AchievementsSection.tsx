@@ -1,11 +1,11 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Award, Trophy, Target, Star, User, Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Mock achievement data - would come from Supabase in the future
+// Mock achievement data - would come from Firebase in the future
 const mockAchievements = [
   {
     id: "a1",

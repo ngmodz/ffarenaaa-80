@@ -17,7 +17,7 @@ const Profile = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-  // Mock tournament data - would come from Supabase in the future
+  // Mock tournament data - would come from Firebase in the future
   const mockJoinedTournaments = [
     {
       id: "t1",

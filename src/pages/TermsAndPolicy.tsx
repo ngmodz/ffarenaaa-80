@@ -279,7 +279,7 @@ const TermsAndPolicy = () => {
                       <li><strong>Personal Information</strong>: Email, Free Fire IGN, and optional social login details (e.g., Google, Discord).</li>
                       <li><strong>Tournament Data</strong>: Details you provide when creating or joining tournaments (e.g., game mode, custom room settings).</li>
                       <li><strong>Payment Data</strong>: Transaction details processed via Cashfree (we do not store payment card information).</li>
-                      <li><strong>Usage Data</strong>: Analytics on app usage, such as page views and tournament participation, stored in Supabase.</li>
+                      <li><strong>Usage Data</strong>: Analytics on app usage, such as page views and tournament participation, stored in Firebase.</li>
                       <li><strong>Media</strong>: Images or media uploaded for tournament banners, profiles, or match highlights.</li>
                     </ul>
                   </div>
@@ -300,7 +300,7 @@ const TermsAndPolicy = () => {
                     <ul className="list-disc pl-6 space-y-2">
                       <li>We share data with:
                         <ul className="list-disc pl-6 space-y-1 mt-2">
-                          <li><strong>Supabase</strong>: For authentication, database, storage, and real-time features (see Supabase's privacy policy).</li>
+                          <li><strong>Firebase</strong>: For authentication, database, storage, and real-time features (see Firebase's privacy policy).</li>
                           <li><strong>Cashfree</strong>: For payment processing (see Cashfree's privacy policy).</li>
                           <li><strong>Hosts/Participants</strong>: Limited data (e.g., IGN) is shared with tournament hosts or participants as needed for gameplay.</li>
                         </ul>
@@ -312,7 +312,7 @@ const TermsAndPolicy = () => {
                   <div className="bg-gaming-card/50 p-4 rounded-lg border border-gaming-border/10">
                     <h3 className="text-xl font-semibold text-gaming-text mb-3">4.4 Data Security</h3>
                     <ul className="list-disc pl-6 space-y-2">
-                      <li>We use HTTPS, Supabase's Row-Level Security (RLS), and Netlify's security features to protect your data.</li>
+                      <li>We use HTTPS, Firebase's security features, and Netlify's security features to protect your data.</li>
                       <li>You are responsible for securing your account credentials and not sharing sensitive information (e.g., Room IDs) publicly.</li>
                     </ul>
                   </div>
@@ -364,7 +364,7 @@ const TermsAndPolicy = () => {
                     <li>Freefire Tournaments is provided "as is" without warranties of any kind.</li>
                     <li>We are not liable for:
                       <ul className="list-disc pl-6 space-y-1 mt-2">
-                        <li>Losses due to Free Fire gameplay issues, user errors, or third-party services (e.g., Supabase, Cashfree).</li>
+                        <li>Losses due to Free Fire gameplay issues, user errors, or third-party services (e.g., Firebase, Cashfree).</li>
                         <li>Unauthorized access to your account due to your failure to secure credentials.</li>
                         <li>Tournament disputes or unfair play unless caused by platform errors.</li>
                       </ul>

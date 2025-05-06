@@ -1,7 +1,17 @@
 import { useState } from "react";
-import { Search, Filter, Trophy } from "lucide-react";
+import { Search, Filter, Trophy, SortAsc, SortDesc, Calendar, DollarSign } from "lucide-react";
 import Layout from "@/components/Layout";
 import TournamentCard from "@/components/TournamentCard";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem 
+} from "@/components/ui/dropdown-menu";
 
 // Sample tournament data
 const sampleTournaments = [{
@@ -49,9 +59,36 @@ const sampleTournaments = [{
   filledSpots: 67,
   status: 'upcoming' as const
 }];
+
 const Index = () => {
   const [filter, setFilter] = useState("all");
-  const filteredTournaments = filter === "all" ? sampleTournaments : sampleTournaments.filter(tournament => tournament.status === filter);
+  const [sortBy, setSortBy] = useState("none");
+  
+  // Apply filters and sorting
+  let displayedTournaments = filter === "all" ? sampleTournaments : sampleTournaments.filter(tournament => tournament.status === filter);
+  
+  // Apply sorting
+  if (sortBy !== "none") {
+    displayedTournaments = [...displayedTournaments].sort((a, b) => {
+      switch (sortBy) {
+        case "date-asc":
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        case "date-desc":
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        case "price-asc":
+          return a.entryFee - b.entryFee;
+        case "price-desc":
+          return b.entryFee - a.entryFee;
+        case "prize-asc":
+          return a.prizeMoney - b.prizeMoney;
+        case "prize-desc":
+          return b.prizeMoney - a.prizeMoney;
+        default:
+          return 0;
+      }
+    });
+  }
+  
   return <div className="w-full px-4 sm:px-6 md:px-8">
       {/* Header - Centered on mobile */}
       <div className="mb-4 text-center sm:text-left">
@@ -72,19 +109,43 @@ const Index = () => {
           <button onClick={() => setFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${filter === "all" ? "bg-gaming-primary text-white" : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"}`}>
             All Tournaments
           </button>
-          <button onClick={() => setFilter("live")} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 flex items-center ${filter === "live" ? "bg-gaming-accent text-white" : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"}`}>
-            <span className={`inline-block w-2 h-2 rounded-full mr-1 ${filter === "live" ? "bg-white" : "bg-red-500"}`}></span>
-            Live Now
-          </button>
           <button onClick={() => setFilter("upcoming")} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${filter === "upcoming" ? "bg-gaming-primary text-white" : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"}`}>
             Upcoming
           </button>
-          <button onClick={() => setFilter("completed")} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${filter === "completed" ? "bg-gaming-primary text-white" : "bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20"}`}>
-            Completed
-          </button>
-          <button className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20 flex items-center`}>
-            <Filter size={14} className="mr-1" /> More Filters
-          </button>
+          
+          {/* Sort & Filter Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 bg-gaming-card text-gaming-muted hover:bg-gaming-primary/20 flex items-center">
+              <Filter size={14} className="mr-1" /> Sort & Filter
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-gaming-card border-gaming-border text-gaming-text">
+              <DropdownMenuLabel>Sort By</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-gaming-border/50" />
+              <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
+                <DropdownMenuRadioItem value="none" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
+                  Default
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="date-asc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
+                  <Calendar size={14} className="mr-2" /> Date (Earliest first)
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="date-desc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
+                  <Calendar size={14} className="mr-2" /> Date (Latest first)
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="price-asc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
+                  <DollarSign size={14} className="mr-2" /> Entry Fee (Low to High)
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="price-desc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
+                  <DollarSign size={14} className="mr-2" /> Entry Fee (High to Low)
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="prize-asc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
+                  <Trophy size={14} className="mr-2" /> Prize Money (Low to High)
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="prize-desc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
+                  <Trophy size={14} className="mr-2" /> Prize Money (High to Low)
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       
@@ -124,14 +185,14 @@ const Index = () => {
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base sm:text-lg font-semibold">
-            {filter === "all" ? "All Tournaments" : filter === "live" ? "Live Tournaments" : filter === "upcoming" ? "Upcoming Tournaments" : "Completed Tournaments"}
+            {filter === "all" ? "All Tournaments" : filter === "upcoming" ? "Upcoming Tournaments" : "Filtered Tournaments"}
           </h2>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredTournaments.map(tournament => <TournamentCard key={tournament.id} {...tournament} />)}
+          {displayedTournaments.map(tournament => <TournamentCard key={tournament.id} {...tournament} />)}
           
-          {filteredTournaments.length === 0 && <div className="col-span-full flex flex-col items-center justify-center p-5 sm:p-8 text-center">
+          {displayedTournaments.length === 0 && <div className="col-span-full flex flex-col items-center justify-center p-5 sm:p-8 text-center">
               <Trophy size={40} className="text-gaming-muted mb-4" />
               <h3 className="text-lg sm:text-xl font-bold mb-2">No tournaments found</h3>
               <p className="text-gaming-muted mb-4">There are no tournaments matching your filters</p>
@@ -143,4 +204,5 @@ const Index = () => {
       </div>
     </div>;
 };
+
 export default Index;

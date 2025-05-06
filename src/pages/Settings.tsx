@@ -28,35 +28,47 @@ import ProfileEditForm from "@/components/settings/ProfileEditForm";
 import ChangePasswordDialog from "@/components/settings/ChangePasswordDialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [openSheet, setOpenSheet] = useState<string | null>(null);
+  const { logout, userProfile, currentUser } = useAuth();
 
-  // Mock user data - would come from Firebase in the future
-  const user = {
+  // Use authentication data when available, fallback to mock otherwise
+  const user = userProfile || {
     name: "ElitePlayer123",
-    email: "player@example.com",
+    email: currentUser?.email || "player@example.com",
     avatar_url: null,
     isPremium: true,
     joinDate: "May 2023",
   };
 
-  const handleLogout = () => {
-    // Show a success message with shorter duration
-    const { dismiss } = toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account"
-    });
-    
-    // Redirect to login page after toast display time
-    setTimeout(() => {
-      // Force dismiss the toast
-      dismiss();
-      navigate("/auth");
-    }, 800);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      
+      // Show a success message with shorter duration
+      const { dismiss } = toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account"
+      });
+      
+      // Redirect to login page after toast display time
+      setTimeout(() => {
+        // Force dismiss the toast
+        dismiss();
+        navigate("/auth");
+      }, 800);
+    } catch (error) {
+      toast({
+        title: "Logout failed",
+        description: error instanceof Error ? error.message : "An error occurred while logging out",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleOpenSheet = (id: string) => {
@@ -107,7 +119,7 @@ const Settings = () => {
       >
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Settings</h1>
-          <Link to="/" className="flex items-center gap-1 text-sm text-gaming-primary hover:text-gaming-primary/80 transition-colors">
+          <Link to="/home" className="flex items-center gap-1 text-sm text-gaming-primary hover:text-gaming-primary/80 transition-colors">
             <ArrowLeft size={16} />
             <span className="hidden sm:inline">Back to Home</span>
           </Link>

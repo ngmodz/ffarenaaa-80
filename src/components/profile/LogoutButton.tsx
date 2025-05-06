@@ -3,16 +3,17 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { signOut } from "@/lib/firebase";
+import { useAuth } from '@/contexts/AuthContext';
 
 const LogoutButton = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { logout } = useAuth();
   
   const handleLogout = async () => {
     try {
-      // Use Firebase signOut
-      await signOut();
+      // Use Auth context logout
+      await logout();
       
       // Redirect to login page
       navigate("/auth");

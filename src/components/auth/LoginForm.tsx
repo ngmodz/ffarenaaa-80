@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { signInWithEmail, signInWithGoogle } from "@/lib/firebase";
 
 interface LoginFormProps {
   setActiveTab: (tab: string) => void;
@@ -99,10 +100,9 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Login with Firebase
+      const result = await signInWithEmail(loginEmail, loginPassword);
       
-      // Mock successful login
       toast({
         title: "Login successful",
         description: "Welcome back to FireArena!",
@@ -115,14 +115,25 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
       
       // Navigate to home after successful login
       setTimeout(() => {
-        navigate('/');
+        navigate('/home');
       }, 1000);
       
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Login error:", error);
+      
+      let errorMessage = "Invalid email or password. Please try again.";
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        errorMessage = "Invalid email or password. Please try again.";
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many failed login attempts. Please try again later.";
+      } else if (error.code === 'auth/user-disabled') {
+        errorMessage = "This account has been disabled. Please contact support.";
+      }
+      
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: "Invalid email or password. Please try again.",
+        description: errorMessage,
       });
     } finally {
       setIsSubmitting(false);

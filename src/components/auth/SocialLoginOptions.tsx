@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { signInWithGoogle } from "@/lib/firebase";
 
 const GoogleLogo = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -17,17 +18,37 @@ const SocialLoginOptions = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSocialLogin = (provider: string) => {
+  const handleGoogleLogin = async () => {
     setIsSubmitting(true);
     
-    // Simulate API call with timeout
-    setTimeout(() => {
+    try {
+      const result = await signInWithGoogle();
+      
       toast({
-        title: `${provider} login initiated`,
-        description: "Redirecting to authentication provider...",
+        title: "Google login successful",
+        description: "Welcome to Freefire Tournaments!",
       });
+      
+      // Navigate to home after successful login
+      navigate('/home');
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      
+      let errorMessage = "Failed to login with Google. Please try again.";
+      if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = "Login canceled. Please try again.";
+      } else if (error.code === 'auth/popup-blocked') {
+        errorMessage = "Login popup was blocked. Please allow popups for this website.";
+      }
+      
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: errorMessage,
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
   
   const handleContinueAsGuest = () => {
@@ -37,7 +58,7 @@ const SocialLoginOptions = () => {
     });
     
     // Navigate to home
-    navigate('/');
+    navigate('/home');
   };
 
   return (
@@ -53,7 +74,7 @@ const SocialLoginOptions = () => {
       
       <div className="flex space-x-3 justify-center">
         <Button
-          onClick={() => handleSocialLogin("Google")}
+          onClick={handleGoogleLogin}
           disabled={isSubmitting}
           variant="outline"
           className="bg-gaming-bg/60 hover:bg-gaming-primary/20 text-gaming-text border border-gaming-primary/30 flex-1 flex items-center justify-center gap-2"

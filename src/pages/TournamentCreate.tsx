@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 
 // Step components will be imported here
 import BasicInfoForm from "@/components/tournament/BasicInfoForm";
@@ -43,6 +44,7 @@ export type TournamentFormData = {
 };
 
 const TournamentCreate = () => {
+  const { isLoading } = useAuthCheck({ requireAuth: true });
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<TournamentFormData>({
     name: "",
@@ -101,10 +103,18 @@ const TournamentCreate = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-gaming-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-6 px-4 max-w-4xl">
       {/* Back button */}
-      <Link to="/" className="inline-flex items-center text-gaming-muted hover:text-gaming-text mb-4">
+      <Link to="/home" className="inline-flex items-center text-gaming-muted hover:text-gaming-text mb-4">
         <ArrowLeft size={18} className="mr-1" /> Back to tournaments
       </Link>
 

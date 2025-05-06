@@ -6,6 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { signUpWithEmail, auth, db } from "@/lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 interface RegisterFormProps {
   setActiveTab: (tab: string) => void;
@@ -120,10 +122,21 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Register with Firebase
+      const result = await signUpWithEmail(registerEmail, registerPassword);
       
-      // Mock successful registration
+      if (result.user) {
+        // Create a user profile in the Firestore database
+        await setDoc(doc(db, 'users', result.user.uid), {
+          id: result.user.uid,
+          name: registerName,
+          email: registerEmail,
+          ign: registerFFID,
+          avatar_url: null,
+          isPremium: false,
+          created_at: new Date(),
+        });
+        
       toast({
         title: "Registration successful",
         description: "Your account has been created. You can now login.",
@@ -133,12 +146,23 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
       setTimeout(() => {
         setActiveTab("login");
       }, 1000);
+      }
+    } catch (error: any) {
+      console.error("Registration error:", error);
       
-    } catch (error) {
+      let errorMessage = "An error occurred. Please try again.";
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "Email is already in use. Please use a different email or login.";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "Invalid email format. Please check your email.";
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = "Password is too weak. Please use a stronger password.";
+      }
+      
       toast({
         variant: "destructive",
         title: "Registration failed",
-        description: "An error occurred. Please try again.",
+        description: errorMessage,
       });
     } finally {
       setIsSubmitting(false);
@@ -154,7 +178,7 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
         </label>
         <Input
           type="text"
-          placeholder="John Doe"
+          placeholder="Enter your full name"
           value={registerName}
           onChange={(e) => setRegisterName(e.target.value)}
           className={cn(
@@ -190,11 +214,11 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
       <div className="space-y-2">
         <label className="text-sm font-medium text-gaming-text/80 flex items-center gap-2">
           <Trophy size={16} className="text-gaming-accent" />
-          Free Fire ID
+          FreeFire UID
         </label>
         <Input
           type="text"
-          placeholder="Your Free Fire ID"
+          placeholder="Your FreeFire UID"
           value={registerFFID}
           onChange={(e) => setRegisterFFID(e.target.value)}
           className={cn(

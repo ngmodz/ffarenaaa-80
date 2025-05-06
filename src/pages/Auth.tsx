@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,9 +7,22 @@ import LoginForm from "@/components/auth/LoginForm";
 import RegisterForm from "@/components/auth/RegisterForm";
 import SocialLoginOptions from "@/components/auth/SocialLoginOptions";
 import { Toaster } from "@/components/ui/toaster";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
+import { Loader2 } from "lucide-react";
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState("login");
+  const { isLoading } = useAuthCheck({ redirectIfAuthenticated: true, redirectPath: '/home' });
+  
+  if (isLoading) {
+    return (
+      <AuthBackground>
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="h-8 w-8 animate-spin text-gaming-primary" />
+        </div>
+      </AuthBackground>
+    );
+  }
   
   return (
     <AuthBackground>

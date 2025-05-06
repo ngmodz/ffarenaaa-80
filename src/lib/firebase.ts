@@ -18,20 +18,23 @@ import {
   getAuth, 
   onAuthStateChanged, 
   signOut as firebaseSignOut,
-  User as FirebaseUser 
+  User as FirebaseUser,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Your Firebase configuration
-// Replace with your actual Firebase config
 const firebaseConfig = {
-  // Use environment variables if available, otherwise use demo values
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDummyValueForTesting",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-project",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "demo-project.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789012",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789012:web:abcdef1234567890",
+  apiKey: "AIzaSyB8rpTnmKUQ9wi9OzvnHDm5EJ55LzlOx8Q",
+  authDomain: "freefire-tournaments-ba2a6.firebaseapp.com",
+  projectId: "freefire-tournaments-ba2a6",
+  storageBucket: "freefire-tournaments-ba2a6.firebasestorage.app",
+  messagingSenderId: "605081354961",
+  appId: "1:605081354961:web:9cfda0d8e1d537c5223bf0"
 };
 
 // For development: Mock Firebase if config is missing or invalid
@@ -267,6 +270,7 @@ export const uploadAvatar = async (userId: string, file: File) => {
   }
 };
 
+// Authentication functions
 export const getCurrentUser = (): Promise<FirebaseUser | null> => {
   return new Promise((resolve) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -279,6 +283,7 @@ export const getCurrentUser = (): Promise<FirebaseUser | null> => {
 export const signOut = async () => {
   try {
     await firebaseSignOut(auth);
+    return { success: true };
   } catch (error) {
     console.error('Error signing out:', error);
     throw error;
@@ -289,5 +294,67 @@ export const onAuthChange = (callback: (user: FirebaseUser | null) => void) => {
   return onAuthStateChanged(auth, callback);
 };
 
-// Export Firebase instances
-export { db, auth, storage }; 
+// New authentication functions
+export const signUpWithEmail = async (email: string, password: string) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    // Create a user profile in Firestore
+    const userRef = doc(db, 'users', userCredential.user.uid);
+    await updateDoc(userRef, {
+      email,
+      created_at: serverTimestamp(),
+    });
+    return { success: true, user: userCredential.user };
+  } catch (error) {
+    console.error('Error signing up:', error);
+    throw error;
+  }
+};
+
+export const signInWithEmail = async (email: string, password: string) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return { success: true, user: userCredential.user };
+  } catch (error) {
+    console.error('Error signing in:', error);
+    throw error;
+  }
+};
+
+export const signInWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    
+    // Check if user exists in Firestore, if not create profile
+    const userRef = doc(db, 'users', userCredential.user.uid);
+    const userDoc = await getDoc(userRef);
+    
+    if (!userDoc.exists()) {
+      await updateDoc(userRef, {
+        email: userCredential.user.email,
+        display_name: userCredential.user.displayName,
+        avatar_url: userCredential.user.photoURL,
+        created_at: serverTimestamp(),
+      });
+    }
+    
+    return { success: true, user: userCredential.user };
+  } catch (error) {
+    console.error('Error signing in with Google:', error);
+    throw error;
+  }
+};
+
+export const resetPassword = async (email: string) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return { success: true };
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    throw error;
+  }
+};
+
+// Export app, db, auth, and storage for direct access if needed
+export { app, db, auth, storage }; 

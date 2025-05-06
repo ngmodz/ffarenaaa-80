@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { UserAvatar } from "./ui/UserAvatar";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -85,7 +86,7 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
 
   // Navigation items with icons and labels
   const navItems = [
-    { icon: <Home size={20} />, label: "Home", to: "/" },
+    { icon: <Home size={20} />, label: "Home", to: "/home" },
     { icon: <Trophy size={20} />, label: "Tournaments", to: "/tournaments" },
     { icon: <Wallet size={20} />, label: "Wallet", to: "/wallet" },
     { icon: <Settings size={20} />, label: "Settings", to: "/settings" }
@@ -139,8 +140,8 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
               label={item.label} 
               to={item.to} 
               isActive={
-                item.to === "/" 
-                  ? currentPath === "/" 
+                item.to === "/home" 
+                  ? currentPath === "/home" 
                   : currentPath.startsWith(item.to)
               } 
               isCollapsed={!isHovered}
@@ -178,6 +179,14 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
               )}
             </AnimatePresence>
           </Link>
+        </div>
+        
+        {/* User Avatar */}
+        <div className={cn(
+          "p-3 flex items-center justify-center",
+          isHovered ? "justify-start" : "justify-center"
+        )}>
+          <UserAvatar />
         </div>
       </div>
     </motion.div>

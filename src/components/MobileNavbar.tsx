@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Home, Trophy, Wallet, Settings as SettingsIcon, Plus } from "lucide-react";
+import { Home, Trophy, Wallet, User, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { UserAvatar } from "./ui/UserAvatar";
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -75,8 +76,8 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
     { 
       icon: <Home size={18} />, 
       label: "Home", 
-      to: "/", 
-      isActive: currentPath === "/",
+      to: "/home", 
+      isActive: currentPath === "/home",
       isHighlighted: false 
     },
     { 
@@ -98,13 +99,6 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       label: "Wallet", 
       to: "/wallet", 
       isActive: currentPath === "/wallet",
-      isHighlighted: false
-    },
-    { 
-      icon: <SettingsIcon size={18} />, 
-      label: "Settings", 
-      to: "/settings", 
-      isActive: currentPath === "/settings",
       isHighlighted: false
     }
   ];
@@ -128,6 +122,25 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
             index={index}
           />
         ))}
+        
+        {/* User Avatar in the last column */}
+        <div className="flex flex-col items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.4,
+              delay: 4 * 0.1,
+              ease: [0.25, 0.1, 0.25, 1.0]
+            }}
+            className="flex flex-col items-center justify-center"
+          >
+            <UserAvatar />
+            <motion.span className="text-2xs font-medium text-gaming-muted mt-1">
+              Profile
+            </motion.span>
+          </motion.div>
+        </div>
       </nav>
     </motion.div>
   );

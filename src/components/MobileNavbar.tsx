@@ -28,7 +28,7 @@ const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false, ind
         to={to}
         className={cn(
           "flex flex-col items-center justify-center text-2xs font-medium transition-colors duration-300",
-          isActive ? "text-gaming-primary" : "text-gaming-muted hover:text-gaming-text",
+          isActive ? "text-gaming-primary" : isHighlighted ? "text-white" : "text-gaming-muted hover:text-gaming-text",
           "px-1 py-1.5 w-full" // Increased vertical padding
         )}
       >
@@ -36,19 +36,26 @@ const NavItem = ({ icon, label, to, isActive = false, isHighlighted = false, ind
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className={cn(
-            "flex items-center justify-center w-10 h-10 rounded-full mb-1 transition-all duration-300", // Increased size from w-8 h-8 to w-10 h-10 and added more bottom margin
+            "flex items-center justify-center rounded-full mb-1 transition-all duration-300", 
             isHighlighted 
-              ? "bg-gaming-accent shadow-glow-accent" 
+              ? "bg-gaming-accent shadow-glow-accent w-12 h-12" 
               : isActive 
-                ? "bg-gaming-primary/20 shadow-glow" 
-                : "bg-gaming-card hover:bg-gaming-card/80"
+                ? "bg-gaming-primary/20 shadow-glow w-10 h-10" 
+                : "bg-gaming-card hover:bg-gaming-card/80 w-10 h-10"
           )}
         >
-          {/* Increased icon size */}
-          {React.cloneElement(icon as React.ReactElement, { size: 22 })}
+          {/* Icon with conditional sizing */}
+          {isHighlighted
+            ? React.cloneElement(icon as React.ReactElement, { size: 24 })
+            : React.cloneElement(icon as React.ReactElement, { size: 22 })}
         </motion.div>
         <motion.span 
-          className="truncate text-sm transition-all duration-300" // Increased text size from text-xs to text-sm
+          className={cn(
+            "truncate transition-all duration-300",
+            isHighlighted 
+              ? "text-white font-medium text-sm" 
+              : "text-sm"
+          )}
           animate={{ y: isActive ? -2 : 0 }}
         >
           {label}
@@ -80,7 +87,7 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       isHighlighted: false
     },
     { 
-      icon: <Plus size={18} />, 
+      icon: <Plus size={18} className="text-white" />, 
       label: "Create", 
       to: "/tournament/create", 
       isActive: currentPath.startsWith("/tournament/create"),

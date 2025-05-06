@@ -24,6 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Add mobile-specific styling for form inputs
+const customInputStyles = "flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500 w-full";
+
 // Import dark input styles
 // import "@/components/ui/dark-input.css";
 
@@ -246,7 +249,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 profile-edit-form">
+    <form onSubmit={handleSubmit} className="space-y-6 profile-edit-form max-w-md mx-auto">
       {/* Avatar Section */}
       <div className="flex flex-col items-center">
         <Avatar className="w-24 h-24 border-2 border-gaming-primary">
@@ -265,7 +268,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         <div className="flex flex-col items-center mt-4 w-full max-w-xs">
           <Label 
             htmlFor="avatar-upload" 
-            className="cursor-pointer btn-gaming-primary w-full text-center py-1 px-3 rounded-md bg-gaming-primary hover:bg-gaming-primary/90 transition-colors"
+            className="cursor-pointer btn-gaming-primary w-full text-center py-2 px-3 rounded-md bg-gaming-primary hover:bg-gaming-primary/90 transition-colors"
           >
             Upload Avatar
           </Label>
@@ -292,11 +295,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         <h3 className="text-lg font-medium text-white">Game Profile</h3>
         
         <div className="space-y-2">
-          <Label htmlFor="ign" className="text-sm text-gaming-muted">
+          <Label htmlFor="ign" className="text-sm text-gaming-muted block mb-1">
             In-Game Name (IGN)
           </Label>
           <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-            <div className="flex items-center bg-[#1a1a1a]">
+            <div className="flex items-center bg-[#1a1a1a] w-full">
               <div className="px-3 py-2">
                 <BadgeInfo className="h-4 w-4 text-gaming-primary" />
               </div>
@@ -306,7 +309,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                 name="ign"
                 value={formData.ign}
                 onChange={handleInputChange}
-                className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                className={customInputStyles}
                 placeholder="Your in-game name"
               />
             </div>
@@ -323,11 +326,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         
         <div className="space-y-4 pt-4">
           <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-sm text-gaming-muted">
+            <Label htmlFor="fullName" className="text-sm text-gaming-muted block mb-1">
               Full Name
             </Label>
             <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-              <div className="flex items-center bg-[#1a1a1a]">
+              <div className="flex items-center bg-[#1a1a1a] w-full">
                 <div className="px-3 py-2">
                   <User className="h-4 w-4 text-gaming-primary" />
                 </div>
@@ -337,7 +340,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                  className={customInputStyles}
                   placeholder="Your full name"
                 />
               </div>
@@ -345,11 +348,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm text-gaming-muted">
+            <Label htmlFor="email" className="text-sm text-gaming-muted block mb-1">
               Email Address
             </Label>
             <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-              <div className="flex items-center bg-[#1a1a1a]">
+              <div className="flex items-center bg-[#1a1a1a] w-full">
                 <div className="px-3 py-2">
                   <Mail className="h-4 w-4 text-gaming-primary" />
                 </div>
@@ -359,7 +362,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                  className={customInputStyles}
                   placeholder="Your email address"
                 />
               </div>
@@ -368,11 +371,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-sm text-gaming-muted">
+            <Label htmlFor="phone" className="text-sm text-gaming-muted block mb-1">
               Phone Number
             </Label>
             <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-              <div className="flex items-center bg-[#1a1a1a]">
+              <div className="flex items-center bg-[#1a1a1a] w-full">
                 <div className="px-3 py-2">
                   <Phone className="h-4 w-4 text-gaming-primary" />
                 </div>
@@ -382,7 +385,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                  className={customInputStyles}
                   placeholder="Your phone number"
                 />
               </div>
@@ -399,11 +402,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         <h3 className="text-lg font-medium text-white">Additional Information</h3>
         
         <div className="space-y-2">
-          <Label htmlFor="location" className="text-sm text-gaming-muted">
+          <Label htmlFor="location" className="text-sm text-gaming-muted block mb-1">
             Location
           </Label>
           <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-            <div className="flex items-center bg-[#1a1a1a]">
+            <div className="flex items-center bg-[#1a1a1a] w-full">
               <div className="px-3 py-2">
                 <MapPin className="h-4 w-4 text-gaming-primary" />
               </div>
@@ -413,7 +416,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500"
+                className={customInputStyles}
                 placeholder="Your location"
               />
             </div>
@@ -421,11 +424,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="birthdate" className="text-sm text-gaming-muted">
+          <Label htmlFor="birthdate" className="text-sm text-gaming-muted block mb-1">
             Date of Birth
           </Label>
           <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-            <div className="flex items-center bg-[#1a1a1a]">
+            <div className="flex items-center bg-[#1a1a1a] w-full">
               <div className="px-3 py-2">
                 <Calendar className="h-4 w-4 text-gaming-primary" />
               </div>
@@ -435,40 +438,39 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                 name="birthdate"
                 value={formData.birthdate}
                 onChange={handleInputChange}
-                className="flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 dark:color-scheme-dark"
-                // Note: Placeholder styling for date might not work consistently, relying on browser default dark mode
+                className={customInputStyles}
+                style={{ colorScheme: 'dark' }}
+                placeholder="YYYY-MM-DD"
               />
             </div>
           </div>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="gender" className="text-sm text-gaming-muted">
+          <Label htmlFor="gender" className="text-sm text-gaming-muted block mb-1">
             Gender
           </Label>
           <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
-            <div className="bg-[#1a1a1a]">
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={(e) => handleSelectChange(e.target.value, "gender")}
-                className="w-full bg-[#1a1a1a] border-0 py-2.5 px-3 text-white focus:outline-none focus:ring-0 appearance-none"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 0.75rem center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '1.25rem 1.25rem',
-                  paddingRight: '2.5rem'
-                }}
-              >
-                <option value="" disabled>Select gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer-not-to-say">Prefer not to say</option>
-              </select>
-            </div>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={(e) => handleSelectChange(e.target.value, "gender")}
+              className="w-full bg-[#1a1a1a] border-0 py-2.5 px-3 text-white focus:outline-none focus:ring-0 appearance-none rounded-md pr-10"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                backgroundPosition: 'right 0.75rem center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '1.25rem 1.25rem',
+                colorScheme: 'dark'
+              }}
+            >
+              <option value="" disabled>Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+              <option value="prefer-not-to-say">Prefer not to say</option>
+            </select>
           </div>
         </div>
       </div>

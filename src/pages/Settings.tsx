@@ -162,14 +162,14 @@ const Settings = () => {
 
       {/* Sheet for Profile */}
       <Sheet open={openSheet === "profile"} onOpenChange={handleCloseSheet}>
-        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto">
           <div className="h-full flex flex-col">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white">Edit Profile</h2>
               <p className="text-sm text-gaming-muted">Update your personal information</p>
             </div>
             
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto pb-10">
               <ProfileEditForm onClose={handleCloseSheet} />
             </div>
           </div>
@@ -178,7 +178,7 @@ const Settings = () => {
 
       {/* Sheet for Password */}
       <Sheet open={openSheet === "password"} onOpenChange={handleCloseSheet}>
-        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto">
           <div className="h-full flex flex-col">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white">Change Password</h2>
@@ -209,7 +209,7 @@ const Settings = () => {
 
       {/* Sheet for Contact Developer */}
       <Sheet open={openSheet === "contact"} onOpenChange={handleCloseSheet}>
-        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border">
+        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto">
           <div className="h-full flex flex-col">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white">Contact Developer</h2>

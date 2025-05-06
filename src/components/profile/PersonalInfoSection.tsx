@@ -107,7 +107,7 @@ const PersonalInfoSection = () => {
       <CardContent>
         <div className="flex flex-col sm:flex-row items-center gap-6">
           {/* Avatar Section */}
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2 mb-4 sm:mb-0">
             <Avatar 
               className={`w-24 h-24 border-2 ${
                 user?.isPremium ? "border-[#FFD700]" : "border-[#A0AEC0]"
@@ -139,26 +139,26 @@ const PersonalInfoSection = () => {
           </div>
 
           {/* User Info Section */}
-          <div className="flex-1 space-y-4 w-full">
+          <div className="flex-1 space-y-4 w-full text-center sm:text-left">
             <div className="space-y-1">
-              <Label className="text-[#A0AEC0]">
+              <Label className="text-[#A0AEC0] text-sm">
                 Free Fire IGN
               </Label>
               <div className="text-[#FFD700] font-bold text-lg">{user?.ign}</div>
             </div>
 
             <div className="space-y-1">
-              <Label className="text-[#A0AEC0]">
+              <Label className="text-[#A0AEC0] text-sm">
                 Full Name
               </Label>
               <div className="text-white">{user?.fullName}</div>
             </div>
 
             <div className="space-y-1">
-              <Label className="text-[#A0AEC0]">
+              <Label className="text-[#A0AEC0] text-sm">
                 Email
               </Label>
-              <div className="flex items-center text-white">
+              <div className="flex items-center text-white justify-center sm:justify-start">
                 <Mail className="w-4 h-4 mr-2 text-gaming-primary/70" />
                 {user?.email}
               </div>
@@ -166,10 +166,10 @@ const PersonalInfoSection = () => {
             
             {user?.location && (
               <div className="space-y-1">
-                <Label className="text-[#A0AEC0]">
+                <Label className="text-[#A0AEC0] text-sm">
                   Location
                 </Label>
-                <div className="flex items-center text-white">
+                <div className="flex items-center text-white justify-center sm:justify-start">
                   <MapPin className="w-4 h-4 mr-2 text-gaming-primary/70" />
                   {user.location}
                 </div>
@@ -183,7 +183,7 @@ const PersonalInfoSection = () => {
           <>
             <Separator className="my-4 bg-gaming-border" />
             <div className="space-y-2">
-              <Label className="text-[#A0AEC0]">
+              <Label className="text-[#A0AEC0] text-sm">
                 Bio
               </Label>
               <div className="text-white text-sm">{user.bio}</div>
@@ -192,9 +192,9 @@ const PersonalInfoSection = () => {
         )}
 
         {/* Edit Button */}
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-center sm:justify-end">
           <Button 
-            className="bg-[#1E3A8A] hover:bg-[#2563EB] flex items-center gap-2"
+            className="bg-[#1E3A8A] hover:bg-[#2563EB] flex items-center gap-2 w-full sm:w-auto"
             onClick={() => window.location.href = "/settings"}
           >
             <Edit size={16} />

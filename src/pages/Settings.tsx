@@ -44,12 +44,12 @@ const Settings = () => {
       description: "You have been logged out of your account"
     });
     
-    // Redirect to login page with shorter delay
+    // Redirect to login page after toast display time
     setTimeout(() => {
       // Force dismiss the toast
       dismiss();
       navigate("/auth");
-    }, 200);
+    }, 800);
   };
 
   const handleOpenSheet = (id: string) => {

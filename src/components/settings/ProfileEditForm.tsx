@@ -103,6 +103,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
     location: "",
     birthdate: "",
     gender: "",
+    uid: "",
   });
   
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -122,6 +123,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         location: user.location || "",
         birthdate: user.birthdate || "",
         gender: user.gender || "",
+        uid: user.uid || "",
       });
     }
   }, [user]);
@@ -181,6 +183,13 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
       newErrors.ign = "In-game name is required";
     } else if (!/^[a-zA-Z0-9]{3,20}$/.test(formData.ign)) {
       newErrors.ign = "IGN must be alphanumeric and between 3-20 characters";
+    }
+    
+    // Validate UID (required, alphanumeric, 5-15 characters)
+    if (!formData.uid) {
+      newErrors.uid = "UID is required";
+    } else if (!/^[a-zA-Z0-9]{5,15}$/.test(formData.uid)) {
+      newErrors.uid = "UID must be alphanumeric and between 5-15 characters";
     }
     
     // Validate email
@@ -249,153 +258,195 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 profile-edit-form max-w-md mx-auto px-1">
-      {/* Avatar Section */}
-      <div className="flex flex-col items-center">
-        <Avatar className="w-24 h-24 border-2 border-gaming-primary">
-          {(avatarPreview || user?.avatar_url) ? (
-            <AvatarImage 
-              src={avatarPreview || user?.avatar_url || ""} 
-              alt="User avatar" 
-            />
-          ) : (
-            <AvatarFallback className="bg-gaming-primary/20">
-              <User size={32} />
-            </AvatarFallback>
-          )}
-        </Avatar>
-        
-        <div className="flex flex-col items-center mt-4 w-full max-w-xs">
-          <Label 
-            htmlFor="avatar-upload" 
-            className="cursor-pointer btn-gaming-primary w-full text-center py-3 px-3 rounded-md bg-gaming-primary hover:bg-gaming-primary/90 transition-colors text-white font-medium"
+    <form 
+      onSubmit={handleSubmit} 
+      className="profile-edit-form space-y-8"
+    >
+      {/* <style>{customStyles}</style> */}
+      
+      {/* Avatar Upload */}
+      <div className="flex flex-col sm:flex-row gap-8 items-center pb-4">
+        <div className="relative">
+          <Avatar 
+            className={`w-24 h-24 border-2 ${
+              user?.isPremium ? "border-[#FFD700]" : "border-[#A0AEC0]"
+            } shadow-md`}
           >
-            Upload Avatar
-          </Label>
-          <Input 
-            id="avatar-upload" 
-            type="file" 
-            accept="image/jpeg, image/png" 
+            {avatarPreview ? (
+              <AvatarImage 
+                src={avatarPreview} 
+                alt="Avatar preview" 
+              />
+            ) : user?.avatar_url ? (
+              <AvatarImage 
+                src={user.avatar_url} 
+                alt={user?.ign || "User avatar"} 
+              />
+            ) : (
+              <AvatarFallback className="bg-gaming-primary/20">
+                <User size={32} />
+              </AvatarFallback>
+            )}
+          </Avatar>
+          <input
+            type="file"
+            id="avatar"
+            accept="image/jpeg, image/png"
             onChange={handleAvatarChange}
-            className="hidden" 
+            className="hidden"
           />
-          {avatarFile && (
-            <div className="text-green-500 text-xs mt-1 flex items-center">
-              <CheckCircle size={12} className="mr-1" />
-              New avatar selected
-            </div>
-          )}
+          <Button
+            type="button"
+            onClick={() => document.getElementById("avatar")?.click()}
+            className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-gaming-primary hover:bg-gaming-primary/90 focus:ring-gaming-primary/25 text-xs py-1 h-auto px-2 rounded-sm"
+            variant="default"
+            size="sm"
+          >
+            Upload
+          </Button>
+        </div>
+        
+        <div className="text-sm text-gray-400 text-center sm:text-left">
+          <h3 className="text-white font-medium text-lg mb-1">Profile Picture</h3>
+          <p>Upload a clear photo to help other players recognize you.</p>
+          <p className="mt-1">JPEG or PNG format. Max 2MB.</p>
         </div>
       </div>
+
+      <Separator className="bg-gray-800" />
       
-      <Separator className="my-6 bg-gaming-border" />
-      
-      {/* Game Profile */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-white">Game Profile</h3>
+      {/* Basic Info Section */}
+      <div className="space-y-6">
+        <h3 className="text-lg font-medium text-white">Basic Information</h3>
         
-        <div className="space-y-2">
-          <Label htmlFor="ign" className="text-sm text-gaming-muted block mb-1 font-medium">
-            In-Game Name (IGN)
+        {/* Required Game Info */}
+        <div className="space-y-4">
+          <Label 
+            htmlFor="ign" 
+            className="text-base text-white flex items-center gap-1.5"
+          >
+            <User size={16} className="text-gaming-primary/70" />
+            Free Fire IGN
+            <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex items-center">
+            <div className="relative flex-1">
+              <Input
+                id="ign"
+                name="ign"
+                placeholder="Your In-Game Name"
+                value={formData.ign}
+                onChange={handleInputChange}
+                className={customInputStyles}
+                required
+              />
+              {errors.ign && (
+                <div className="text-red-500 text-sm mt-1">{errors.ign}</div>
+              )}
+              <div className="text-gray-500 text-sm mt-1">Please ensure this matches your exact In-Game Name as it appears in Free Fire for tournament verification</div>
+            </div>
+          </div>
+        </div>
+
+        {/* UID Field (Editable) */}
+        <div className="space-y-4">
+          <Label 
+            htmlFor="uid" 
+            className="text-base text-white flex items-center gap-1.5"
+          >
+            <BadgeInfo size={16} className="text-gaming-primary/70" />
+            UID (Unique ID)
+            <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex items-center">
+            <div className="relative flex-1">
+              <Input
+                id="uid"
+                name="uid"
+                placeholder="Your Unique ID"
+                value={formData.uid}
+                onChange={handleInputChange}
+                className={customInputStyles}
+                required
+              />
+              {errors.uid && (
+                <div className="text-red-500 text-sm mt-1">{errors.uid}</div>
+              )}
+              <div className="text-gray-500 text-sm mt-1">This is your unique ID for prize money distribution and in-game identification</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Info */}
+        <div className="space-y-4">
+          <Label htmlFor="fullName" className="text-sm text-gaming-muted block mb-1 font-medium">
+            Full Name
           </Label>
           <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
             <div className="flex items-center bg-[#1a1a1a] w-full">
               <div className="px-3 py-2">
-                <BadgeInfo className="h-5 w-5 text-gaming-primary" />
+                <User className="h-5 w-5 text-gaming-primary" />
               </div>
               <input
                 type="text"
-                id="ign"
-                name="ign"
-                value={formData.ign}
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
                 onChange={handleInputChange}
                 className={customInputStyles}
-                placeholder="Your in-game name"
+                placeholder="Your full name"
                 autoComplete="off"
               />
             </div>
           </div>
-          {errors.ign && <p className="text-red-500 text-xs mt-1">{errors.ign}</p>}
         </div>
-      </div>
-      
-      <Separator className="my-6 bg-gaming-border" />
-      
-      {/* Personal Information */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-white">Personal Information</h3>
         
-        <div className="space-y-4 pt-2">
-          <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-sm text-gaming-muted block mb-1 font-medium">
-              Full Name
-            </Label>
-            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
-              <div className="flex items-center bg-[#1a1a1a] w-full">
-                <div className="px-3 py-2">
-                  <User className="h-5 w-5 text-gaming-primary" />
-                </div>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  className={customInputStyles}
-                  placeholder="Your full name"
-                  autoComplete="off"
-                />
+        <div className="space-y-4">
+          <Label htmlFor="email" className="text-sm text-gaming-muted block mb-1 font-medium">
+            Email Address
+          </Label>
+          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
+            <div className="flex items-center bg-[#1a1a1a] w-full">
+              <div className="px-3 py-2">
+                <Mail className="h-5 w-5 text-gaming-primary" />
               </div>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={customInputStyles}
+                placeholder="Your email address"
+                autoComplete="off"
+              />
             </div>
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm text-gaming-muted block mb-1 font-medium">
-              Email Address
-            </Label>
-            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
-              <div className="flex items-center bg-[#1a1a1a] w-full">
-                <div className="px-3 py-2">
-                  <Mail className="h-5 w-5 text-gaming-primary" />
-                </div>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className={customInputStyles}
-                  placeholder="Your email address"
-                  autoComplete="off"
-                />
+          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+        </div>
+        
+        <div className="space-y-4">
+          <Label htmlFor="phone" className="text-sm text-gaming-muted block mb-1 font-medium">
+            Phone Number
+          </Label>
+          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
+            <div className="flex items-center bg-[#1a1a1a] w-full">
+              <div className="px-3 py-2">
+                <Phone className="h-5 w-5 text-gaming-primary" />
               </div>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                className={customInputStyles}
+                placeholder="Your phone number"
+                autoComplete="off"
+              />
             </div>
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="phone" className="text-sm text-gaming-muted block mb-1 font-medium">
-              Phone Number
-            </Label>
-            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
-              <div className="flex items-center bg-[#1a1a1a] w-full">
-                <div className="px-3 py-2">
-                  <Phone className="h-5 w-5 text-gaming-primary" />
-                </div>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className={customInputStyles}
-                  placeholder="Your phone number"
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-          </div>
+          {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
         </div>
       </div>
       

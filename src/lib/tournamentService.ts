@@ -43,6 +43,8 @@ export interface Tournament {
   created_at: Timestamp | string; // Updated to handle string for mock data
   participants: string[];
   filled_spots: number;
+  room_id?: string | null;
+  room_password?: string | null;
 }
 
 // Create a new tournament
@@ -160,7 +162,8 @@ export const getTournamentById = async (id: string) => {
         ...docSnap.data(),
       } as Tournament;
     } else {
-      throw new Error("Tournament not found");
+      console.warn(`Tournament with id ${id} not found.`);
+      return null;
     }
   } catch (error) {
     console.error("Error getting tournament:", error);
@@ -291,5 +294,38 @@ export const getTournamentDraft = async () => {
   } catch (error) {
     console.error("Error getting tournament draft:", error);
     throw error;
+  }
+};
+
+// Add this new function
+export const updateTournamentRoomDetails = async (
+  tournamentId: string,
+  roomId: string,
+  roomPassword: string
+) => {
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("You must be logged in to update room details.");
+    }
+
+    const tournamentRef = doc(db, "tournaments", tournamentId);
+    const tournamentSnap = await getDoc(tournamentRef);
+
+    if (!tournamentSnap.exists() || tournamentSnap.data().host_id !== currentUser.uid) {
+      throw new Error("You are not authorized to update this tournament or it does not exist.");
+    }
+
+    await updateDoc(tournamentRef, {
+      room_id: roomId,
+      room_password: roomPassword,
+    });
+
+    return { success: true, message: "Room details updated successfully." };
+  } catch (error) {
+    console.error("Error updating tournament room details:", error);
+    // Check if error is an instance of Error and has a message property
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+    return { success: false, message: errorMessage };
   }
 }; 

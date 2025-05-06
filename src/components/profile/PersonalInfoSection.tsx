@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User, Edit, CheckCircle, Mail, MapPin } from "lucide-react";
+import { User, Edit, CheckCircle, Mail, MapPin, BadgeInfo } from "lucide-react";
 import { 
   Card, 
   CardContent, 
@@ -147,6 +147,16 @@ const PersonalInfoSection = () => {
                 Free Fire IGN
               </Label>
               <div className="text-[#FFD700] font-bold text-lg">{user?.ign || "Not set"}</div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-[#A0AEC0] text-sm font-medium">
+                UID
+              </Label>
+              <div className="text-white font-mono flex items-center justify-center sm:justify-start">
+                <BadgeInfo className="w-4 h-4 mr-2 text-gaming-primary/70" />
+                <span>{user?.uid || "Not available"}</span>
+              </div>
             </div>
 
             <div className="space-y-1">

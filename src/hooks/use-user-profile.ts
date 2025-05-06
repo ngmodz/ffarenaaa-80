@@ -6,6 +6,7 @@ const TEST_MODE = true;
 
 interface UserProfile {
   id: string;
+  uid: string;
   ign: string;
   fullName: string;
   email: string;
@@ -28,6 +29,7 @@ interface ProfileUpdate {
   location?: string;
   birthdate?: string;
   gender?: string;
+  uid?: string;
 }
 
 interface UseUserProfileReturn {
@@ -42,6 +44,7 @@ interface UseUserProfileReturn {
 // Default mock user profile for test mode
 const DEFAULT_USER_PROFILE: UserProfile = {
   id: "test-user-123",
+  uid: "FF123456789",
   ign: "ElitePlayer123",
   fullName: "John Smith",
   email: "player@example.com",

@@ -1,4 +1,3 @@
-
 #root {
   width: 100%;
   min-height: 100vh;
@@ -43,4 +42,27 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Safe area utilities for PWA on mobile devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-top {
+    padding-top: env(safe-area-inset-top) !important;
+  }
+  
+  .mt-safe {
+    margin-top: env(safe-area-inset-top) !important;
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top) !important;
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+  
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom) !important;
+  }
 }

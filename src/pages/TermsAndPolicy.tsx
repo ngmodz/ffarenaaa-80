@@ -7,11 +7,11 @@ const TermsAndPolicy = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <div className="mb-6 flex items-center">
+      <div className="fixed top-4 left-4 z-10">
         <Button 
-          variant="ghost" 
+          variant="secondary" 
           size="sm" 
-          className="text-gaming-text/70 hover:text-gaming-primary"
+          className="flex items-center bg-gaming-card/80 backdrop-blur-md border border-gaming-border shadow-md hover:bg-gaming-primary/20"
           onClick={() => navigate(-1)}
         >
           <ArrowLeft size={16} className="mr-2" />
@@ -19,7 +19,7 @@ const TermsAndPolicy = () => {
         </Button>
       </div>
       
-      <div className="prose prose-invert prose-gaming max-w-none">
+      <div className="prose prose-invert prose-gaming max-w-none pt-10">
         <h1 className="text-3xl font-bold text-gaming-primary mb-6">Terms and Policy for Freefire Tournaments PWA</h1>
         
         <p className="text-sm text-gaming-text/70 mb-6">Last Updated: May 1, 2025</p>

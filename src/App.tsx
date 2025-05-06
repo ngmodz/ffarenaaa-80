@@ -19,8 +19,8 @@ function App() {
           <Route path="tournament/:id" element={<TournamentDetails />} />
           <Route path="/profile" element={<Navigate to="/settings" replace />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/terms-and-privacy" element={<TermsAndPolicy />} />
         </Route>
+        <Route path="/terms-and-privacy" element={<TermsAndPolicy />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

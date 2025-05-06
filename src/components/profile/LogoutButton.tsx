@@ -14,12 +14,6 @@ const LogoutButton = () => {
       // Use Firebase signOut
       await signOut();
       
-      // Show a success message
-      toast({
-        title: "Logged out successfully",
-        description: "You have been logged out of your account"
-      });
-      
       // Redirect to login page
       navigate("/auth");
     } catch (error) {

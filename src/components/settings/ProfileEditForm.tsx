@@ -24,8 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Add mobile-specific styling for form inputs
-const customInputStyles = "flex-1 bg-[#1a1a1a] border-0 py-2 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500 w-full";
+// Mobile-specific styling for form inputs with better contrast and touch targets
+const customInputStyles = "flex-1 bg-[#1a1a1a] border-0 py-3 pr-3 text-white focus:outline-none focus:ring-0 placeholder:text-gray-500 w-full text-base";
 
 // Import dark input styles
 // import "@/components/ui/dark-input.css";
@@ -249,7 +249,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 profile-edit-form max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-6 profile-edit-form max-w-md mx-auto px-1">
       {/* Avatar Section */}
       <div className="flex flex-col items-center">
         <Avatar className="w-24 h-24 border-2 border-gaming-primary">
@@ -268,7 +268,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         <div className="flex flex-col items-center mt-4 w-full max-w-xs">
           <Label 
             htmlFor="avatar-upload" 
-            className="cursor-pointer btn-gaming-primary w-full text-center py-2 px-3 rounded-md bg-gaming-primary hover:bg-gaming-primary/90 transition-colors"
+            className="cursor-pointer btn-gaming-primary w-full text-center py-3 px-3 rounded-md bg-gaming-primary hover:bg-gaming-primary/90 transition-colors text-white font-medium"
           >
             Upload Avatar
           </Label>
@@ -295,13 +295,13 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         <h3 className="text-lg font-medium text-white">Game Profile</h3>
         
         <div className="space-y-2">
-          <Label htmlFor="ign" className="text-sm text-gaming-muted block mb-1">
+          <Label htmlFor="ign" className="text-sm text-gaming-muted block mb-1 font-medium">
             In-Game Name (IGN)
           </Label>
-          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
             <div className="flex items-center bg-[#1a1a1a] w-full">
               <div className="px-3 py-2">
-                <BadgeInfo className="h-4 w-4 text-gaming-primary" />
+                <BadgeInfo className="h-5 w-5 text-gaming-primary" />
               </div>
               <input
                 type="text"
@@ -311,6 +311,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                 onChange={handleInputChange}
                 className={customInputStyles}
                 placeholder="Your in-game name"
+                autoComplete="off"
               />
             </div>
           </div>
@@ -324,15 +325,15 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
       <div className="space-y-4">
         <h3 className="text-lg font-medium text-white">Personal Information</h3>
         
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-sm text-gaming-muted block mb-1">
+            <Label htmlFor="fullName" className="text-sm text-gaming-muted block mb-1 font-medium">
               Full Name
             </Label>
-            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
               <div className="flex items-center bg-[#1a1a1a] w-full">
                 <div className="px-3 py-2">
-                  <User className="h-4 w-4 text-gaming-primary" />
+                  <User className="h-5 w-5 text-gaming-primary" />
                 </div>
                 <input
                   type="text"
@@ -342,19 +343,20 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                   onChange={handleInputChange}
                   className={customInputStyles}
                   placeholder="Your full name"
+                  autoComplete="off"
                 />
               </div>
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm text-gaming-muted block mb-1">
+            <Label htmlFor="email" className="text-sm text-gaming-muted block mb-1 font-medium">
               Email Address
             </Label>
-            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
               <div className="flex items-center bg-[#1a1a1a] w-full">
                 <div className="px-3 py-2">
-                  <Mail className="h-4 w-4 text-gaming-primary" />
+                  <Mail className="h-5 w-5 text-gaming-primary" />
                 </div>
                 <input
                   type="email"
@@ -364,6 +366,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                   onChange={handleInputChange}
                   className={customInputStyles}
                   placeholder="Your email address"
+                  autoComplete="off"
                 />
               </div>
             </div>
@@ -371,22 +374,23 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-sm text-gaming-muted block mb-1">
+            <Label htmlFor="phone" className="text-sm text-gaming-muted block mb-1 font-medium">
               Phone Number
             </Label>
-            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+            <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
               <div className="flex items-center bg-[#1a1a1a] w-full">
                 <div className="px-3 py-2">
-                  <Phone className="h-4 w-4 text-gaming-primary" />
+                  <Phone className="h-5 w-5 text-gaming-primary" />
                 </div>
                 <input
-                  type="text"
+                  type="tel"
                   id="phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
                   className={customInputStyles}
                   placeholder="Your phone number"
+                  autoComplete="off"
                 />
               </div>
             </div>
@@ -402,13 +406,13 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         <h3 className="text-lg font-medium text-white">Additional Information</h3>
         
         <div className="space-y-2">
-          <Label htmlFor="location" className="text-sm text-gaming-muted block mb-1">
+          <Label htmlFor="location" className="text-sm text-gaming-muted block mb-1 font-medium">
             Location
           </Label>
-          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
             <div className="flex items-center bg-[#1a1a1a] w-full">
               <div className="px-3 py-2">
-                <MapPin className="h-4 w-4 text-gaming-primary" />
+                <MapPin className="h-5 w-5 text-gaming-primary" />
               </div>
               <input
                 type="text"
@@ -418,19 +422,20 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                 onChange={handleInputChange}
                 className={customInputStyles}
                 placeholder="Your location"
+                autoComplete="off"
               />
             </div>
           </div>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="birthdate" className="text-sm text-gaming-muted block mb-1">
+          <Label htmlFor="birthdate" className="text-sm text-gaming-muted block mb-1 font-medium">
             Date of Birth
           </Label>
-          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
             <div className="flex items-center bg-[#1a1a1a] w-full">
               <div className="px-3 py-2">
-                <Calendar className="h-4 w-4 text-gaming-primary" />
+                <Calendar className="h-5 w-5 text-gaming-primary" />
               </div>
               <input
                 type="date"
@@ -439,7 +444,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
                 value={formData.birthdate}
                 onChange={handleInputChange}
                 className={customInputStyles}
-                style={{ colorScheme: 'dark' }}
+                style={{ 
+                  colorScheme: 'dark',
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'none'
+                }}
                 placeholder="YYYY-MM-DD"
               />
             </div>
@@ -447,16 +456,16 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="gender" className="text-sm text-gaming-muted block mb-1">
+          <Label htmlFor="gender" className="text-sm text-gaming-muted block mb-1 font-medium">
             Gender
           </Label>
-          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border">
+          <div className="overflow-hidden rounded-md bg-transparent border border-gaming-border shadow-sm">
             <select
               id="gender"
               name="gender"
               value={formData.gender}
               onChange={(e) => handleSelectChange(e.target.value, "gender")}
-              className="w-full bg-[#1a1a1a] border-0 py-2.5 px-3 text-white focus:outline-none focus:ring-0 appearance-none rounded-md pr-10"
+              className="w-full bg-[#1a1a1a] border-0 py-3 px-3 text-white focus:outline-none focus:ring-0 appearance-none rounded-md pr-10 text-base"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.75rem center',
@@ -476,7 +485,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
       </div>
       
       {/* Form Actions */}
-      <div className="flex justify-end gap-4 pt-4">
+      <div className="flex justify-end gap-4 pt-4 pb-6">
         <Button 
           type="button" 
           variant="outline" 
@@ -488,7 +497,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
         </Button>
         <Button 
           type="submit" 
-          className="bg-gaming-primary hover:bg-gaming-primary/90"
+          className="bg-gaming-primary hover:bg-gaming-primary/90 py-6"
           disabled={loading || userLoading}
         >
           {loading || userLoading ? (

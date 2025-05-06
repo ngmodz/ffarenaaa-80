@@ -162,8 +162,18 @@ const Settings = () => {
 
       {/* Sheet for Profile */}
       <Sheet open={openSheet === "profile"} onOpenChange={handleCloseSheet}>
-        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto">
+        <SheetContent 
+          side={isMobile ? "bottom" : "right"} 
+          className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto p-4 rounded-t-xl bottom-sheet-ios-fix"
+          style={{
+            maxHeight: isMobile ? 'calc(90vh - env(safe-area-inset-bottom))' : '90vh',
+            paddingBottom: isMobile ? 'calc(1rem + env(safe-area-inset-bottom))' : '1rem',
+          }}
+        >
           <div className="h-full flex flex-col">
+            {isMobile && (
+              <div className="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
+            )}
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white">Edit Profile</h2>
               <p className="text-sm text-gaming-muted">Update your personal information</p>
@@ -178,8 +188,18 @@ const Settings = () => {
 
       {/* Sheet for Password */}
       <Sheet open={openSheet === "password"} onOpenChange={handleCloseSheet}>
-        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto">
+        <SheetContent 
+          side={isMobile ? "bottom" : "right"} 
+          className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto p-4 rounded-t-xl bottom-sheet-ios-fix"
+          style={{
+            maxHeight: isMobile ? 'calc(90vh - env(safe-area-inset-bottom))' : '90vh',
+            paddingBottom: isMobile ? 'calc(1rem + env(safe-area-inset-bottom))' : '1rem',
+          }}
+        >
           <div className="h-full flex flex-col">
+            {isMobile && (
+              <div className="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
+            )}
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white">Change Password</h2>
               <p className="text-sm text-gaming-muted">Update your account password</p>
@@ -196,7 +216,7 @@ const Settings = () => {
               <div className="text-center py-8">
                 <p className="text-gaming-muted">Change your password here</p>
                 <Button 
-                  className="mt-4 bg-gaming-primary hover:bg-gaming-primary/90"
+                  className="mt-4 bg-gaming-primary hover:bg-gaming-primary/90 py-6 w-full sm:w-auto"
                   onClick={handleCloseSheet}
                 >
                   Close
@@ -209,8 +229,18 @@ const Settings = () => {
 
       {/* Sheet for Contact Developer */}
       <Sheet open={openSheet === "contact"} onOpenChange={handleCloseSheet}>
-        <SheetContent side={isMobile ? "bottom" : "right"} className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto">
+        <SheetContent 
+          side={isMobile ? "bottom" : "right"} 
+          className="bg-gaming-bg border-gaming-border max-h-[90vh] overflow-y-auto p-4 rounded-t-xl bottom-sheet-ios-fix"
+          style={{
+            maxHeight: isMobile ? 'calc(90vh - env(safe-area-inset-bottom))' : '90vh',
+            paddingBottom: isMobile ? 'calc(1rem + env(safe-area-inset-bottom))' : '1rem',
+          }}
+        >
           <div className="h-full flex flex-col">
+            {isMobile && (
+              <div className="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
+            )}
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white">Contact Developer</h2>
               <p className="text-sm text-gaming-muted">Questions, feedback, or bug reports</p>

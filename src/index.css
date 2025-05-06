@@ -232,4 +232,38 @@
   .horizontal-scroll-container::-webkit-scrollbar {
     display: none;
   }
+
+  /* Mobile PWA fixes for iOS devices */
+  @supports (-webkit-touch-callout: none) {
+    /* Fix for input zooming on iOS */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="date"],
+    input[type="search"],
+    select,
+    textarea {
+      font-size: 16px !important; /* Prevent zoom on focus */
+    }
+
+    /* Fix for bottom sheet issues on iOS PWA */
+    .bottom-sheet-ios-fix {
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+      margin-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Fix for iOS notch area */
+    .top-inset-padding {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    /* Fix for form elements in PWA */
+    .pwa-input-fix {
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0.5rem;
+    }
+  }
 }

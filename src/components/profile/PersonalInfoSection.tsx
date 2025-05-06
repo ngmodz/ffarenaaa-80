@@ -76,7 +76,7 @@ const PersonalInfoSection = () => {
 
   if (loading && !user) {
     return (
-      <Card className="bg-[#1F2937] border-gaming-border">
+      <Card className="bg-[#1F2937] border-gaming-border shadow-md">
         <CardHeader>
           <CardTitle className="text-xl">Profile Information</CardTitle>
         </CardHeader>
@@ -91,27 +91,27 @@ const PersonalInfoSection = () => {
   }
 
   return (
-    <Card className="bg-[#1F2937] border-gaming-border">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card className="bg-[#1F2937] border-gaming-border shadow-md">
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
         <CardTitle className="text-xl text-center sm:text-left">
           Profile Information
         </CardTitle>
         <Link 
           to="/settings" 
-          className="flex items-center gap-1 text-sm text-gaming-primary hover:text-gaming-primary/80 transition-colors"
+          className="flex items-center gap-1 text-sm text-gaming-primary hover:text-gaming-primary/80 transition-colors bg-gaming-primary/10 p-2 rounded-md"
         >
           <SettingsIcon size={16} />
           <span className="hidden sm:inline">Settings</span>
         </Link>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 pb-6">
         <div className="flex flex-col sm:flex-row items-center gap-6">
           {/* Avatar Section */}
-          <div className="flex flex-col items-center gap-2 mb-4 sm:mb-0">
+          <div className="flex flex-col items-center gap-2 mb-6 sm:mb-0">
             <Avatar 
               className={`w-24 h-24 border-2 ${
                 user?.isPremium ? "border-[#FFD700]" : "border-[#A0AEC0]"
-              }`}
+              } shadow-md`}
             >
               {user?.avatar_url ? (
                 <AvatarImage 
@@ -125,48 +125,50 @@ const PersonalInfoSection = () => {
               )}
             </Avatar>
             
-            {isTestMode && (
-              <div className="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-xs rounded-full">
-                Test Mode
-              </div>
-            )}
-            
-            {user?.isPremium && (
-              <div className="px-2 py-0.5 bg-[#FFD700]/20 text-[#FFD700] text-xs rounded-full">
-                Premium
-              </div>
-            )}
+            <div className="flex flex-wrap justify-center gap-2">
+              {isTestMode && (
+                <div className="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-xs rounded-full">
+                  Test Mode
+                </div>
+              )}
+              
+              {user?.isPremium && (
+                <div className="px-2 py-0.5 bg-[#FFD700]/20 text-[#FFD700] text-xs rounded-full">
+                  Premium
+                </div>
+              )}
+            </div>
           </div>
 
           {/* User Info Section */}
           <div className="flex-1 space-y-4 w-full text-center sm:text-left">
             <div className="space-y-1">
-              <Label className="text-[#A0AEC0] text-sm">
+              <Label className="text-[#A0AEC0] text-sm font-medium">
                 Free Fire IGN
               </Label>
-              <div className="text-[#FFD700] font-bold text-lg">{user?.ign}</div>
+              <div className="text-[#FFD700] font-bold text-lg">{user?.ign || "Not set"}</div>
             </div>
 
             <div className="space-y-1">
-              <Label className="text-[#A0AEC0] text-sm">
+              <Label className="text-[#A0AEC0] text-sm font-medium">
                 Full Name
               </Label>
-              <div className="text-white">{user?.fullName}</div>
+              <div className="text-white">{user?.fullName || "Not provided"}</div>
             </div>
 
             <div className="space-y-1">
-              <Label className="text-[#A0AEC0] text-sm">
+              <Label className="text-[#A0AEC0] text-sm font-medium">
                 Email
               </Label>
               <div className="flex items-center text-white justify-center sm:justify-start">
                 <Mail className="w-4 h-4 mr-2 text-gaming-primary/70" />
-                {user?.email}
+                <span className="text-ellipsis overflow-hidden">{user?.email || "No email"}</span>
               </div>
             </div>
             
             {user?.location && (
               <div className="space-y-1">
-                <Label className="text-[#A0AEC0] text-sm">
+                <Label className="text-[#A0AEC0] text-sm font-medium">
                   Location
                 </Label>
                 <div className="flex items-center text-white justify-center sm:justify-start">
@@ -183,7 +185,7 @@ const PersonalInfoSection = () => {
           <>
             <Separator className="my-4 bg-gaming-border" />
             <div className="space-y-2">
-              <Label className="text-[#A0AEC0] text-sm">
+              <Label className="text-[#A0AEC0] text-sm font-medium">
                 Bio
               </Label>
               <div className="text-white text-sm">{user.bio}</div>
@@ -194,7 +196,7 @@ const PersonalInfoSection = () => {
         {/* Edit Button */}
         <div className="mt-6 flex justify-center sm:justify-end">
           <Button 
-            className="bg-[#1E3A8A] hover:bg-[#2563EB] flex items-center gap-2 w-full sm:w-auto"
+            className="bg-[#1E3A8A] hover:bg-[#2563EB] flex items-center gap-2 w-full sm:w-auto py-6 text-base font-medium shadow-lg"
             onClick={() => window.location.href = "/settings"}
           >
             <Edit size={16} />

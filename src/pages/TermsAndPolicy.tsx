@@ -20,7 +20,7 @@ const TermsAndPolicy = () => {
       </div>
       
       <div className="prose prose-invert prose-gaming max-w-none">
-        <h1 className="text-3xl font-bold text-gaming-primary mb-6">Terms and Policy for Freefire Tournaments PWA</h1>
+        <h1 className="text-3xl font-bold text-gaming-primary mb-6">Terms and Policy for Freefire Tournaments</h1>
         
         <p className="text-sm text-gaming-text/70 mb-6">Last Updated: May 1, 2025</p>
         

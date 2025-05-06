@@ -49,8 +49,8 @@ const Layout = () => {
           damping: 30
         }}
       >
-        {/* Added bottom padding to create space for mobile navbar */}
-        <div className={`px-0 min-h-screen w-full mx-auto ${isMobile ? 'pb-28' : 'pb-4'}`}>
+        {/* Adjusted bottom padding for terms page */}
+        <div className={`px-0 min-h-screen w-full mx-auto ${isMobile ? (isTermsPage ? 'pb-12' : 'pb-28') : 'pb-4'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

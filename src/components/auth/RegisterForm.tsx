@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Eye, EyeOff, Loader2, Mail, Lock, User, Trophy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -187,7 +186,14 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
           <Check size={14} className="text-gaming-primary" />
         </div>
         <span className="text-xs text-gaming-text/70">
-          By registering, you agree to our Terms of Service and Privacy Policy
+          By registering, you agree to our{" "}
+          <Button 
+            variant="link" 
+            className="p-0 h-auto text-xs text-gaming-primary hover:underline"
+            onClick={() => window.open("/terms-and-privacy", "_blank")}
+          >
+            Terms of Service and Privacy Policy
+          </Button>
         </span>
       </div>
       

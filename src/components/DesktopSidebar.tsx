@@ -152,7 +152,7 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
         {/* Create Tournament Button */}
         <div className="p-3">
           <Link
-            to="/create-tournament"
+            to="/tournament/create"
             className={cn(
               "btn-gaming-accent flex items-center justify-center rounded-md transition-all duration-300",
               isHovered ? "px-4 py-2" : "p-2"

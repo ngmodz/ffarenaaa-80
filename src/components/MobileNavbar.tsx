@@ -82,8 +82,8 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
     { 
       icon: <Plus size={18} />, 
       label: "Create", 
-      to: "/create-tournament", 
-      isActive: false,
+      to: "/tournament/create", 
+      isActive: currentPath.startsWith("/tournament/create"),
       isHighlighted: true
     },
     { 

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Search, Filter, Trophy, SortAsc, SortDesc, Calendar, DollarSign } from "lucide-react";
+import { Search, Filter, Trophy, SortAsc, SortDesc, Calendar, DollarSign, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import TournamentCard from "@/components/TournamentCard";
 import { 
@@ -12,6 +13,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem 
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 // Sample tournament data
 const sampleTournaments = [{
@@ -91,11 +93,13 @@ const Index = () => {
   
   return <div className="w-full px-4 sm:px-6 md:px-8">
       {/* Header - Centered on mobile */}
-      <div className="mb-4 text-center sm:text-left">
+      <div className="mb-4 text-center sm:text-left sm:flex sm:justify-between sm:items-center">
+        <div>
         <h1 className="text-xl sm:text-2xl font-bold mb-2 text-gaming-text mx-0 my-[11px]">
           <span className="text-gaming-primary">Freefire</span> Tournaments
         </h1>
         <p className="text-gaming-muted text-sm">Join competitive tournaments and win real rewards</p>
+        </div>
       </div>
       
       {/* Search and Filters */}

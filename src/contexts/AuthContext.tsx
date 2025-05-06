@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { 
   auth, 
@@ -30,7 +29,6 @@ interface UserProfile {
   email: string;
   avatar_url: string | null;
   isPremium: boolean;
-  joinDate?: string; // Added joinDate as an optional property
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -91,4 +89,4 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 }
 
-export default AuthContext;
+export default AuthContext; 

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -46,9 +45,6 @@ const Settings = () => {
     isPremium: true,
     joinDate: "May 2023",
   };
-
-  // Get join date with fallback
-  const joinDate = userProfile?.joinDate || (user as any).joinDate || "Unknown";
 
   const handleLogout = async () => {
     try {
@@ -151,7 +147,7 @@ const Settings = () => {
                 )}
               </div>
               <p className="text-sm text-gaming-muted">{user.email}</p>
-              <p className="text-xs text-gaming-muted mt-1">Member since {joinDate}</p>
+              <p className="text-xs text-gaming-muted mt-1">Member since {user.joinDate}</p>
             </div>
           </div>
         </Card>

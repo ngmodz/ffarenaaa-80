@@ -50,16 +50,6 @@ const SocialLoginOptions = () => {
       setIsSubmitting(false);
     }
   };
-  
-  const handleContinueAsGuest = () => {
-    toast({
-      title: "Welcome, Guest!",
-      description: "You have limited access to features.",
-    });
-    
-    // Navigate to home
-    navigate('/home');
-  };
 
   return (
     <div className="text-center space-y-4">
@@ -81,17 +71,6 @@ const SocialLoginOptions = () => {
         >
           <GoogleLogo />
           Continue with Google
-        </Button>
-      </div>
-      
-      <div>
-        <Button 
-          onClick={handleContinueAsGuest} 
-          variant="link" 
-          disabled={isSubmitting}
-          className="text-gaming-primary hover:text-gaming-accent"
-        >
-          Continue as guest <ArrowRight size={16} className="ml-1" />
         </Button>
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 
 interface AuthBackgroundProps {
@@ -20,7 +19,7 @@ const AuthBackground = ({ children }: AuthBackgroundProps) => {
       </div>
       
       <footer className="py-4 text-center text-sm text-gaming-text/50 relative z-10">
-        <p>© 2025 FireArena - Not affiliated with Garena Free Fire</p>
+        <p>© 2025 Free Fire Tournaments - Not affiliated with Garena Free Fire</p>
       </footer>
     </div>
   );

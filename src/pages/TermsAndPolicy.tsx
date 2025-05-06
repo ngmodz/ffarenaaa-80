@@ -7,11 +7,11 @@ const TermsAndPolicy = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <div className="fixed top-4 left-4 z-10">
+      <div className="mb-6 flex items-center">
         <Button 
-          variant="secondary" 
+          variant="ghost" 
           size="sm" 
-          className="flex items-center bg-gaming-card/80 backdrop-blur-md border border-gaming-border shadow-md hover:bg-gaming-primary/20"
+          className="text-gaming-text/70 hover:text-gaming-primary"
           onClick={() => navigate(-1)}
         >
           <ArrowLeft size={16} className="mr-2" />
@@ -19,7 +19,7 @@ const TermsAndPolicy = () => {
         </Button>
       </div>
       
-      <div className="prose prose-invert prose-gaming max-w-none pt-10">
+      <div className="prose prose-invert prose-gaming max-w-none">
         <h1 className="text-3xl font-bold text-gaming-primary mb-6">Terms and Policy for Freefire Tournaments PWA</h1>
         
         <p className="text-sm text-gaming-text/70 mb-6">Last Updated: May 1, 2025</p>
@@ -220,9 +220,6 @@ const TermsAndPolicy = () => {
         
         <p className="mt-6">Thank you for using Freefire Tournaments. Let's create epic Free Fire battles together!</p>
       </div>
-      
-      {/* Blank spacer to prevent content from touching bottom of screen */}
-      <div className="h-24 w-full mt-8"></div>
     </div>
   );
 };

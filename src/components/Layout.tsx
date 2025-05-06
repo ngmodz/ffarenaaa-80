@@ -1,6 +1,6 @@
-
 import { Outlet, useLocation } from "react-router-dom";
 import MobileNavbar from "./MobileNavbar";
+import BlankNavbar from "./BlankNavbar";
 import DesktopSidebar from "./DesktopSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
@@ -11,6 +11,7 @@ const Layout = () => {
   const currentPath = location.pathname;
   const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
+  const isTermsPage = currentPath === "/terms-and-privacy";
 
   // Listen for hover state changes from the sidebar
   const handleSidebarHover = (hovered: boolean) => {
@@ -68,7 +69,7 @@ const Layout = () => {
         </div>
       </motion.div>
       
-      {isMobile && <MobileNavbar currentPath={currentPath} />}
+      {isMobile && (isTermsPage ? <BlankNavbar /> : <MobileNavbar currentPath={currentPath} />)}
     </div>
   );
 };

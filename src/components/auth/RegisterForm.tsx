@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2, Mail, Lock, User, Trophy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
@@ -10,22 +11,66 @@ interface RegisterFormProps {
   setActiveTab: (tab: string) => void;
 }
 
+// Password validation helper function
+const validatePassword = (password: string) => {
+  const errors = [];
+  
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters");
+  }
+  
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter");
+  }
+  
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter");
+  }
+  
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one number");
+  }
+  
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    errors.push("Password must contain at least one special character");
+  }
+  
+  return errors;
+};
+
 const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
   const [registerFFID, setRegisterFFID] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registerErrors, setRegisterErrors] = useState({ 
     name: "", 
     email: "", 
     password: "", 
-    ffid: "" 
+    ffid: "",
+    terms: ""
   });
   
+  // Password validation errors
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+
+  // Check password strength as user types
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setRegisterPassword(newPassword);
+    
+    if (newPassword) {
+      setPasswordErrors(validatePassword(newPassword));
+    } else {
+      setPasswordErrors([]);
+    }
+  };
+  
   const validateRegisterForm = () => {
-    const errors = { name: "", email: "", password: "", ffid: "" };
+    const errors = { name: "", email: "", password: "", ffid: "", terms: "" };
     let isValid = true;
     
     if (!registerName) {
@@ -41,16 +86,25 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
       isValid = false;
     }
     
+    // Password validation
     if (!registerPassword) {
       errors.password = "Password is required";
       isValid = false;
-    } else if (registerPassword.length < 8) {
-      errors.password = "Password must be at least 8 characters";
-      isValid = false;
+    } else {
+      const passwordValidationErrors = validatePassword(registerPassword);
+      if (passwordValidationErrors.length > 0) {
+        errors.password = "Password does not meet requirements";
+        isValid = false;
+      }
     }
     
     if (!registerFFID) {
       errors.ffid = "Free Fire ID is required";
+      isValid = false;
+    }
+    
+    if (!acceptedTerms) {
+      errors.terms = "You must accept the Terms of Service and Privacy Policy";
       isValid = false;
     }
     
@@ -104,7 +158,7 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
           value={registerName}
           onChange={(e) => setRegisterName(e.target.value)}
           className={cn(
-            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary",
+            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary autofill:bg-gaming-bg/60 autofill:text-gaming-text [-webkit-autofill]:!text-gaming-text [-webkit-autofill]:!bg-gaming-bg/60",
             registerErrors.name && "border-red-500"
           )}
         />
@@ -124,7 +178,7 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
           value={registerEmail}
           onChange={(e) => setRegisterEmail(e.target.value)}
           className={cn(
-            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary",
+            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary autofill:bg-gaming-bg/60 autofill:text-gaming-text [-webkit-autofill]:!text-gaming-text [-webkit-autofill]:!bg-gaming-bg/60",
             registerErrors.email && "border-red-500"
           )}
         />
@@ -144,7 +198,7 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
           value={registerFFID}
           onChange={(e) => setRegisterFFID(e.target.value)}
           className={cn(
-            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary",
+            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary autofill:bg-gaming-bg/60 autofill:text-gaming-text [-webkit-autofill]:!text-gaming-text [-webkit-autofill]:!bg-gaming-bg/60",
             registerErrors.ffid && "border-red-500"
           )}
         />
@@ -163,9 +217,9 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
             value={registerPassword}
-            onChange={(e) => setRegisterPassword(e.target.value)}
+            onChange={handlePasswordChange}
             className={cn(
-              "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text pr-10 focus:border-gaming-primary focus:ring-gaming-primary",
+              "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text pr-10 focus:border-gaming-primary focus:ring-gaming-primary autofill:bg-gaming-bg/60 autofill:text-gaming-text [-webkit-autofill]:!text-gaming-text [-webkit-autofill]:!bg-gaming-bg/60",
               registerErrors.password && "border-red-500"
             )}
           />
@@ -180,21 +234,63 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
         {registerErrors.password && (
           <p className="text-xs text-red-500">{registerErrors.password}</p>
         )}
+        
+        {/* Password requirements - only shown when password doesn't meet requirements */}
+        {registerPassword && passwordErrors.length > 0 && (
+          <div className="mt-2 space-y-1">
+            <p className="text-xs text-gaming-text/70">Password requirements:</p>
+            <ul className="text-xs space-y-1">
+              <li className={cn("flex items-center gap-1", 
+                registerPassword.length >= 8 ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={registerPassword.length >= 8 ? "text-green-500" : "text-gaming-text/50"} />
+                Minimum 8 characters
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[A-Z]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[A-Z]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One uppercase letter
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[a-z]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[a-z]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One lowercase letter
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[0-9]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[0-9]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One number
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(registerPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One special character
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
       
       <div className="flex items-start space-x-2 my-2">
-        <div className="bg-gaming-primary/20 p-1 rounded-md mt-0.5">
-          <Check size={14} className="text-gaming-primary" />
+        <Checkbox 
+          id="accept-terms" 
+          checked={acceptedTerms}
+          onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+          className="mt-1 border-gaming-primary/50 data-[state=checked]:bg-gaming-primary"
+        />
+        <div className="space-y-1">
+          <label htmlFor="accept-terms" className="text-xs text-gaming-text/70 cursor-pointer">
+            I agree to the{" "}
+            <Link 
+              to="/terms-and-privacy"
+              className="text-gaming-primary hover:underline"
+            >
+              Terms of Service and Privacy Policy
+            </Link>
+          </label>
+          {registerErrors.terms && (
+            <p className="text-xs text-red-500">{registerErrors.terms}</p>
+          )}
         </div>
-        <span className="text-xs text-gaming-text/70">
-          By registering, you agree to our{" "}
-          <Link 
-            to="/terms-and-privacy"
-            className="text-gaming-primary hover:underline"
-          >
-            Terms of Service and Privacy Policy
-          </Link>
-        </span>
       </div>
       
       <Button 

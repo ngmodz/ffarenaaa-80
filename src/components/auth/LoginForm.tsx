@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, Lock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,6 +12,33 @@ interface LoginFormProps {
   setActiveTab: (tab: string) => void;
 }
 
+// Password validation helper function
+const validatePassword = (password: string) => {
+  const errors = [];
+  
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters");
+  }
+  
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter");
+  }
+  
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter");
+  }
+  
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one number");
+  }
+  
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    errors.push("Password must contain at least one special character");
+  }
+  
+  return errors;
+};
+
 const LoginForm = ({ setActiveTab }: LoginFormProps) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +47,21 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginErrors, setLoginErrors] = useState({ email: "", password: "" });
+  
+  // Password validation errors
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+
+  // Check password as user types
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setLoginPassword(newPassword);
+    
+    if (newPassword) {
+      setPasswordErrors(validatePassword(newPassword));
+    } else {
+      setPasswordErrors([]);
+    }
+  };
   
   const validateLoginForm = () => {
     const errors = { email: "", password: "" };
@@ -34,9 +75,16 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
       isValid = false;
     }
     
+    // Password validation
     if (!loginPassword) {
       errors.password = "Password is required";
       isValid = false;
+    } else {
+      const passwordValidationErrors = validatePassword(loginPassword);
+      if (passwordValidationErrors.length > 0) {
+        errors.password = "Password does not meet requirements";
+        isValid = false;
+      }
     }
     
     setLoginErrors(errors);
@@ -94,7 +142,7 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
           value={loginEmail}
           onChange={(e) => setLoginEmail(e.target.value)}
           className={cn(
-            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary",
+            "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text focus:border-gaming-primary focus:ring-gaming-primary autofill:bg-gaming-bg/60 autofill:text-gaming-text [-webkit-autofill]:!text-gaming-text [-webkit-autofill]:!bg-gaming-bg/60",
             loginErrors.email && "border-red-500"
           )}
         />
@@ -113,9 +161,9 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
             value={loginPassword}
-            onChange={(e) => setLoginPassword(e.target.value)}
+            onChange={handlePasswordChange}
             className={cn(
-              "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text pr-10 focus:border-gaming-primary focus:ring-gaming-primary",
+              "bg-gaming-bg/60 border-gaming-primary/30 text-gaming-text pr-10 focus:border-gaming-primary focus:ring-gaming-primary autofill:bg-gaming-bg/60 autofill:text-gaming-text [-webkit-autofill]:!text-gaming-text [-webkit-autofill]:!bg-gaming-bg/60",
               loginErrors.password && "border-red-500"
             )}
           />
@@ -129,6 +177,40 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
         </div>
         {loginErrors.password && (
           <p className="text-xs text-red-500">{loginErrors.password}</p>
+        )}
+        
+        {/* Password requirements - only shown when password doesn't meet requirements */}
+        {loginPassword && passwordErrors.length > 0 && (
+          <div className="mt-2 space-y-1">
+            <p className="text-xs text-gaming-text/70">Password requirements:</p>
+            <ul className="text-xs space-y-1">
+              <li className={cn("flex items-center gap-1", 
+                loginPassword.length >= 8 ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={loginPassword.length >= 8 ? "text-green-500" : "text-gaming-text/50"} />
+                Minimum 8 characters
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[A-Z]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[A-Z]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One uppercase letter
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[a-z]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[a-z]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One lowercase letter
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[0-9]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[0-9]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One number
+              </li>
+              <li className={cn("flex items-center gap-1", 
+                /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50")}>
+                <Check size={12} className={/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(loginPassword) ? "text-green-500" : "text-gaming-text/50"} />
+                One special character
+              </li>
+            </ul>
+          </div>
         )}
         
         <div className="flex items-center justify-between mt-1">

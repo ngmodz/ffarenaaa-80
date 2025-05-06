@@ -12,10 +12,38 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface ChangePasswordDialogProps {
   trigger?: React.ReactNode;
 }
+
+// Password validation helper function
+const validatePassword = (password: string) => {
+  const errors = [];
+  
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters");
+  }
+  
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter");
+  }
+  
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter");
+  }
+  
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one number");
+  }
+  
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    errors.push("Password must contain at least one special character");
+  }
+  
+  return errors;
+};
 
 const ChangePasswordDialog = ({ trigger }: ChangePasswordDialogProps) => {
   const { toast } = useToast();
@@ -39,12 +67,9 @@ const ChangePasswordDialog = ({ trigger }: ChangePasswordDialogProps) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Password validation regex patterns
-  const hasLowerCase = /[a-z]/;
-  const hasUpperCase = /[A-Z]/;
-  const hasNumber = /[0-9]/;
-  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+  
+  // Password validation errors
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
   const togglePasswordVisibility = (field: keyof typeof showPassword) => {
     setShowPassword({
@@ -67,28 +92,19 @@ const ChangePasswordDialog = ({ trigger }: ChangePasswordDialogProps) => {
       isValid = false;
     }
 
-    // Validate new password
+    // Validate new password using the consistent validation function
     if (!form.newPassword) {
       errors.newPassword = "New password is required";
       isValid = false;
-    } else if (form.newPassword.length < 8) {
-      errors.newPassword = "Password must be at least 8 characters";
-      isValid = false;
-    } else if (!hasLowerCase.test(form.newPassword)) {
-      errors.newPassword = "Password must include a lowercase letter";
-      isValid = false;
-    } else if (!hasUpperCase.test(form.newPassword)) {
-      errors.newPassword = "Password must include an uppercase letter";
-      isValid = false;
-    } else if (!hasNumber.test(form.newPassword)) {
-      errors.newPassword = "Password must include a number";
-      isValid = false;
-    } else if (!hasSpecialChar.test(form.newPassword)) {
-      errors.newPassword = "Password must include a special character";
-      isValid = false;
-    } else if (form.currentPassword === form.newPassword) {
-      errors.newPassword = "New password must be different from current password";
-      isValid = false;
+    } else {
+      const newPasswordErrors = validatePassword(form.newPassword);
+      if (newPasswordErrors.length > 0) {
+        errors.newPassword = "Password does not meet requirements";
+        isValid = false;
+      } else if (form.currentPassword === form.newPassword) {
+        errors.newPassword = "New password must be different from current password";
+        isValid = false;
+      }
     }
 
     // Validate confirm password
@@ -117,6 +133,15 @@ const ChangePasswordDialog = ({ trigger }: ChangePasswordDialogProps) => {
         ...formErrors,
         [name]: "",
       });
+    }
+    
+    // Check password requirements as user types
+    if (name === 'newPassword') {
+      if (value) {
+        setPasswordErrors(validatePassword(value));
+      } else {
+        setPasswordErrors([]);
+      }
     }
   };
 
@@ -248,11 +273,39 @@ const ChangePasswordDialog = ({ trigger }: ChangePasswordDialogProps) => {
                 {formErrors.newPassword}
               </p>
             )}
-            {!formErrors.newPassword && form.newPassword && (
-              <p className="text-[#22C55E] text-xs flex items-center gap-1 mt-1">
-                <Check size={12} />
-                Password meets requirements
-              </p>
+            
+            {/* Password requirements - only shown when needed */}
+            {form.newPassword && passwordErrors.length > 0 && (
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-[#A0AEC0]">Password requirements:</p>
+                <ul className="text-xs space-y-1">
+                  <li className={cn("flex items-center gap-1", 
+                    form.newPassword.length >= 8 ? "text-[#22C55E]" : "text-[#A0AEC0]")}>
+                    <Check size={12} className={form.newPassword.length >= 8 ? "text-[#22C55E]" : "text-[#A0AEC0]"} />
+                    Minimum 8 characters
+                  </li>
+                  <li className={cn("flex items-center gap-1", 
+                    /[A-Z]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]")}>
+                    <Check size={12} className={/[A-Z]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]"} />
+                    One uppercase letter
+                  </li>
+                  <li className={cn("flex items-center gap-1", 
+                    /[a-z]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]")}>
+                    <Check size={12} className={/[a-z]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]"} />
+                    One lowercase letter
+                  </li>
+                  <li className={cn("flex items-center gap-1", 
+                    /[0-9]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]")}>
+                    <Check size={12} className={/[0-9]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]"} />
+                    One number
+                  </li>
+                  <li className={cn("flex items-center gap-1", 
+                    /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]")}>
+                    <Check size={12} className={/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(form.newPassword) ? "text-[#22C55E]" : "text-[#A0AEC0]"} />
+                    One special character
+                  </li>
+                </ul>
+              </div>
             )}
           </div>
 

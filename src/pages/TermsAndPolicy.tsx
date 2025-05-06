@@ -220,6 +220,9 @@ const TermsAndPolicy = () => {
         
         <p className="mt-6">Thank you for using Freefire Tournaments. Let's create epic Free Fire battles together!</p>
       </div>
+      
+      {/* Blank spacer to prevent content from touching bottom of screen */}
+      <div className="h-24 w-full mt-8"></div>
     </div>
   );
 };

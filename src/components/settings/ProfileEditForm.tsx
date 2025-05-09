@@ -16,6 +16,9 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { useUserProfile } from "@/hooks/use-user-profile";
+import { validateUserData, isUIDAvailable, isIGNAvailable } from "@/lib/user-utils";
+import { ProfileUpdate } from "@/lib/types";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Select,
   SelectContent,
@@ -92,9 +95,10 @@ interface ProfileEditFormProps {
 const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
   const { toast } = useToast();
   const { user, loading: userLoading, updateProfile, uploadUserAvatar, error: userError } = useUserProfile();
+  const { currentUser } = useAuth(); // Get authentication state
   
   // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProfileUpdate>({
     ign: "",
     fullName: "",
     email: "",
@@ -109,6 +113,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [validating, setValidating] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Load initial data from user profile
@@ -138,6 +143,17 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
       });
     }
   }, [userError, toast]);
+
+  // Check authentication status
+  useEffect(() => {
+    if (!currentUser) {
+      toast({
+        title: "Authentication Error",
+        description: "You must be logged in to edit your profile",
+        variant: "destructive",
+      });
+    }
+  }, [currentUser, toast]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -175,70 +191,122 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
     }
   };
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+  const validateForm = async () => {
+    setValidating(true);
     
-    // Validate IGN (required, alphanumeric, 3-20 characters)
-    if (!formData.ign) {
-      newErrors.ign = "In-game name is required";
-    } else if (!/^[a-zA-Z0-9]{3,20}$/.test(formData.ign)) {
-      newErrors.ign = "IGN must be alphanumeric and between 3-20 characters";
+    try {
+      // Initial validation using utility function
+      const { valid, errors: validationErrors } = validateUserData(formData);
+      
+      if (!valid) {
+        setErrors(validationErrors);
+        return false;
+      }
+      
+      // Additional validation - check if field is non-empty
+      const newErrors: Record<string, string> = {};
+      
+      // Check required fields
+      if (!formData.ign) {
+        newErrors.ign = "In-game name is required";
+      }
+      
+      if (!formData.uid) {
+        newErrors.uid = "UID is required";
+      }
+      
+      if (!formData.email) {
+        newErrors.email = "Email is required";
+      }
+      
+      // Check if UID is already in use by another user
+      if (formData.uid && user?.uid !== formData.uid) {
+        const isUIDFree = await isUIDAvailable(formData.uid, user?.id);
+        if (!isUIDFree) {
+          newErrors.uid = "This UID is already registered to another account";
+        }
+      }
+      
+      // Check if IGN is already in use by another user
+      if (formData.ign && user?.ign !== formData.ign) {
+        const isIGNFree = await isIGNAvailable(formData.ign, user?.id);
+        if (!isIGNFree) {
+          newErrors.ign = "This In-Game Name is already registered to another account";
+        }
+      }
+      
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    } catch (error) {
+      console.error("Validation error:", error);
+      toast({
+        title: "Validation Error",
+        description: "Could not validate form data. Please try again.",
+        variant: "destructive",
+      });
+      return false;
+    } finally {
+      setValidating(false);
     }
-    
-    // Validate UID (required, alphanumeric, 5-15 characters)
-    if (!formData.uid) {
-      newErrors.uid = "UID is required";
-    } else if (!/^[a-zA-Z0-9]{5,15}$/.test(formData.uid)) {
-      newErrors.uid = "UID must be alphanumeric and between 5-15 characters";
-    }
-    
-    // Validate email
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!isValidEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-    
-    // Validate phone (optional)
-    if (formData.phone && !isValidPhone(formData.phone)) {
-      newErrors.phone = "Please enter a valid phone number";
-    }
-    
-    // Validate bio (optional, max 200 chars)
-    if (formData.bio && formData.bio.length > 200) {
-      newErrors.bio = "Bio must be less than 200 characters";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    if (!currentUser) {
+      toast({
+        title: "Authentication Error",
+        description: "You must be logged in to update your profile",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (validating) return;
+    
+    const isValid = await validateForm();
+    if (!isValid) {
       return;
     }
     
     setLoading(true);
     
     try {
-      // First update profile data
-      await updateProfile(formData);
+      console.log("ProfileEditForm - Submitting profile update:", formData);
+      console.log("ProfileEditForm - Authentication state:", { 
+        authenticated: !!currentUser,
+        uid: currentUser?.uid,
+        profileUser: user
+      });
       
-      // Then upload avatar if there is one
+      // First upload avatar if changed
+      let avatarUrl: string | undefined = undefined;
       if (avatarFile) {
-        await uploadUserAvatar(avatarFile);
+        console.log("ProfileEditForm - Uploading avatar file");
+        avatarUrl = await uploadUserAvatar(avatarFile);
       }
       
-      // Reset avatar state
-      setAvatarFile(null);
-      setAvatarPreview(null);
+      // Prepare updates object including avatar if changed
+      const updates: ProfileUpdate = {
+        ...formData
+      };
+      
+      if (avatarUrl) {
+        updates.avatar_url = avatarUrl;
+      }
+      
+      console.log("ProfileEditForm - Calling updateProfile with:", updates);
+      await updateProfile(updates);
       
       onClose();
-    } catch (error) {
       toast({
-        title: "Update failed",
+        title: "Profile Updated",
+        description: "Your profile has been successfully updated.",
+      });
+    } catch (error) {
+      console.error("ProfileEditForm - Error updating profile:", error);
+      toast({
+        title: "Update Failed",
         description: error instanceof Error ? error.message : "Failed to update profile",
         variant: "destructive",
       });
@@ -268,9 +336,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
       <div className="flex flex-col sm:flex-row gap-8 items-center pb-4">
         <div className="relative">
           <Avatar 
-            className={`w-24 h-24 border-2 ${
-              user?.isPremium ? "border-[#FFD700]" : "border-[#A0AEC0]"
-            } shadow-md`}
+            className="w-24 h-24 border-2 border-[#A0AEC0] shadow-md"
           >
             {avatarPreview ? (
               <AvatarImage 

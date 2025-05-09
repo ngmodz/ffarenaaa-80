@@ -79,7 +79,7 @@ const ProfileSettings = () => {
         <div className="flex flex-col sm:flex-row items-center gap-6">
           {/* Avatar Section */}
           <div className="flex flex-col items-center gap-2">
-            <Avatar className={`w-24 h-24 border-2 ${user.isPremium ? "border-[#FFD700]" : "border-[#A0AEC0]"}`}>
+            <Avatar className="w-24 h-24 border-2 border-[#A0AEC0]">
               {user.avatar_url ? (
                 <AvatarImage src={user.avatar_url} alt={user.ign} />
               ) : (

@@ -182,12 +182,14 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
         </div>
         
         {/* User Avatar */}
+        {/*
         <div className={cn(
           "p-3 flex items-center justify-center",
           isHovered ? "justify-start" : "justify-center"
         )}>
           <UserAvatar />
         </div>
+        */}
       </div>
     </motion.div>
   );

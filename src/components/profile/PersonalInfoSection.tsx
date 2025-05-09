@@ -109,9 +109,7 @@ const PersonalInfoSection = () => {
           {/* Avatar Section */}
           <div className="flex flex-col items-center gap-2 mb-6 sm:mb-0">
             <Avatar 
-              className={`w-24 h-24 border-2 ${
-                user?.isPremium ? "border-[#FFD700]" : "border-[#A0AEC0]"
-              } shadow-md`}
+              className="w-24 h-24 border-2 border-[#A0AEC0] shadow-md"
             >
               {user?.avatar_url ? (
                 <AvatarImage 
@@ -129,12 +127,6 @@ const PersonalInfoSection = () => {
               {isTestMode && (
                 <div className="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-xs rounded-full">
                   Test Mode
-                </div>
-              )}
-              
-              {user?.isPremium && (
-                <div className="px-2 py-0.5 bg-[#FFD700]/20 text-[#FFD700] text-xs rounded-full">
-                  Premium
                 </div>
               )}
             </div>

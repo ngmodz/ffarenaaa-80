@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { 
+  getCurrentUser,
+  getUserProfile,
+  updateUserProfile,
+  uploadAvatar as uploadFirebaseAvatar,
+  auth,
+  onAuthChange,
+  isMock
+} from '@/lib/firebase';
+import { useAuth } from '@/contexts/AuthContext';
 
-// Test mode flag - would be set from environment variables in a real app
-const TEST_MODE = true;
+// Use isMock from firebase.ts to determine if we're in test mode
+const TEST_MODE = isMock; // Updated to use the value from firebase.ts
 
 interface UserProfile {
   id: string;
@@ -62,6 +72,7 @@ export function useUserProfile(): UseUserProfileReturn {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { currentUser } = useAuth(); // Get current user from AuthContext
 
   useEffect(() => {
     const initializeUser = async () => {
@@ -71,10 +82,14 @@ export function useUserProfile(): UseUserProfileReturn {
           await fetchProfileFromLocalStorage();
         } else {
           // In a real app with Firebase integration
-          // const currentUser = await getCurrentUser();
-          // if (currentUser) {
-          //   await fetchUserProfile(currentUser.uid);
-          // }
+          // Use currentUser from AuthContext instead of getCurrentUser()
+          if (currentUser) {
+            console.log("Found authenticated user:", currentUser.uid);
+            await fetchUserProfile(currentUser.uid);
+          } else {
+            console.log("No authenticated user found");
+            setUser(null);
+          }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load user profile');
@@ -85,7 +100,45 @@ export function useUserProfile(): UseUserProfileReturn {
     };
 
     initializeUser();
-  }, []);
+    
+    // Auth state is already handled by AuthContext, so we don't need a separate listener here
+  }, [currentUser]); // Add currentUser as a dependency
+
+  // Fetch user profile from Firestore
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      setLoading(true);
+      const userProfile = await getUserProfile(userId);
+      
+      if (userProfile) {
+        setUser({
+          id: userProfile.id,
+          uid: userProfile.uid,
+          ign: userProfile.ign,
+          fullName: userProfile.fullName,
+          email: userProfile.email,
+          phone: userProfile.phone || '',
+          bio: userProfile.bio || '',
+          location: userProfile.location || '',
+          birthdate: userProfile.birthdate || '',
+          gender: userProfile.gender || '',
+          avatar_url: userProfile.avatar_url,
+          isPremium: userProfile.isPremium,
+          joinDate: userProfile.created_at ? new Date(userProfile.created_at.toDate()).toLocaleDateString('en-US', {
+            month: 'long',
+            year: 'numeric'
+          }) : '',
+        });
+      }
+      
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load user profile');
+      console.error('Error loading profile from Firestore:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch user profile from localStorage in test mode
   const fetchProfileFromLocalStorage = async () => {
@@ -114,8 +167,15 @@ export function useUserProfile(): UseUserProfileReturn {
 
   // Update user profile
   const updateProfile = async (updates: ProfileUpdate) => {
-    if (!user) {
-      setError('User not authenticated');
+    if (!currentUser) {
+      const errorMsg = 'User not authenticated';
+      console.error(errorMsg, { currentAuthUser: currentUser, profileUser: user });
+      setError(errorMsg);
+      toast({
+        title: 'Update Failed',
+        description: errorMsg,
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -128,9 +188,14 @@ export function useUserProfile(): UseUserProfileReturn {
         localStorage.setItem('userProfile', JSON.stringify(updatedUser));
         setUser(updatedUser);
       } else {
-        // In a real app with Firebase integration
-        // await updateUserProfile(user.id, updates);
-        // await fetchUserProfile(user.id);
+        // Update profile in Firestore
+        console.log("Updating profile in Firestore for user:", currentUser.uid, updates);
+        
+        // Always use the current authenticated user's ID from AuthContext
+        await updateUserProfile(currentUser.uid, updates);
+        
+        // Fetch updated profile
+        await fetchUserProfile(currentUser.uid);
       }
       
       toast({
@@ -151,9 +216,11 @@ export function useUserProfile(): UseUserProfileReturn {
 
   // Upload avatar
   const uploadUserAvatar = async (file: File): Promise<string> => {
-    if (!user) {
-      setError('User not authenticated');
-      throw new Error('User not authenticated');
+    if (!currentUser) {
+      const errorMsg = 'User not authenticated';
+      setError(errorMsg);
+      console.error(errorMsg, { currentAuthUser: currentUser, profileUser: user });
+      throw new Error(errorMsg);
     }
 
     try {
@@ -180,9 +247,15 @@ export function useUserProfile(): UseUserProfileReturn {
         localStorage.setItem('userProfile', JSON.stringify(updatedUser));
         setUser(updatedUser);
       } else {
-        // In a real app with Firebase integration
-        // avatarUrl = await uploadAvatar(user.id, file);
-        // await fetchUserProfile(user.id);
+        // Upload avatar to Firebase Storage
+        console.log("Uploading avatar for user:", currentUser.uid);
+        avatarUrl = await uploadFirebaseAvatar(currentUser.uid, file);
+        
+        // Update user profile with new avatar URL
+        await updateUserProfile(currentUser.uid, { avatar_url: avatarUrl });
+        
+        // Fetch updated profile
+        await fetchUserProfile(currentUser.uid);
       }
       
       toast({

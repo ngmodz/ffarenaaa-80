@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read/write access to user's own profile only
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // Don't allow users to delete their profiles
+    }
+    
+    // Tournament-related rules can be added here if needed
+    match /tournaments/{tournamentId} {
+      allow read: if true; // Anyone can view tournaments
+      allow write: if request.auth != null && 
+                    (request.auth.token.admin == true || 
+                    resource.data.creatorId == request.auth.uid);
+    }
+    
+    // Default deny all rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

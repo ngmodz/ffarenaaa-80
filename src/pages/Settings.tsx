@@ -29,6 +29,7 @@ import ChangePasswordDialog from "@/components/settings/ChangePasswordDialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
+import FirebaseTest from "@/components/settings/FirebaseTest";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -140,11 +141,6 @@ const Settings = () => {
             <div className="flex-1">
               <div className="flex items-center">
                 <h2 className="text-xl font-bold text-white">{user.name}</h2>
-                {user.isPremium && (
-                  <span className="ml-2 bg-[#FFD700]/20 text-[#FFD700] text-xs px-2 py-0.5 rounded-full">
-                    Premium
-                  </span>
-                )}
               </div>
               <p className="text-sm text-gaming-muted">{user.email}</p>
               <p className="text-xs text-gaming-muted mt-1">Member since {user.joinDate}</p>
@@ -177,6 +173,9 @@ const Settings = () => {
             </div>
           </button>
         </Card>
+        
+        {/* Firebase Connection Test */}
+        <FirebaseTest />
       </motion.div>
 
       {/* Sheet for Profile */}

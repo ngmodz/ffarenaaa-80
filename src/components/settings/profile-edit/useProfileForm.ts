@@ -3,16 +3,43 @@ import { useToast } from "@/hooks/use-toast";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateUserData, isUIDAvailable, isIGNAvailable } from "@/lib/user-utils";
-import { ProfileUpdate } from "@/lib/types";
 import { FormErrors, ProfileFormData } from "./types";
 
-export const useProfileForm = (onClose: () => void) => {
+// Define a type that includes all possible keys with string values
+interface ProfileUpdate {
+  ign?: string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  bio?: string;
+  location?: string;
+  birthdate?: string;
+  gender?: string;
+  uid?: string;
+}
+
+// Define a type that matches the keys in ProfileFormData
+type ProfileUpdateKey = keyof ProfileFormData;
+
+export const useProfileForm = (onClose: () => void, bypassValidation: boolean = false) => {
   const { toast } = useToast();
   const { user, loading: userLoading, updateProfile, error: userError } = useUserProfile();
   const { currentUser } = useAuth();
   
   // Form state
   const [formData, setFormData] = useState<ProfileFormData>({
+    ign: "",
+    fullName: "",
+    email: "",
+    phone: "",
+    bio: "",
+    location: "",
+    birthdate: "",
+    gender: "",
+    uid: "",
+  });
+  
+  const [originalData, setOriginalData] = useState<ProfileFormData>({
     ign: "",
     fullName: "",
     email: "",
@@ -31,7 +58,7 @@ export const useProfileForm = (onClose: () => void) => {
   // Load initial data from user profile
   useEffect(() => {
     if (user) {
-      setFormData({
+      const initialData = {
         ign: user.ign || "",
         fullName: user.fullName || "",
         email: user.email || "",
@@ -41,7 +68,11 @@ export const useProfileForm = (onClose: () => void) => {
         birthdate: user.birthdate || "",
         gender: user.gender || "",
         uid: user.uid || "",
-      });
+      };
+      
+      setFormData(initialData);
+      // Keep track of original values to detect changes
+      setOriginalData(initialData);
     }
   }, [user]);
 
@@ -88,49 +119,51 @@ export const useProfileForm = (onClose: () => void) => {
 
   const validateForm = async () => {
     setValidating(true);
+    setErrors({});
+    
+    // If bypass is enabled, still do basic format validation but skip availability checks
+    // This bypassValidation flag is not currently used but kept for potential future debugging needs.
+    if (bypassValidation) {
+      console.log("VALIDATION BYPASSED - Only checking basic format");
+      
+      // Just check required fields and formats
+      const { valid, errors: validationErrors } = validateUserData(formData);
+      setErrors(validationErrors);
+      
+      setValidating(false);
+      return valid;
+    }
     
     try {
-      // Initial validation using utility function
+      // Initial validation using utility function - only checks format
       const { valid, errors: validationErrors } = validateUserData(formData);
       
-      if (!valid) {
-        setErrors(validationErrors);
-        return false;
-      }
+      // if (!valid) { // Keep this commented out if we want to aggregate all errors
+      //   setErrors(validationErrors);
+      //   return false;
+      // }
       
-      // Additional validation - check if field is non-empty
-      const newErrors: Record<string, string> = {};
+      // Aggregate errors from validateUserData and newErrors
+      const newErrors: Record<string, string> = { ...validationErrors }; 
       
-      // Check required fields
-      if (!formData.ign) {
+      // Check required fields if not already caught by validateUserData
+      if (!formData.ign && !newErrors.ign) {
         newErrors.ign = "In-game name is required";
       }
       
-      if (!formData.uid) {
+      if (!formData.uid && !newErrors.uid) {
         newErrors.uid = "UID is required";
       }
       
-      if (!formData.email) {
+      if (!formData.email && !newErrors.email) {
         newErrors.email = "Email is required";
       }
       
-      // Check if UID is already in use by another user
-      if (formData.uid && user?.uid !== formData.uid) {
-        const isUIDFree = await isUIDAvailable(formData.uid, user?.id);
-        if (!isUIDFree) {
-          newErrors.uid = "This UID is already registered to another account";
-        }
-      }
-      
-      // Check if IGN is already in use by another user
-      if (formData.ign && user?.ign !== formData.ign) {
-        const isIGNFree = await isIGNAvailable(formData.ign, user?.id);
-        if (!isIGNFree) {
-          newErrors.ign = "This In-Game Name is already registered to another account";
-        }
-      }
-      
+      // UID and IGN uniqueness checks are removed as they are no longer required.
+      // console.log("UID and IGN uniqueness checks are skipped in validateForm as duplicates are allowed.");
+            
       setErrors(newErrors);
+      // Return true if newErrors (which includes initial validationErrors) is empty
       return Object.keys(newErrors).length === 0;
     } catch (error) {
       console.error("Validation error:", error);
@@ -145,15 +178,7 @@ export const useProfileForm = (onClose: () => void) => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const formValid = await validateForm();
-    if (!formValid) {
-      console.error("Form validation failed");
-      return;
-    }
-    
+  const submitProfileData = async () => {
     try {
       setLoading(true);
       toast({
@@ -161,12 +186,30 @@ export const useProfileForm = (onClose: () => void) => {
         description: "Please wait while we update your profile...",
       });
       
-      // Prepare updates object
-      const updates: ProfileUpdate = {
-        ...formData
-      };
+      // Prepare updates object - only include changed fields
+      const updates: ProfileUpdate = {};
       
+      // Compare with original values and only include changed fields
+      (Object.keys(formData) as Array<keyof ProfileFormData>).forEach(key => {
+        if (formData[key] !== originalData[key]) {
+          updates[key] = formData[key] as string;
+        }
+      });
+      
+      // Log what fields are actually being updated
+      console.log("Fields being updated:", Object.keys(updates));
       console.log("ProfileEditForm - Calling updateProfile with:", updates);
+      
+      // Only proceed if there are actual changes
+      if (Object.keys(updates).length === 0) {
+        toast({
+          title: "No Changes",
+          description: "No changes were made to your profile.",
+        });
+        onClose();
+        return;
+      }
+      
       await updateProfile(updates);
       
       onClose();
@@ -176,14 +219,41 @@ export const useProfileForm = (onClose: () => void) => {
       });
     } catch (error) {
       console.error("ProfileEditForm - Error updating profile:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to update profile";
+      
+      // Check for specific errors related to IGN/UID
+      if (errorMessage.includes("IGN")) {
+        setErrors(prev => ({ ...prev, ign: errorMessage }));
+      } else if (errorMessage.includes("UID")) {
+        setErrors(prev => ({ ...prev, uid: errorMessage }));
+      }
+      
       toast({
         title: "Update Failed",
-        description: error instanceof Error ? error.message : "Failed to update profile",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const formValid = await validateForm();
+    if (!formValid) {
+      console.error("Form validation failed");
+      return;
+    }
+    
+    await submitProfileData();
+  };
+
+  // Direct submit function for debugging - skips validation
+  const directSubmit = async () => {
+    console.log("DIRECT SUBMIT - Bypassing validation");
+    await submitProfileData();
   };
 
   return {
@@ -194,6 +264,7 @@ export const useProfileForm = (onClose: () => void) => {
     validating,
     handleInputChange,
     handleSelectChange,
-    handleSubmit
+    handleSubmit,
+    directSubmit
   };
 }; 

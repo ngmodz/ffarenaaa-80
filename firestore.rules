@@ -17,6 +17,17 @@ service cloud.firestore {
                     resource.data.creatorId == request.auth.uid);
     }
     
+    // Allow users to create verification requests for IGN/UID
+    match /verification_requests/{requestId} {
+      allow read: if request.auth != null && 
+                   (resource.data.userId == request.auth.uid ||
+                   request.auth.token.admin == true);
+      allow create: if request.auth != null && 
+                     request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && request.auth.token.admin == true;
+      allow delete: if request.auth != null && request.auth.token.admin == true;
+    }
+    
     // Explicitly deny access to test_connection collection
     match /test_connection/{document=**} {
       allow read, write: if false;

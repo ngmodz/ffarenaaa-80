@@ -315,14 +315,43 @@ export const updateUserProfile = async (userId: string, updates: {
   isPremium?: boolean;
 }) => {
   try {
-    // Validate IGN (alphanumeric, 3-20 characters)
-    if (updates.ign && !/^[a-zA-Z0-9]{3,20}$/.test(updates.ign)) {
-      throw new Error('IGN must be alphanumeric and between 3-20 characters');
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    let validationPassed = true;
+    let validationErrors = [];
+
+    // Validate IGN format (alphanumeric, 3-20 characters)
+    if (updates.ign !== undefined) {
+      if (!updates.ign) {
+        validationErrors.push('IGN cannot be empty');
+        validationPassed = false;
+      }
+      else if (!/^[a-zA-Z0-9]{3,20}$/.test(updates.ign)) {
+        validationErrors.push('IGN must be alphanumeric and between 3-20 characters');
+        validationPassed = false;
+      }
+      // Uniqueness check for IGN is removed as it's no longer required
+      // console.log("IGN uniqueness check skipped as duplicates are now allowed.");
     }
     
-    // Validate UID if provided
-    if (updates.uid && !/^[0-9]{8,12}$/.test(updates.uid)) {
-      throw new Error('Free Fire UID must be a number with 8-12 digits');
+    // Validate UID format (numeric, 8-12 digits)
+    if (updates.uid !== undefined) {
+      if (!updates.uid) {
+        validationErrors.push('UID cannot be empty');
+        validationPassed = false;
+      }
+      else if (!/^[0-9]{8,12}$/.test(updates.uid)) {
+        validationErrors.push('Free Fire UID must be a number with 8-12 digits');
+        validationPassed = false;
+      }
+      // Uniqueness check for UID is removed as it's no longer required
+      // console.log("UID uniqueness check skipped as duplicates are now allowed.");
+    }
+    
+    if (!validationPassed) {
+      throw new Error(validationErrors.join('. '));
     }
     
     const userRef = doc(db, 'users', userId);
@@ -333,7 +362,12 @@ export const updateUserProfile = async (userId: string, updates: {
       updated_at: serverTimestamp(),
     };
     
+    // Log the update attempt
+    console.log(`Updating user ${userId} with data (uniqueness checks for IGN/UID are disabled):`, updatedData);
+    
+    // Update the document
     await updateDoc(userRef, updatedData);
+    console.log(`User ${userId} profile updated successfully`);
     
     // Return updated user data
     const updatedUser = await getDoc(userRef);
@@ -342,6 +376,20 @@ export const updateUserProfile = async (userId: string, updates: {
     console.error('Error updating user profile:', error);
     throw error;
   }
+};
+
+// Check if an IGN already exists (excluding the current user)
+// This function is now modified to always return false as IGNs no longer need to be unique
+export const checkIGNExists = async (ign: string, currentUserId: string): Promise<boolean> => {
+  console.log(`IGN existence check skipped for IGN: ${ign} (User: ${currentUserId}) - IGNs can now be duplicated. This function will always return false.`);
+  return false; // Always return false (not taken by another user)
+};
+
+// Check if a UID already exists (excluding the current user)
+// This function is now modified to always return false as UIDs no longer need to be unique
+export const checkUIDExists = async (uid: string, currentUserId: string): Promise<boolean> => {
+  console.log(`UID existence check skipped for UID: ${uid} (User: ${currentUserId}) - UIDs can now be duplicated. This function will always return false.`);
+  return false; // Always return false (not taken by another user)
 };
 
 export const uploadAvatar = async (userId: string, file: File) => {
@@ -522,6 +570,123 @@ export const verifyFirestoreConnection = async () => {
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Unknown error"
+    };
+  }
+};
+
+// Add a new function to verify ownership of UID/IGN
+export const requestVerification = async (userId: string, type: 'uid' | 'ign', value: string, evidence?: string) => {
+  try {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+    
+    if (!value) {
+      throw new Error(`${type.toUpperCase()} value is required`);
+    }
+    
+    // Create a verification request in Firestore
+    const verificationRef = collection(db, 'verification_requests');
+    
+    // Add the verification request
+    await addDoc(verificationRef, {
+      userId,
+      type,
+      value,
+      evidence: evidence || '',
+      status: 'pending',
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp()
+    });
+    
+    return {
+      success: true,
+      message: `Your ${type.toUpperCase()} verification request has been submitted. Our team will review it within 24-48 hours.`
+    };
+  } catch (error) {
+    console.error(`Error requesting ${type} verification:`, error);
+    throw error;
+  }
+};
+
+// Add function to check verification status
+export const checkVerificationStatus = async (userId: string, type: 'uid' | 'ign', value: string) => {
+  try {
+    const verificationRef = collection(db, 'verification_requests');
+    const q = query(
+      verificationRef, 
+      where('userId', '==', userId),
+      where('type', '==', type),
+      where('value', '==', value),
+      limit(1)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      return { exists: false, status: null };
+    }
+    
+    const data = querySnapshot.docs[0].data();
+    return { 
+      exists: true, 
+      status: data.status,
+      created_at: data.created_at
+    };
+  } catch (error) {
+    console.error(`Error checking ${type} verification status:`, error);
+    throw error;
+  }
+};
+
+// Add a utility function to directly check the database for availability issues
+export const debugCheckValueInFirestore = async (type: 'ign' | 'uid', value: string): Promise<any> => {
+  try {
+    console.log(`DEBUG CHECK: Searching for ${type}='${value}' in Firestore`);
+    
+    if (isMock) {
+      return { 
+        success: false, 
+        error: "App is running in mock mode, can't check real database", 
+        foundUsers: [],
+        type,
+        value
+      };
+    }
+    
+    // Direct approach to avoid issues with existing functions
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where(type, '==', value));
+    const querySnapshot = await getDocs(q);
+    
+    const results = [];
+    
+    querySnapshot.forEach(doc => {
+      results.push({
+        id: doc.id,
+        [type]: doc.data()[type],
+        data: doc.data()
+      });
+    });
+    
+    console.log(`DEBUG CHECK: Found ${results.length} users with ${type}='${value}'`, results);
+    
+    return {
+      success: true,
+      exists: !querySnapshot.empty,
+      count: querySnapshot.size,
+      foundUsers: results,
+      type,
+      value
+    };
+  } catch (error) {
+    console.error(`ERROR in debug check for ${type}:`, error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Unknown error",
+      foundUsers: [],
+      type,
+      value
     };
   }
 };

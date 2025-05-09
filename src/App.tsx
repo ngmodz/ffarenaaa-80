@@ -11,6 +11,7 @@ import PWALayoutWrapper from "./components/PWALayoutWrapper";
 import { Toaster } from "./components/ui/toaster";
 import Landing from "./pages/Landing";
 import { useAuth } from "./contexts/AuthContext";
+import Wallet from "./pages/Wallet";
 import "./App.css";
 
 function App() {
@@ -32,6 +33,9 @@ function App() {
           } />
           <Route path="/tournament/create" element={<TournamentCreate />} />
           <Route path="/tournament/:id" element={<TournamentDetails />} />
+          <Route path="/wallet" element={
+            currentUser ? <Wallet /> : <Navigate to="/auth" replace />
+          } />
           <Route path="/profile" element={<Navigate to="/settings" replace />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/terms-and-privacy" element={<TermsAndPolicy />} />

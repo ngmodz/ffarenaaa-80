@@ -100,38 +100,20 @@ export function formatDate(timestamp: Timestamp | undefined): string {
 
 /**
  * Check if UID is already in use by another user
+ * (This function is now modified to always allow UIDs as they no longer need to be unique)
  */
 export async function isUIDAvailable(uid: string, currentUserId?: string): Promise<boolean> {
-  try {
-    const existingUser = await findUserByUID(uid);
-    
-    // If no user found with this UID, or it's the current user's UID
-    if (!existingUser || (currentUserId && existingUser.id === currentUserId)) {
-      return true;
-    }
-    
-    return false;
-  } catch (error) {
-    console.error('Error checking UID availability:', error);
-    return false;
-  }
+  console.log(`UID uniqueness check skipped for UID: ${uid} (User: ${currentUserId}) - UIDs can now be duplicated.`);
+  // Always return true as UIDs no longer need to be unique
+  return true;
 }
 
 /**
  * Check if IGN is already in use by another user
+ * (This function is now modified to always allow IGNs as they no longer need to be unique)
  */
 export async function isIGNAvailable(ign: string, currentUserId?: string): Promise<boolean> {
-  try {
-    const existingUser = await findUserByIGN(ign);
-    
-    // If no user found with this IGN, or it's the current user's IGN
-    if (!existingUser || (currentUserId && existingUser.id === currentUserId)) {
-      return true;
-    }
-    
-    return false;
-  } catch (error) {
-    console.error('Error checking IGN availability:', error);
-    return false;
-  }
+  console.log(`IGN uniqueness check skipped for IGN: ${ign} (User: ${currentUserId}) - IGNs can now be duplicated.`);
+  // Always return true as IGNs no longer need to be unique
+  return true;
 } 

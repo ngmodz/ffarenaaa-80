@@ -1,5 +1,5 @@
-import React from "react";
-import { User, BadgeInfo, Mail, Phone } from "lucide-react";
+import React, { useState } from "react";
+import { User, BadgeInfo, Mail, Phone, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { customInputStyles } from "./utils";
@@ -42,9 +42,14 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
               required
             />
             {errors.ign && (
-              <div className="text-red-500 text-sm mt-1">{errors.ign}</div>
+              <div className="text-red-500 text-sm mt-1 space-y-1">
+                <div className="flex items-center gap-1">
+                  <AlertCircle size={14} />
+                  <span>{errors.ign}</span>
+                </div>
+              </div>
             )}
-            <div className="text-gray-500 text-sm mt-1">Please ensure this matches your exact In-Game Name as it appears in Free Fire for tournament verification</div>
+            <div className="text-gray-500 text-sm mt-1">Please ensure this matches your exact In-Game Name as it appears in Free Fire for tournament verification. (Note: IGNs no longer need to be unique)</div>
           </div>
         </div>
       </div>
@@ -71,9 +76,14 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
               required
             />
             {errors.uid && (
-              <div className="text-red-500 text-sm mt-1">{errors.uid}</div>
+              <div className="text-red-500 text-sm mt-1 space-y-1">
+                <div className="flex items-center gap-1">
+                  <AlertCircle size={14} />
+                  <span>{errors.uid}</span>
+                </div>
+              </div>
             )}
-            <div className="text-gray-500 text-sm mt-1">This is your unique ID for prize money distribution and in-game identification</div>
+            <div className="text-gray-500 text-sm mt-1">This is your unique ID for prize money distribution and in-game identification. (Note: UIDs no longer need to be unique)</div>
           </div>
         </div>
       </div>

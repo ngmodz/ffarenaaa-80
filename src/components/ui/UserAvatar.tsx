@@ -1,11 +1,32 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LogOut, Settings, User } from "lucide-react";
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
+
+// Helper function to get the avatar letter - can be reused elsewhere too
+export function getAvatarLetter(userProfile: any, currentUser: any): string {
+  // Try different properties in order of preference
+  if (userProfile?.ign && userProfile.ign.length > 0) {
+    return userProfile.ign.charAt(0).toUpperCase();
+  }
+  if (userProfile?.name && userProfile.name.length > 0) {
+    return userProfile.name.charAt(0).toUpperCase();
+  }
+  if (userProfile?.fullName && userProfile.fullName.length > 0) {
+    return userProfile.fullName.charAt(0).toUpperCase();
+  }
+  if (currentUser?.displayName && currentUser.displayName.length > 0) {
+    return currentUser.displayName.charAt(0).toUpperCase();
+  }
+  if (currentUser?.email && currentUser.email.length > 0) {
+    return currentUser.email.charAt(0).toUpperCase();
+  }
+  return "U"; // Default fallback
+}
 
 export function UserAvatar() {
   const { currentUser, userProfile, logout } = useAuth();
@@ -13,18 +34,7 @@ export function UserAvatar() {
   const [initials, setInitials] = useState('');
 
   useEffect(() => {
-    if (userProfile?.name) {
-      const nameParts = userProfile.name.split(' ');
-      if (nameParts.length > 1) {
-        setInitials(`${nameParts[0][0]}${nameParts[1][0]}`);
-      } else if (nameParts.length === 1) {
-        setInitials(nameParts[0][0]);
-      }
-    } else if (currentUser?.email) {
-      setInitials(currentUser.email[0].toUpperCase());
-    } else {
-      setInitials('U');
-    }
+    setInitials(getAvatarLetter(userProfile, currentUser));
   }, [currentUser, userProfile]);
 
   const handleLogout = async () => {
@@ -57,8 +67,7 @@ export function UserAvatar() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer border border-gaming-primary/30">
-          <AvatarImage src={userProfile?.avatar_url || ''} />
-          <AvatarFallback className="bg-gaming-primary/20 text-gaming-primary">
+          <AvatarFallback className="bg-gaming-primary/20 text-[#FFD700] font-bold">
             {initials}
           </AvatarFallback>
         </Avatar>

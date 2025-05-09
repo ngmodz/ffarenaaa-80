@@ -13,7 +13,9 @@ import {
   serverTimestamp,
   Timestamp,
   DocumentData,
-  DocumentReference
+  DocumentReference,
+  deleteDoc,
+  limit
 } from 'firebase/firestore';
 import { 
   getAuth, 
@@ -344,25 +346,78 @@ export const updateUserProfile = async (userId: string, updates: {
 
 export const uploadAvatar = async (userId: string, file: File) => {
   try {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+    
+    if (!file) {
+      throw new Error('File is required');
+    }
+    
     // Generate a unique file path
     const fileExt = file.name.split('.').pop();
-    const fileName = `${userId}-${Date.now()}.${fileExt}`;
-    const filePath = `avatars/${userId}/${fileName}`;
+    if (!fileExt) {
+      throw new Error('Invalid file extension');
+    }
     
-    // Upload file to Firebase Storage
-    const storageRef = ref(storage, filePath);
-    await uploadBytes(storageRef, file);
+    // Create a totally unique filename
+    const uniqueId = Math.random().toString(36).substring(2);
+    const fileName = `avatar-${Date.now()}-${uniqueId}.${fileExt}`;
     
-    // Get download URL
-    const downloadURL = await getDownloadURL(storageRef);
+    // Use a simple flat path that's more likely to work
+    const filePath = `avatars/${fileName}`;
     
-    // Update user's avatar_url in Firestore
-    const userRef = doc(db, 'users', userId);
-    await updateDoc(userRef, { avatar_url: downloadURL });
+    console.log("Uploading avatar with path:", filePath);
     
-    return downloadURL;
+    // Explicitly check if storage is initialized
+    if (!storage) {
+      throw new Error('Firebase Storage is not initialized');
+    }
+    
+    try {
+      // Create blob from file
+      const blob = file.slice(0, file.size, file.type);
+      const newFile = new File([blob], fileName, { type: file.type });
+      
+      // Upload file to Firebase Storage
+      const storageRef = ref(storage, filePath);
+      console.log("Storage reference created");
+      
+      // Upload with explicit content type
+      const metadata = {
+        contentType: file.type
+      };
+      
+      const uploadResult = await uploadBytes(storageRef, newFile, metadata);
+      console.log("Upload successful, result:", uploadResult);
+      
+      // Get download URL
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log("Download URL obtained:", downloadURL);
+      
+      // Update user's avatar_url in Firestore
+      const userRef = doc(db, 'users', userId);
+      await updateDoc(userRef, { 
+        avatar_url: downloadURL,
+        updated_at: serverTimestamp()
+      });
+      console.log("User profile updated with new avatar URL");
+      
+      return downloadURL;
+    } catch (uploadError) {
+      console.error("Upload failed with error:", uploadError);
+      
+      // Try alternate upload method for older browsers
+      if (uploadError instanceof Error) {
+        throw new Error(`Avatar upload failed: ${uploadError.message}`);
+      }
+      throw uploadError;
+    }
   } catch (error) {
     console.error('Error uploading avatar:', error);
+    if (error instanceof Error) {
+      throw new Error(`Avatar upload failed: ${error.message}`);
+    }
     throw error;
   }
 };
@@ -448,33 +503,22 @@ export const resetPassword = async (email: string) => {
   }
 };
 
-// Test function to verify Firestore connection
-export const testFirestoreConnection = async () => {
+// Simple function to verify Firestore connection without any test documents
+export const verifyFirestoreConnection = async () => {
   try {
     if (isMock) {
-      console.log("Cannot test Firestore connection in mock mode");
+      console.log("Cannot verify Firestore connection in mock mode");
       return { success: false, error: "App is running in mock mode" };
     }
     
-    // Create a test document
-    const testRef = doc(db, 'test_connection', Date.now().toString());
-    await setDoc(testRef, { 
-      timestamp: serverTimestamp(),
-      test: true 
-    });
+    // Just check if we can access Firestore by doing a simple operation
+    const usersCollection = collection(db, 'users');
+    await getDocs(query(usersCollection, where('isPremium', '==', true), limit(1)));
     
-    // Retrieve the document to verify write+read
-    const testSnap = await getDoc(testRef);
-    
-    if (testSnap.exists()) {
-      console.log("✅ Firestore connection test succeeded");
-      return { success: true };
-    } else {
-      console.error("❌ Firestore connection test failed: Document not found after writing");
-      return { success: false, error: "Document not found after writing" };
-    }
+    console.log("✅ Firestore connection verified successfully");
+    return { success: true };
   } catch (error) {
-    console.error("❌ Firestore connection test failed:", error);
+    console.error("❌ Firestore connection verification failed:", error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Unknown error"

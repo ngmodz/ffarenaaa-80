@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { testFirestoreConnection, isMock } from '@/lib/firebase';
+import { verifyFirestoreConnection, isMock } from '@/lib/firebase';
 import { useAuth } from '@/contexts/AuthContext';
 
 const FirebaseTest = () => {
@@ -15,10 +15,10 @@ const FirebaseTest = () => {
   const [loading, setLoading] = useState(false);
   const { currentUser, userProfile } = useAuth();
 
-  const runTest = async () => {
+  const verifyConnection = async () => {
     setLoading(true);
     try {
-      const result = await testFirestoreConnection();
+      const result = await verifyFirestoreConnection();
       setTestResult({
         ...result,
         timestamp: new Date(),
@@ -83,19 +83,19 @@ const FirebaseTest = () => {
           ) : (
             <>
               <p className="text-[#A0AEC0]">
-                Test your connection to Firebase/Firestore to ensure profile updates can be saved.
+                Verify your connection to Firebase/Firestore to ensure profile updates can be saved.
               </p>
               
               <Button 
-                onClick={runTest} 
+                onClick={verifyConnection} 
                 disabled={loading}
-                className="bg-[#1E3A8A] hover:bg-[#2563EB]"
+                className="bg-[#1E3A8A] hover:bg-[#2563EB] mt-4"
               >
-                {loading ? 'Testing...' : 'Test Firestore Connection'}
+                {loading ? 'Verifying...' : 'Verify Firestore Connection'}
               </Button>
               
               {testResult && (
-                <Alert variant={testResult.success ? "default" : "destructive"}>
+                <Alert variant={testResult.success ? "default" : "destructive"} className="mt-4">
                   {testResult.success ? (
                     <CheckCircle2 className="h-4 w-4" />
                   ) : (
@@ -109,7 +109,7 @@ const FirebaseTest = () => {
                   </AlertTitle>
                   <AlertDescription>
                     {testResult.success 
-                      ? `Successfully connected to Firestore at ${testResult.timestamp?.toLocaleTimeString()}`
+                      ? `Successfully verified Firestore connection at ${testResult.timestamp?.toLocaleTimeString()}`
                       : `Error: ${testResult.error} (${testResult.timestamp?.toLocaleTimeString()})`
                     }
                   </AlertDescription>

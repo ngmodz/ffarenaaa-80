@@ -94,7 +94,7 @@ interface ProfileEditFormProps {
 
 const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
   const { toast } = useToast();
-  const { user, loading: userLoading, updateProfile, uploadUserAvatar, error: userError } = useUserProfile();
+  const { user, loading: userLoading, updateProfile, error: userError } = useUserProfile();
   const { currentUser } = useAuth(); // Get authentication state
   
   // Form state
@@ -110,8 +110,6 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
     uid: "",
   });
   
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [validating, setValidating] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -171,23 +169,6 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
     // Clear error when field is edited
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
-    }
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      
-      // Preview the image
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          setAvatarPreview(reader.result.toString());
-        }
-      };
-      reader.readAsDataURL(file);
-      
-      setAvatarFile(file);
     }
   };
 
@@ -253,47 +234,23 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!currentUser) {
-      toast({
-        title: "Authentication Error",
-        description: "You must be logged in to update your profile",
-        variant: "destructive",
-      });
+    const formValid = await validateForm();
+    if (!formValid) {
+      console.error("Form validation failed");
       return;
     }
-    
-    if (validating) return;
-    
-    const isValid = await validateForm();
-    if (!isValid) {
-      return;
-    }
-    
-    setLoading(true);
     
     try {
-      console.log("ProfileEditForm - Submitting profile update:", formData);
-      console.log("ProfileEditForm - Authentication state:", { 
-        authenticated: !!currentUser,
-        uid: currentUser?.uid,
-        profileUser: user
+      setLoading(true);
+      toast({
+        title: "Updating Profile",
+        description: "Please wait while we update your profile...",
       });
       
-      // First upload avatar if changed
-      let avatarUrl: string | undefined = undefined;
-      if (avatarFile) {
-        console.log("ProfileEditForm - Uploading avatar file");
-        avatarUrl = await uploadUserAvatar(avatarFile);
-      }
-      
-      // Prepare updates object including avatar if changed
+      // Prepare updates object
       const updates: ProfileUpdate = {
         ...formData
       };
-      
-      if (avatarUrl) {
-        updates.avatar_url = avatarUrl;
-      }
       
       console.log("ProfileEditForm - Calling updateProfile with:", updates);
       await updateProfile(updates);
@@ -332,50 +289,23 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onClose }) => {
     >
       {/* <style>{customStyles}</style> */}
       
-      {/* Avatar Upload */}
+      {/* Replace Avatar Upload with First-Letter Avatar */}
       <div className="flex flex-col sm:flex-row gap-8 items-center pb-4">
         <div className="relative">
           <Avatar 
             className="w-24 h-24 border-2 border-[#A0AEC0] shadow-md"
           >
-            {avatarPreview ? (
-              <AvatarImage 
-                src={avatarPreview} 
-                alt="Avatar preview" 
-              />
-            ) : user?.avatar_url ? (
-              <AvatarImage 
-                src={user.avatar_url} 
-                alt={user?.ign || "User avatar"} 
-              />
-            ) : (
-              <AvatarFallback className="bg-gaming-primary/20">
-                <User size={32} />
-              </AvatarFallback>
-            )}
+            <AvatarFallback className="bg-gaming-primary/20 text-[#FFD700] text-4xl font-bold">
+              {formData.fullName ? formData.fullName.charAt(0).toUpperCase() : 
+               formData.ign ? formData.ign.charAt(0).toUpperCase() : 'U'}
+            </AvatarFallback>
           </Avatar>
-          <input
-            type="file"
-            id="avatar"
-            accept="image/jpeg, image/png"
-            onChange={handleAvatarChange}
-            className="hidden"
-          />
-          <Button
-            type="button"
-            onClick={() => document.getElementById("avatar")?.click()}
-            className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-gaming-primary hover:bg-gaming-primary/90 focus:ring-gaming-primary/25 text-xs py-1 h-auto px-2 rounded-sm"
-            variant="default"
-            size="sm"
-          >
-            Upload
-          </Button>
         </div>
         
         <div className="text-sm text-gray-400 text-center sm:text-left">
           <h3 className="text-white font-medium text-lg mb-1">Profile Picture</h3>
-          <p>Upload a clear photo to help other players recognize you.</p>
-          <p className="mt-1">JPEG or PNG format. Max 2MB.</p>
+          <p>Your avatar shows the first letter of your name.</p>
+          <p className="mt-1">Update your name to change this letter.</p>
         </div>
       </div>
 

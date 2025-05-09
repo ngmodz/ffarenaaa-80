@@ -26,6 +26,7 @@ interface UserProfile {
   id: string;
   name?: string;
   ign?: string;
+  uid?: string;
   email: string;
   avatar_url: string | null;
   isPremium: boolean;

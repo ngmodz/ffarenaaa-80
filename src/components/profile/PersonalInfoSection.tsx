@@ -9,18 +9,18 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { SettingsIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from '@/contexts/AuthContext';
+import AvatarDisplay from "@/components/ui/AvatarDisplay";
 
 const PersonalInfoSection = () => {
-  const { user, loading, updateProfile, uploadUserAvatar, error, isTestMode } = useUserProfile();
+  const { user, loading, updateProfile, error, isTestMode } = useUserProfile();
+  const { currentUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [ignValue, setIgnValue] = useState("");
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   // Initialize form data when user data is loaded
   React.useEffect(() => {
@@ -39,38 +39,14 @@ const PersonalInfoSection = () => {
 
   const handleSaveProfile = async () => {
     try {
-      // First update profile text information
+      // Update profile text information
       await updateProfile({ ign: ignValue });
-      
-      // Then upload avatar if there is one
-      if (avatarFile) {
-        await uploadUserAvatar(avatarFile);
-      }
       
       // Reset states
       setIsEditing(false);
-      setAvatarFile(null);
-      setAvatarPreview(null);
     } catch (err) {
       console.error("Failed to save profile:", err);
       // Error is already handled in the hook with toast notifications
-    }
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      
-      // Preview the image
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          setAvatarPreview(reader.result.toString());
-        }
-      };
-      reader.readAsDataURL(file);
-      
-      setAvatarFile(file);
     }
   };
 
@@ -106,22 +82,13 @@ const PersonalInfoSection = () => {
       </CardHeader>
       <CardContent className="px-4 pb-6">
         <div className="flex flex-col sm:flex-row items-center gap-6">
-          {/* Avatar Section */}
+          {/* Avatar Section - using first letter */}
           <div className="flex flex-col items-center gap-2 mb-6 sm:mb-0">
-            <Avatar 
-              className="w-24 h-24 border-2 border-[#A0AEC0] shadow-md"
-            >
-              {user?.avatar_url ? (
-                <AvatarImage 
-                  src={user.avatar_url} 
-                  alt={user?.ign || "User avatar"} 
-                />
-              ) : (
-                <AvatarFallback className="bg-gaming-primary/20">
-                  <User size={32} />
-                </AvatarFallback>
-              )}
-            </Avatar>
+            <AvatarDisplay 
+              userProfile={user}
+              currentUser={currentUser}
+              size="xl" 
+            />
             
             <div className="flex flex-wrap justify-center gap-2">
               {isTestMode && (

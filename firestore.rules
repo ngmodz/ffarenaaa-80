@@ -17,6 +17,11 @@ service cloud.firestore {
                     resource.data.creatorId == request.auth.uid);
     }
     
+    // Explicitly deny access to test_connection collection
+    match /test_connection/{document=**} {
+      allow read, write: if false;
+    }
+    
     // Default deny all rule
     match /{document=**} {
       allow read, write: if false;

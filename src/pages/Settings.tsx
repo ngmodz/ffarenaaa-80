@@ -15,7 +15,6 @@ import {
   AlertCircle,
   Check,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +28,7 @@ import ChangePasswordDialog from "@/components/settings/ChangePasswordDialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import FirebaseTest from "@/components/settings/FirebaseTest";
+import AvatarDisplay from "@/components/ui/AvatarDisplay";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -40,11 +39,17 @@ const Settings = () => {
 
   // Use authentication data when available, fallback to mock otherwise
   const user = userProfile || {
-    name: "ElitePlayer123",
+    name: currentUser?.displayName || "ElitePlayer123",
     email: currentUser?.email || "player@example.com",
-    avatar_url: null,
     isPremium: true,
-    joinDate: "May 2023",
+    ign: "ElitePlayer123",
+    uid: "FF123456789"
+  };
+
+  // Get member since date - simplified to avoid type issues
+  const getMemberSince = () => {
+    // Fallback to default date to avoid type issues
+    return "May 2023";
   };
 
   const handleLogout = async () => {
@@ -129,21 +134,17 @@ const Settings = () => {
         {/* Profile Card */}
         <Card className="p-4 bg-gaming-card border-gaming-border shadow-glow">
           <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16 border-2 border-gaming-primary shadow-glow">
-              {user.avatar_url ? (
-                <AvatarImage src={user.avatar_url} alt={user.name} />
-              ) : (
-                <AvatarFallback className="bg-gaming-primary/20 text-gaming-primary text-xl font-semibold">
-                  {user.name.substring(0, 2).toUpperCase()}
-                </AvatarFallback>
-              )}
-            </Avatar>
+            <AvatarDisplay 
+              userProfile={userProfile}
+              currentUser={currentUser}
+              size="lg" 
+            />
             <div className="flex-1">
               <div className="flex items-center">
                 <h2 className="text-xl font-bold text-white">{user.name}</h2>
               </div>
-              <p className="text-sm text-gaming-muted">{user.email}</p>
-              <p className="text-xs text-gaming-muted mt-1">Member since {user.joinDate}</p>
+              <p className="text-sm text-gaming-muted text-[#FFD700] font-bold">{user.ign || "Not set"}</p>
+              <p className="text-xs text-gaming-muted mt-1">UID: {user.uid || "Not available"}</p>
             </div>
           </div>
         </Card>
@@ -173,9 +174,6 @@ const Settings = () => {
             </div>
           </button>
         </Card>
-        
-        {/* Firebase Connection Test */}
-        <FirebaseTest />
       </motion.div>
 
       {/* Sheet for Profile */}

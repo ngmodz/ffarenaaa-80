@@ -4,7 +4,6 @@ import {
   getCurrentUser,
   getUserProfile,
   updateUserProfile,
-  uploadAvatar as uploadFirebaseAvatar,
   auth,
   onAuthChange,
   isMock
@@ -25,7 +24,6 @@ interface UserProfile {
   location: string;
   birthdate: string;
   gender: string;
-  avatar_url: string | null;
   isPremium: boolean;
   joinDate: string;
 }
@@ -46,7 +44,6 @@ interface UseUserProfileReturn {
   loading: boolean;
   user: UserProfile | null;
   updateProfile: (updates: ProfileUpdate) => Promise<void>;
-  uploadUserAvatar: (file: File) => Promise<string>;
   error: string | null;
   isTestMode: boolean;
 }
@@ -63,7 +60,6 @@ const DEFAULT_USER_PROFILE: UserProfile = {
   location: "New York, USA",
   birthdate: "1995-07-15",
   gender: "male",
-  avatar_url: null,
   isPremium: true,
   joinDate: "May 2023",
 };
@@ -122,7 +118,6 @@ export function useUserProfile(): UseUserProfileReturn {
           location: userProfile.location || '',
           birthdate: userProfile.birthdate || '',
           gender: userProfile.gender || '',
-          avatar_url: userProfile.avatar_url,
           isPremium: userProfile.isPremium,
           joinDate: userProfile.created_at ? new Date(userProfile.created_at.toDate()).toLocaleDateString('en-US', {
             month: 'long',
@@ -214,90 +209,10 @@ export function useUserProfile(): UseUserProfileReturn {
     }
   };
 
-  // Upload avatar
-  const uploadUserAvatar = async (file: File): Promise<string> => {
-    if (!currentUser) {
-      const errorMsg = 'User not authenticated';
-      setError(errorMsg);
-      console.error(errorMsg, { currentAuthUser: currentUser, profileUser: user });
-      throw new Error(errorMsg);
-    }
-
-    try {
-      setLoading(true);
-      
-      // Validate file size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        throw new Error('Avatar must be less than 2MB');
-      }
-      
-      // Validate file type
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        throw new Error('Avatar must be JPEG or PNG format');
-      }
-      
-      let avatarUrl = '';
-      
-      if (TEST_MODE) {
-        // In test mode, convert file to data URL
-        avatarUrl = await fileToDataUrl(file);
-        
-        // Update user in localStorage
-        const updatedUser = { ...user, avatar_url: avatarUrl };
-        localStorage.setItem('userProfile', JSON.stringify(updatedUser));
-        setUser(updatedUser);
-      } else {
-        // Upload avatar to Firebase Storage
-        console.log("Uploading avatar for user:", currentUser.uid);
-        avatarUrl = await uploadFirebaseAvatar(currentUser.uid, file);
-        
-        // Update user profile with new avatar URL
-        await updateUserProfile(currentUser.uid, { avatar_url: avatarUrl });
-        
-        // Fetch updated profile
-        await fetchUserProfile(currentUser.uid);
-      }
-      
-      toast({
-        title: 'Avatar updated',
-        description: 'Your avatar has been successfully updated.',
-      });
-      
-      return avatarUrl;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to upload avatar');
-      toast({
-        title: 'Upload failed',
-        description: err instanceof Error ? err.message : 'Failed to upload avatar',
-        variant: 'destructive',
-      });
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Helper function to convert File to data URL for test mode
-  const fileToDataUrl = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          resolve(reader.result.toString());
-        } else {
-          reject(new Error('Failed to convert file to data URL'));
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
   return {
     loading,
     user,
     updateProfile,
-    uploadUserAvatar,
     error,
     isTestMode: TEST_MODE,
   };

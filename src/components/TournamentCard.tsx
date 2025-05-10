@@ -3,34 +3,27 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { TournamentType } from "@/components/home/types";
 
 interface TournamentCardProps {
-  id: string;
-  title: string;
-  entryFee: number;
-  prizeMoney: number;
-  date: string;
-  time: string;
-  totalSpots: number;
-  filledSpots: number;
-  mode: string;
-  status: 'active' | 'ongoing' | 'completed' | 'cancelled';
-  isPremium?: boolean;
+  tournament: TournamentType;
 }
 
-const TournamentCard = ({
-  id,
-  title,
-  entryFee,
-  prizeMoney,
-  date,
-  time,
-  totalSpots,
-  filledSpots,
-  mode,
-  status,
-  isPremium = false
-}: TournamentCardProps) => {
+const TournamentCard = ({ tournament }: TournamentCardProps) => {
+  const {
+    id,
+    title,
+    entryFee,
+    prizeMoney,
+    date,
+    time,
+    totalSpots,
+    filledSpots,
+    mode,
+    status,
+    isPremium = false
+  } = tournament;
+  
   const statusColors = {
     active: "bg-blue-500",
     ongoing: "bg-gaming-accent animate-pulse",
@@ -201,55 +194,39 @@ const TournamentCard = ({
             <span>{filledSpots}/{totalSpots}</span>
           </div>
           
-          {/* Progress Bar with improved animation and gradient */}
-          <div className="w-full bg-[#333333] h-2 rounded-full overflow-hidden">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${(filledSpots / totalSpots) * 100}%` }}
-              transition={{ 
-                duration: 1.2, 
-                ease: [0.34, 1.56, 0.64, 1], 
-                delay: 0.3 
-              }}
-              className={cn(
-                "h-full rounded-full",
-                getProgressBarColor()
-              )}
+          <div className="w-full h-1.5 bg-[#2A2A2A] rounded-full overflow-hidden">
+            <div 
+              className={cn("h-full rounded-full", getProgressBarColor())}
+              style={{ width: `${(filledSpots / totalSpots) * 100}%` }}
             />
           </div>
         </div>
         
         {/* Action Button */}
-        <motion.div
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="mt-auto"
-        >
+        <div className="mt-auto pt-2">
           <Link 
-            to={`/tournaments/${id}`}
+            to={`/tournament/${id}`}
             className={cn(
-              "w-full flex justify-center items-center text-center font-bold py-2.5 text-sm rounded-md text-white",
-              status === 'completed' || status === 'cancelled'
-                ? "bg-[#505050] hover:bg-[#606060]" 
+              "block w-full py-2 text-center rounded-md text-white font-medium text-sm transition-colors",
+              status === 'active' && !isFullyBooked
+                ? "bg-gaming-primary hover:bg-gaming-primary/90" 
                 : status === 'ongoing'
                   ? "bg-gaming-accent hover:bg-gaming-accent/90"
-                  : spotsLeft > 0 
-                    ? isPremium
-                      ? "bg-gradient-to-r from-gaming-accent to-gaming-primary hover:opacity-90"
-                      : "bg-gaming-primary hover:bg-gaming-primary/90"
-                    : "bg-red-500 hover:bg-red-600"
+                  : "bg-[#505050] hover:bg-[#606060]"
             )}
           >
-            {status === 'completed' || status === 'cancelled'
-              ? 'View Results' 
+            {status === 'active' && !isFullyBooked
+              ? 'Join Tournament'
               : status === 'ongoing'
-                ? 'Watch Live'
-                : spotsLeft > 0 
-                  ? 'Join Tournament' 
-                  : 'Fully Booked'
+                ? 'Watch Now'
+                : status === 'completed'
+                  ? 'View Results'
+                  : isFullyBooked 
+                    ? 'Fully Booked'
+                    : 'View Details'
             }
           </Link>
-        </motion.div>
+        </div>
       </Card>
     </motion.div>
   );

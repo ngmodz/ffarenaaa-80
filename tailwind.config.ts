@@ -57,16 +57,17 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Add gaming-specific colors
+        // Gaming-specific colors (restored orange and purple theme)
         gaming: {
-          primary: "#9b87f5",
-          secondary: "#7E69AB",
-          accent: "#f97316",
-          bg: "#0A0A0A",
-          text: "#FFFFFF",
-          muted: "#888888",
-          card: "#121212",
-          border: "#2A2A2A",
+          primary: "#9b87f5", // Purple for primary buttons
+          secondary: "#7E69AB", // Lighter purple for secondary elements
+          accent: "#f97316", // Orange for accent elements
+          bg: "#0A0A0A", // Near-black background
+          text: "#FFFFFF", // White for primary text
+          muted: "#888888", // Gray for secondary text
+          card: "#121212", // Dark gray for cards
+          border: "#2A2A2A", // Border color
+          error: "#EF4444", // Red for warnings/errors
         },
       },
       borderRadius: {

@@ -136,10 +136,10 @@ const Index = () => {
                   <Calendar size={14} className="mr-2" /> Date (Latest first)
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="price-asc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
-                  <DollarSign size={14} className="mr-2" /> Entry Fee (Low to High)
+                  <span className="mr-2 font-bold text-sm">₹</span> Entry Fee (Low to High)
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="price-desc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
-                  <DollarSign size={14} className="mr-2" /> Entry Fee (High to Low)
+                  <span className="mr-2 font-bold text-sm">₹</span> Entry Fee (High to Low)
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="prize-asc" className="text-xs focus:bg-gaming-primary/20 focus:text-white">
                   <Trophy size={14} className="mr-2" /> Prize Money (Low to High)

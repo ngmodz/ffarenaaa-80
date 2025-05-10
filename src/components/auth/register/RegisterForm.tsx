@@ -110,26 +110,57 @@ const RegisterForm = ({ setActiveTab }: RegisterFormProps) => {
       const result = await signUpWithEmail(formState.email, formState.password);
       
       if (result.user) {
-        // Create a user profile in the Firestore database
-        await setDoc(doc(db, 'users', result.user.uid), {
-          id: result.user.uid,
-          name: formState.name,
-          email: formState.email,
-          ign: formState.ffid,
-          avatar_url: null,
-          isPremium: false,
-          created_at: new Date(),
-        });
-        
-        toast({
-          title: "Registration successful",
-          description: "Your account has been created. You can now login.",
-        });
-        
-        // Switch to login tab after successful registration
-        setTimeout(() => {
-          setActiveTab("login");
-        }, 1000);
+        try {
+          // Ensure the auth state has propagated before writing to Firestore
+          // Wait a short moment to ensure Firebase Auth is fully initialized
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Create a user profile in the Firestore database with all required fields
+          await setDoc(doc(db, 'users', result.user.uid), {
+            id: result.user.uid,
+            fullName: formState.name,
+            email: formState.email,
+            uid: formState.ffid, // Free Fire UID
+            ign: formState.ffid, // In-game name - can be updated by user later
+            phone: "",
+            bio: "",
+            location: "",
+            birthdate: "",
+            gender: "",
+            avatar_url: null,
+            isPremium: false,
+            created_at: new Date(),
+            updated_at: new Date(),
+            displayName: formState.name
+          });
+          
+          console.log("User profile created successfully:", result.user.uid);
+          
+          toast({
+            title: "Registration successful",
+            description: "Your account has been created. You can now login.",
+          });
+          
+          // Switch to login tab after successful registration
+          setTimeout(() => {
+            setActiveTab("login");
+          }, 1000);
+        } catch (firestoreError: any) {
+          console.error("Firestore error:", firestoreError);
+          
+          // If writing to Firestore fails, delete the authentication user to avoid orphaned accounts
+          try {
+            await result.user.delete();
+          } catch (deleteError) {
+            console.error("Error deleting orphaned user:", deleteError);
+          }
+          
+          toast({
+            variant: "destructive",
+            title: "Registration failed",
+            description: "Unable to create user profile. Please try again later.",
+          });
+        }
       }
     } catch (error: any) {
       console.error("Registration error:", error);

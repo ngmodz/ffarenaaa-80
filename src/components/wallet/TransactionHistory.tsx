@@ -183,22 +183,6 @@ const TransactionHistory = ({ userId, refreshTrigger = 0 }: TransactionHistoryPr
 
   return (
     <div className="space-y-4">
-      {/* Refresh button */}
-      <div className="flex justify-end mb-2">
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={refreshTransactions}
-            disabled={isLoading}
-            className="bg-gaming-card text-[#9b87f5] hover:bg-[#9b87f5]/10 border-[#9b87f5]/30 flex items-center gap-1 transition-all duration-200"
-          >
-            <RefreshCw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
-            {isLoading ? 'Refreshing...' : 'Refresh'}
-          </Button>
-        </motion.div>
-      </div>
-
       {/* Loading state */}
       {isLoading && (
         <motion.div 

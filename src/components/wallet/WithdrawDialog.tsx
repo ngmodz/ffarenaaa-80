@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Wallet as WalletType } from "@/lib/walletService";
+import { Wallet as WalletType, updateWalletBalance } from "@/lib/walletService";
 
 interface WithdrawDialogProps {
   isOpen: boolean;
@@ -94,11 +94,11 @@ const WithdrawDialog = ({
 
       console.log(`Initiating withdrawal of ₹${numAmount} to ${upiId} via ${withdrawalMethod}`);
       
-      setTimeout(() => {
-        setIsLoading(false);
-        onOpenChange(false);
-        alert(`Successfully initiated withdrawal of ₹${numAmount}!`);
-      }, 2000);
+      await updateWalletBalance(currentUser.uid, -numAmount);
+      
+      setIsLoading(false);
+      onOpenChange(false);
+      alert(`Successfully initiated withdrawal of ₹${numAmount}!`);
 
     } catch (err) {
       console.error("Withdrawal error:", err);

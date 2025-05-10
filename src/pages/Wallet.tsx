@@ -138,6 +138,7 @@ const Wallet = () => {
       <AddFundsDialog 
         isOpen={isAddFundsOpen} 
         onOpenChange={setIsAddFundsOpen} 
+        wallet={wallet}
       />
       
       <WithdrawDialog 

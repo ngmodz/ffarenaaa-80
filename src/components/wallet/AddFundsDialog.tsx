@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Wallet as WalletType } from "@/lib/walletService";
+import { Wallet as WalletType, updateWalletBalance } from "@/lib/walletService";
 
 // Minimum amount that can be added
 const MIN_AMOUNT = 100;
@@ -80,12 +80,13 @@ const AddFundsDialog = ({
 
       console.log(`Initiating payment of ₹${numAmount} via ${paymentMethod}`);
       
-      setTimeout(() => {
-        setIsLoading(false);
-        onOpenChange(false);
-        // Show success message (in production would be handled by webhook)
-        alert(`Successfully added ₹${numAmount} to your wallet!`);
-      }, 2000);
+      // In a real app, this would redirect to a payment gateway
+      // For mock purposes, we'll just update the wallet directly
+      await updateWalletBalance(currentUser.uid, numAmount);
+      
+      setIsLoading(false);
+      onOpenChange(false);
+      alert(`Successfully added ₹${numAmount} to your wallet!`);
       
     } catch (err) {
       console.error("Payment error:", err);

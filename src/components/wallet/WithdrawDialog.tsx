@@ -107,13 +107,12 @@ const WithdrawDialog = ({
     }
   };
 
+  // ... existing code ...
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent
-  className="fixed inset-0 flex items-center justify-center z-50 max-h-screen px-4 py-6 overflow-y-auto sm:px-6 sm:py-8 md:px-0 md:py-0"
->
-
-        <div className="w-full max-w-md bg-[#1F2937] text-white rounded-lg shadow-lg p-6">
+      <DialogContent className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto max-w-md mx-auto sm:max-w-md">
+        <div className="w-full bg-[#1F2937] text-white rounded-lg shadow-lg p-6">
           <DialogHeader>
             <DialogTitle className="text-[#FFFFFF] text-xl">Withdraw Funds</DialogTitle>
             <DialogDescription className="text-[#A0AEC0]">

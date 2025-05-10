@@ -1,21 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Users, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { TournamentDetailsSidebarProps } from "./types";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+interface OrganizerData {
+  name: string;
+  verified: boolean;
+  tournamentsHosted: number;
+}
 
 const TournamentSidebar: React.FC<TournamentDetailsSidebarProps> = ({
   tournament,
   progressPercentage,
   spotsLeft
 }) => {
-  // Mock organizer data
-  const mockOrganizer = {
-    name: "GamersHub",
-    verified: true,
-    tournaments: 45
-  };
+  const [organizer, setOrganizer] = useState<OrganizerData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrganizerData = async () => {
+      if (!tournament.host_id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userDocRef = doc(db, "users", tournament.host_id);
+        const userDoc = await getDoc(userDocRef);
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setOrganizer({
+            name: userData.displayName || userData.username || "Anonymous Organizer",
+            verified: userData.verified || false,
+            tournamentsHosted: userData.tournamentsHosted || 0
+          });
+        } else {
+          setOrganizer({
+            name: "Unknown Organizer",
+            verified: false,
+            tournamentsHosted: 0
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching organizer data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrganizerData();
+  }, [tournament.host_id]);
 
   return (
     <div className="space-y-6">
@@ -60,15 +99,21 @@ const TournamentSidebar: React.FC<TournamentDetailsSidebarProps> = ({
 
       <Card className="bg-gaming-card border-gaming-border p-4">
         <h3 className="font-semibold mb-3">Organized By</h3>
-        <div className="flex items-center">
-          <div>
-            <div className="font-medium text-white">{mockOrganizer.name}</div>
-            <div className="text-xs text-gaming-muted">{mockOrganizer.tournaments} tournaments hosted</div>
+        {loading ? (
+          <div className="text-sm text-gaming-muted">Loading organizer info...</div>
+        ) : organizer ? (
+          <div className="flex items-center">
+            <div>
+              <div className="font-medium text-white">{organizer.name}</div>
+              <div className="text-xs text-gaming-muted">{organizer.tournamentsHosted} tournaments hosted</div>
+            </div>
+            {organizer.verified && (
+              <Check size={18} className="ml-auto text-gaming-primary" />
+            )}
           </div>
-          {mockOrganizer.verified && (
-            <Check size={18} className="ml-auto text-gaming-primary" />
-          )}
-        </div>
+        ) : (
+          <div className="text-sm text-gaming-muted">No organizer information available</div>
+        )}
       </Card>
     </div>
   );

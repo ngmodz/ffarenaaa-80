@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -7,64 +7,52 @@ import TournamentFilters from "@/components/home/TournamentFilters";
 import FeaturedTournament from "@/components/home/FeaturedTournament";
 import TournamentList from "@/components/home/TournamentList";
 import { TournamentType } from "@/components/home/types";
-
-// Sample tournament data
-const sampleTournaments = [{
-  id: "t1",
-  title: "Free Fire Squad Showdown",
-  mode: "Squad",
-  entryFee: 49,
-  prizeMoney: 10000,
-  date: "May 5, 2025",
-  time: "6:00 PM",
-  totalSpots: 48,
-  filledSpots: 32,
-  status: 'active' as const,
-  isPremium: false
-}, {
-  id: "t2",
-  title: "Elite Solo Cup",
-  mode: "Solo",
-  entryFee: 99,
-  prizeMoney: 20000,
-  date: "May 4, 2025",
-  time: "8:00 PM",
-  totalSpots: 96,
-  filledSpots: 96,
-  status: 'ongoing' as const,
-  isPremium: true
-}, {
-  id: "t3",
-  title: "Booyah Duo Challenge",
-  mode: "Duo",
-  entryFee: 75,
-  prizeMoney: 15000,
-  date: "May 3, 2025",
-  time: "7:00 PM",
-  totalSpots: 50,
-  filledSpots: 42,
-  status: 'completed' as const,
-  isPremium: false
-}, {
-  id: "t4",
-  title: "Pro League Qualifiers",
-  mode: "Squad",
-  entryFee: 149,
-  prizeMoney: 30000,
-  date: "May 6, 2025",
-  time: "9:00 PM",
-  totalSpots: 100,
-  filledSpots: 67,
-  status: 'active' as const,
-  isPremium: true
-}];
+import { getTournaments, Tournament } from "@/lib/tournamentService";
 
 const Index = () => {
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("none");
+  const [tournaments, setTournaments] = useState<TournamentType[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Fetch tournaments from Firebase
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      try {
+        setLoading(true);
+        const fetchedTournaments = await getTournaments();
+        
+        // Convert Firebase tournament data to the format expected by the UI components
+        const formattedTournaments: TournamentType[] = fetchedTournaments.map(tournament => ({
+          id: tournament.id,
+          title: tournament.name,
+          mode: tournament.mode,
+          entryFee: tournament.entry_fee,
+          prizeMoney: tournament.prize_distribution ? 
+            Object.values(tournament.prize_distribution).reduce((total, amount) => total + amount, 0) : 0,
+          date: tournament.start_date,
+          time: new Date(tournament.start_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          totalSpots: tournament.max_players,
+          filledSpots: tournament.filled_spots || 0,
+          status: tournament.status === 'active' ? 'active' : 
+                  tournament.status === 'ongoing' ? 'ongoing' : 
+                  tournament.status === 'completed' ? 'completed' : 'active',
+          isPremium: tournament.entry_fee > 100 // Just an example condition for premium
+        }));
+        
+        setTournaments(formattedTournaments);
+      } catch (error) {
+        console.error("Error fetching tournaments:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchTournaments();
+  }, []);
   
   // Apply filters and sorting
-  let displayedTournaments = filter === "all" ? sampleTournaments : sampleTournaments.filter(tournament => {
+  let displayedTournaments = filter === "all" ? tournaments : tournaments.filter(tournament => {
     if (filter === "active") return tournament.status === 'active';
     if (filter === "ongoing") return tournament.status === 'ongoing';
     if (filter === "completed") return tournament.status === 'completed';
@@ -94,10 +82,10 @@ const Index = () => {
   }
   
   // Find a featured tournament (preference for ongoing premium tournaments)
-  const featuredTournament = sampleTournaments.find(t => t.isPremium && t.status === 'ongoing') || 
-    sampleTournaments.find(t => t.isPremium) || 
-    sampleTournaments.find(t => t.status === 'ongoing') || 
-    sampleTournaments[0];
+  const featuredTournament = tournaments.find(t => t.isPremium && t.status === 'ongoing') || 
+    tournaments.find(t => t.isPremium) || 
+    tournaments.find(t => t.status === 'ongoing') || 
+    tournaments[0];
   
   return <div className="w-full px-4 sm:px-6 md:px-8">
       {/* Header - Centered on mobile */}
@@ -119,7 +107,7 @@ const Index = () => {
       />
       
       {/* Featured Tournament */}
-      {filter !== "completed" && featuredTournament && (
+      {!loading && filter !== "completed" && featuredTournament && (
         <FeaturedTournament tournament={featuredTournament} />
       )}
       
@@ -132,7 +120,13 @@ const Index = () => {
           </Link>
         </div>
         
-        <TournamentList tournaments={displayedTournaments} />
+        {loading ? (
+          <div className="text-center py-10">
+            <p className="text-[#A0A0A0]">Loading tournaments...</p>
+          </div>
+        ) : (
+          <TournamentList tournaments={displayedTournaments} />
+        )}
       </div>
   </div>;
 };

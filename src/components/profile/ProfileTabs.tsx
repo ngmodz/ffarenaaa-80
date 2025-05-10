@@ -1,19 +1,20 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import TournamentActivityList from "@/components/profile/TournamentActivityList";
+import { 
+  getTournaments, 
+  Tournament 
+} from "@/lib/tournamentService";
+import { auth } from "@/lib/firebase";
 
 interface ProfileTabsProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   activeFilter: string | null;
   handleFilterChange: (filter: string | null) => void;
-  mockJoinedTournaments: any[];
-  mockHostedTournaments: any[];
-  mockWinnings: any[];
   getFilteredTournaments: (tournaments: any[]) => any[];
 }
 
@@ -22,11 +23,57 @@ const ProfileTabs = ({
   setSearchQuery,
   activeFilter,
   handleFilterChange,
-  mockJoinedTournaments,
-  mockHostedTournaments,
-  mockWinnings,
   getFilteredTournaments
 }: ProfileTabsProps) => {
+  const [joinedTournaments, setJoinedTournaments] = useState<Tournament[]>([]);
+  const [hostedTournaments, setHostedTournaments] = useState<Tournament[]>([]);
+  const [winnings, setWinnings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      try {
+        setLoading(true);
+        const allTournaments = await getTournaments();
+        const currentUser = auth.currentUser;
+        
+        if (currentUser) {
+          // Filter joined tournaments (where user is a participant)
+          const joined = allTournaments.filter(tournament => 
+            tournament.participants && tournament.participants.includes(currentUser.uid)
+          );
+          setJoinedTournaments(joined);
+          
+          // Filter hosted tournaments (where user is the host)
+          const hosted = allTournaments.filter(tournament => 
+            tournament.host_id === currentUser.uid
+          );
+          setHostedTournaments(hosted);
+          
+          // Filter winnings (tournaments where user participated and has a position)
+          // Note: This is a simplified version, as we don't have a dedicated winnings collection yet
+          const userWinnings = joined
+            .filter(tournament => tournament.status === "completed")
+            .map(tournament => ({
+              id: tournament.id,
+              title: tournament.name,
+              date: tournament.start_date,
+              prize: tournament.prize_distribution ? 
+                Object.values(tournament.prize_distribution)[0] : 0,
+              position: 1 // Placeholder - in a real app, would come from a results collection
+            }));
+          setWinnings(userWinnings);
+        }
+      } catch (error) {
+        console.error("Error fetching tournaments:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTournaments();
+  }, []);
+
   return (
     <Tabs defaultValue="joined" className="w-full">
       <div className="flex flex-col gap-4">
@@ -65,12 +112,12 @@ const ProfileTabs = ({
         
         <div className="flex gap-2 mb-2 flex-wrap">
           <Badge 
-            onClick={() => handleFilterChange('upcoming')}
-            className={`cursor-pointer ${activeFilter === 'upcoming' 
+            onClick={() => handleFilterChange('active')}
+            className={`cursor-pointer ${activeFilter === 'active' 
               ? 'bg-blue-600 hover:bg-blue-700' 
               : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
           >
-            Upcoming
+            Active
           </Badge>
           <Badge 
             onClick={() => handleFilterChange('ongoing')}
@@ -78,7 +125,7 @@ const ProfileTabs = ({
               ? 'bg-gaming-accent hover:bg-gaming-accent/90' 
               : 'bg-[#111827] hover:bg-[#374151] text-[#A0AEC0]'}`}
           >
-            Live
+            Ongoing
           </Badge>
           <Badge 
             onClick={() => handleFilterChange('completed')}
@@ -101,24 +148,36 @@ const ProfileTabs = ({
       </div>
 
       <TabsContent value="joined" className="mt-4">
-        <TournamentActivityList 
-          tournaments={getFilteredTournaments(mockJoinedTournaments)} 
-          type="joined"
-        />
+        {loading ? (
+          <div className="text-center text-white py-4">Loading tournaments...</div>
+        ) : (
+          <TournamentActivityList 
+            tournaments={getFilteredTournaments(joinedTournaments)} 
+            type="joined"
+          />
+        )}
       </TabsContent>
       
       <TabsContent value="hosted" className="mt-4">
-        <TournamentActivityList 
-          tournaments={getFilteredTournaments(mockHostedTournaments)} 
-          type="hosted"
-        />
+        {loading ? (
+          <div className="text-center text-white py-4">Loading tournaments...</div>
+        ) : (
+          <TournamentActivityList 
+            tournaments={getFilteredTournaments(hostedTournaments)} 
+            type="hosted"
+          />
+        )}
       </TabsContent>
       
       <TabsContent value="winnings" className="mt-4">
-        <TournamentActivityList 
-          tournaments={getFilteredTournaments(mockWinnings)} 
-          type="winnings"
-        />
+        {loading ? (
+          <div className="text-center text-white py-4">Loading tournaments...</div>
+        ) : (
+          <TournamentActivityList 
+            tournaments={getFilteredTournaments(winnings)} 
+            type="winnings"
+          />
+        )}
       </TabsContent>
     </Tabs>
   );

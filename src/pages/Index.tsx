@@ -108,14 +108,6 @@ const Index = () => {
           </h1>
           <p className="text-[#A0A0A0] text-sm">Join competitive tournaments and win real rewards</p>
         </div>
-        
-        <div className="mt-4 sm:mt-0">
-          <Link to="/tournament/create">
-            <Button variant="default" className="bg-gaming-primary hover:bg-gaming-primary/90">
-              <Plus size={16} className="mr-1" /> Create Tournament
-            </Button>
-          </Link>
-        </div>
       </div>
       
       {/* Search and Filters */}

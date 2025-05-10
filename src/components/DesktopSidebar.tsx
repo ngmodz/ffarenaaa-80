@@ -150,37 +150,6 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
           ))}
         </div>
 
-        {/* Create Tournament Button */}
-        <div className="p-3">
-          <Link
-            to="/tournament/create"
-            className={cn(
-              "btn-gaming-accent flex items-center justify-center rounded-md transition-all duration-300",
-              isHovered ? "px-4 py-2" : "p-2"
-            )}
-          >
-            <motion.div
-              whileHover={{ rotate: 90 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Plus size={20} className="transition-transform duration-300" />
-            </motion.div>
-            <AnimatePresence>
-              {isHovered && (
-                <motion.span
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "auto" }}
-                  exit={{ opacity: 0, width: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="ml-2 whitespace-nowrap overflow-hidden"
-                >
-                  Create Tournament
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </Link>
-        </div>
-        
         {/* User Avatar */}
         {/*
         <div className={cn(

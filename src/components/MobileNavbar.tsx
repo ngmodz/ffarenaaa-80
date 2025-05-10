@@ -88,13 +88,6 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       isHighlighted: false
     },
     { 
-      icon: <Plus size={18} className="text-white" />, 
-      label: "Create", 
-      to: "/tournament/create", 
-      isActive: currentPath.startsWith("/tournament/create"),
-      isHighlighted: true
-    },
-    { 
       icon: <Wallet size={18} />, 
       label: "Wallet", 
       to: "/wallet", 
@@ -110,7 +103,7 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gaming-bg/90 border-t border-gaming-border backdrop-blur-lg py-1 pb-safe"
     >
-      <nav className="grid grid-cols-5 max-w-md mx-auto">
+      <nav className="grid grid-cols-4 max-w-md mx-auto">
         {navItems.map((item, index) => (
           <NavItem 
             key={item.to}

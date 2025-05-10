@@ -168,19 +168,26 @@ export const getRecentTransactions = async (
  */
 export const addTransaction = async (transaction: Omit<Transaction, 'id'>): Promise<string> => {
   try {
+    console.log("Adding transaction to Firestore:", transaction);
     const transactionsRef = collection(db, 'transactions');
     
-    // Prepare the transaction data for Firestore
+    // Ensure date is a Firebase Timestamp (not a JavaScript Date)
     const transactionData = {
       ...transaction,
-      date: Timestamp.fromDate(transaction.date)
+      date: transaction.date instanceof Date 
+        ? Timestamp.fromDate(transaction.date) 
+        : transaction.date
     };
+    
+    console.log("Prepared transaction data for Firestore:", transactionData);
     
     // Create a new document with auto-generated ID
     const newDocRef = doc(transactionsRef);
+    console.log("Created new document reference with ID:", newDocRef.id);
     
     // Add the transaction to Firestore with the generated ID
     await setDoc(newDocRef, transactionData);
+    console.log("Transaction successfully written to Firestore");
     
     // Return the new transaction ID
     return newDocRef.id;
@@ -208,5 +215,60 @@ export const updateWalletBalance = async (userId: string, amount: number): Promi
   } catch (error) {
     console.error('Error updating wallet balance:', error);
     throw error;
+  }
+};
+
+/**
+ * Set up a real-time listener for a user's transactions (for debugging)
+ * @param userId Firebase Auth UID of the user
+ * @returns Unsubscribe function
+ */
+export const debugMonitorTransactions = (userId: string): (() => void) => {
+  console.log(`Setting up transaction monitor for user ${userId}`);
+  
+  try {
+    const transactionsRef = collection(db, 'transactions');
+    const q = query(
+      transactionsRef,
+      where('userId', '==', userId),
+      orderBy('date', 'desc'),
+      limit(20)
+    );
+    
+    // Set up real-time listener
+    const unsubscribe = onSnapshot(q, 
+      (snapshot) => {
+        console.log(`[DEBUG] Transaction monitor: Received ${snapshot.size} transactions`);
+        
+        // Log each transaction
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          console.log(`[DEBUG] Transaction ${doc.id}:`, {
+            ...data,
+            date: data.date?.toDate?.() || data.date,
+          });
+        });
+        
+        // Log any changes in this snapshot
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            console.log(`[DEBUG] New transaction added: ${change.doc.id}`);
+          } else if (change.type === 'modified') {
+            console.log(`[DEBUG] Transaction modified: ${change.doc.id}`);
+          } else if (change.type === 'removed') {
+            console.log(`[DEBUG] Transaction removed: ${change.doc.id}`);
+          }
+        });
+      },
+      (error) => {
+        console.error('[DEBUG] Error in transaction monitor:', error);
+      }
+    );
+    
+    return unsubscribe;
+  } catch (error) {
+    console.error('[DEBUG] Error setting up transaction monitor:', error);
+    // Return dummy unsubscribe function
+    return () => {};
   }
 }; 

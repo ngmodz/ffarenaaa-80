@@ -45,13 +45,35 @@ let app, db, auth, storage;
 let isMock = false;
 
 try {
+  // Validate required Firebase config values
+  if (!firebaseConfig.apiKey || !firebaseConfig.projectId || !firebaseConfig.appId) {
+    throw new Error("Invalid Firebase configuration - missing required fields");
+  }
+  
   // Initialize Firebase
-  console.log("Attempting to initialize Firebase with config:", firebaseConfig);
+  console.log("Initializing Firebase with config:", { 
+    apiKey: firebaseConfig.apiKey.substring(0, 5) + '***', 
+    projectId: firebaseConfig.projectId,
+    appId: firebaseConfig.appId.substring(0, 8) + '***'
+  });
+  
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   auth = getAuth(app);
   storage = getStorage(app);
-  console.log("Firebase initialized successfully");
+  
+  // Verify initialization
+  if (!db || !auth || !storage) {
+    throw new Error("Firebase services not initialized properly");
+  }
+  
+  console.log("Firebase initialized successfully:", { 
+    app: !!app, 
+    db: !!db, 
+    auth: !!auth, 
+    storage: !!storage,
+    mock: isMock
+  });
 } catch (error) {
   console.error('Firebase initialization error:', error);
   console.warn('Using mock Firebase implementation for development');

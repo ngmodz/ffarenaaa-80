@@ -28,6 +28,40 @@ service cloud.firestore {
       allow delete: if request.auth != null && request.auth.token.admin == true;
     }
     
+    // Wallet rules - allow users to access only their own wallet
+    match /wallets/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // Don't allow wallet deletion
+    }
+    
+    // Simplified transaction rules
+    match /transactions/{transactionId} {
+      // Allow reading any transaction if the user ID matches the authenticated user
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid
+      );
+      
+      // Allow creating transactions if userID matches authenticated user
+      allow create: if request.auth != null && (
+        request.resource.data.userId == request.auth.uid
+      );
+      
+      // No updates or deletions
+      allow update: if false;
+      allow delete: if false;
+    }
+    
+    // Important: Allow users to list their own transactions
+    match /transactions {
+      allow list: if request.auth != null && request.query.limit <= 100 && 
+                  request.query.where.size() > 0 && 
+                  request.query.where[0][0] == 'userId' && 
+                  request.query.where[0][1] == '==' && 
+                  request.query.where[0][2] == request.auth.uid;
+    }
+    
     // Explicitly deny access to test_connection collection
     match /test_connection/{document=**} {
       allow read, write: if false;

@@ -26,7 +26,7 @@ const SocialLoginOptions = () => {
       
       toast({
         title: "Google login successful",
-        description: "Welcome to Freefire Tournaments!",
+        description: "Welcome to Free Fire Tournament",
       });
       
       // Navigate to home after successful login

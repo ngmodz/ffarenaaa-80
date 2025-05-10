@@ -105,7 +105,7 @@ const LoginForm = ({ setActiveTab }: LoginFormProps) => {
       
       toast({
         title: "Login successful",
-        description: "Welcome back to FireArena!",
+        description: "Welcome to Free Fire Tournament",
       });
       
       // Store in local storage if remember me is checked

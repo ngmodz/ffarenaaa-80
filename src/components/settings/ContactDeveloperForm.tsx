@@ -43,8 +43,8 @@ const ContactDeveloperForm = ({ onClose }: ContactDeveloperFormProps) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "Nishant Grewal",
-      email: "ngmodz05@gmail.com",
+      name: "",
+      email: "",
       subject: "",
       message: "",
     },

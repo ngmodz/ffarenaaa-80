@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { TournamentFormData } from "@/pages/TournamentCreate";
-import { ChevronLeft, CalendarIcon, Users, Trophy, MapPin, Settings, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, CalendarIcon, Users, Trophy, MapPin, Settings, AlertTriangle, CheckCircle2, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { createTournament, uploadTournamentBanner } from "@/lib/tournamentService";
+import { toast } from "sonner";
+import { auth } from "@/lib/firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 
 interface ReviewAndPublishProps {
   formData: TournamentFormData;
@@ -18,6 +21,23 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [authVerified, setAuthVerified] = useState(false);
+  
+  // Verify authentication status on component mount
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is signed in with UID:", user.uid);
+        setAuthVerified(true);
+      } else {
+        console.log("No user is signed in");
+        setError("You must be logged in to create a tournament. Please sign in again.");
+        setAuthVerified(false);
+      }
+    });
+    
+    return () => unsubscribe();
+  }, []);
   
   // Calculate total prize pool
   const totalPrizePool = formData.entry_fee * formData.max_players;
@@ -49,15 +69,83 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       });
   };
 
+  // Validate tournament data
+  const validateTournamentData = (): boolean => {
+    // Check if user is authenticated
+    if (!auth.currentUser) {
+      setError("You must be logged in to create a tournament. Please sign in.");
+      return false;
+    }
+    
+    // Check required fields
+    const requiredFields: (keyof TournamentFormData)[] = [
+      'name', 'description', 'mode', 'max_players', 'start_date', 
+      'map', 'room_type', 'entry_fee', 'prize_distribution', 'rules'
+    ];
+    
+    const missingFields = requiredFields.filter(field => !formData[field]);
+    if (missingFields.length > 0) {
+      setError(`Missing required fields: ${missingFields.join(', ')}`);
+      return false;
+    }
+    
+    // Check if date is in the future
+    const tournamentDate = new Date(formData.start_date);
+    const now = new Date();
+    if (tournamentDate <= now) {
+      setError("Tournament start date must be in the future");
+      return false;
+    }
+    
+    // Check if prize distribution adds up to 100%
+    const prizeTotal = Object.values(formData.prize_distribution).reduce((sum, value) => sum + value, 0);
+    if (prizeTotal !== 100) {
+      setError(`Prize distribution must total 100%. Current total: ${prizeTotal}%`);
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Re-authenticate user if needed
+  const refreshAuthentication = async () => {
+    try {
+      // Sign out and redirect to auth page to refresh authentication
+      await signOut(auth);
+      toast.error("Authentication session expired. Please log in again.");
+      navigate("/auth");
+      return false;
+    } catch (error) {
+      console.error("Error signing out:", error);
+      return false;
+    }
+  };
+
   // Handle tournament creation
   const createTournamentHandler = async () => {
     try {
-      setIsSubmitting(true);
+      // Reset states
       setError(null);
+      
+      if (!authVerified) {
+        const isRefreshed = await refreshAuthentication();
+        if (!isRefreshed) return;
+      }
+      
+      // Validate data
+      if (!validateTournamentData()) {
+        return;
+      }
+      
+      setIsSubmitting(true);
+      
+      // Notify user that the tournament is being created
+      toast.info("Creating your tournament...");
       
       // If there's a new image file, upload it to Firebase Storage
       let bannerImageUrl = formData.banner_image_url;
       if (formData.banner_image instanceof File) {
+        toast.info("Uploading tournament banner...");
         bannerImageUrl = await uploadTournamentBanner(formData.banner_image);
       }
       
@@ -75,6 +163,7 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       
       // Success!
       setSuccess(true);
+      toast.success("Tournament created successfully!");
       
       // Redirect after a delay
       setTimeout(() => {
@@ -83,9 +172,17 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       
     } catch (error) {
       console.error("Error creating tournament:", error);
-      setError(typeof error === 'object' && error !== null && 'message' in error ? 
-        (error as Error).message : 
-        "Failed to create tournament. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Failed to create tournament. Please try again.";
+      
+      // Handle specific error cases
+      if (errorMessage.includes("permission") || errorMessage.includes("Permission")) {
+        // If it's a permissions issue, try to refresh auth
+        toast.error("Permission issue detected. Refreshing your authentication...");
+        await refreshAuthentication();
+      } else {
+        setError(errorMessage);
+        toast.error(errorMessage);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -98,6 +195,7 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -108,6 +206,27 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
           <AlertTitle>Success!</AlertTitle>
           <AlertDescription>
             Your tournament has been created successfully! Redirecting to tournament page...
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {!authVerified && (
+        <Alert className="mb-6 bg-amber-500/20 border-amber-500 text-amber-500">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Authentication Warning</AlertTitle>
+          <AlertDescription>
+            Your authentication session may be invalid. Creating a tournament might fail. Please consider signing out and signing back in.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {/* Tournament Date Warning */}
+      {formData.start_date && new Date(formData.start_date) < new Date(Date.now() + 24 * 60 * 60 * 1000) && (
+        <Alert className="mb-6 bg-amber-500/20 border-amber-500 text-amber-500">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Warning</AlertTitle>
+          <AlertDescription>
+            Your tournament is scheduled to start in less than 24 hours. Participants may not have enough time to join.
           </AlertDescription>
         </Alert>
       )}

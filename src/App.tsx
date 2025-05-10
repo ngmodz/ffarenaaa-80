@@ -9,6 +9,7 @@ import TermsAndPolicy from "./pages/TermsAndPolicy";
 import Layout from "./components/Layout";
 import PWALayoutWrapper from "./components/PWALayoutWrapper";
 import { Toaster } from "./components/ui/toaster";
+import { Toaster as SonnerToaster } from "./components/ui/sonner";
 import Landing from "./pages/Landing";
 import { useAuth } from "./contexts/AuthContext";
 import Wallet from "./pages/Wallet";
@@ -44,6 +45,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
+      <SonnerToaster position="top-center" theme="dark" />
     </PWALayoutWrapper>
   );
 }

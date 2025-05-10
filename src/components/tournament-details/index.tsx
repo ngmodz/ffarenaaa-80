@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { updateTournamentRoomDetails } from "@/lib/tournamentService";
+import { updateTournamentRoomDetails, joinTournament } from "@/lib/tournamentService";
 import { TournamentProps } from "./types";
 import TournamentHeader from "./TournamentHeader";
 import TournamentTabs from "./TournamentTabs";
@@ -22,10 +22,81 @@ const TournamentDetailsContent: React.FC<TournamentProps> = ({
   const [roomIdInput, setRoomIdInput] = useState(tournament?.room_id || "");
   const [roomPasswordInput, setRoomPasswordInput] = useState(tournament?.room_password || "");
   const [isSavingRoomDetails, setIsSavingRoomDetails] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
 
   // Calculate derived values
   const progressPercentage = tournament.max_players > 0 ? (tournament.filled_spots / tournament.max_players) * 100 : 0;
   const spotsLeft = tournament.max_players - tournament.filled_spots;
+
+  const handleJoinTournament = async () => {
+    console.log("Join tournament button clicked");
+    if (!id || !tournament) {
+      console.error("Missing tournament ID or tournament data", { id, tournament });
+      return;
+    }
+    
+    if (!currentUser) {
+      console.error("No authenticated user found");
+      toast({
+        title: "Authentication Required",
+        description: "You must be logged in to join this tournament.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check if user is the tournament host
+    if (tournament.host_id === currentUser.uid) {
+      console.error("User is the host of this tournament");
+      toast({
+        title: "Cannot Join",
+        description: "You cannot join your own tournament as you are the host.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check if user is already a participant
+    if (tournament.participants && tournament.participants.includes(currentUser.uid)) {
+      console.error("User is already a participant in this tournament");
+      toast({
+        title: "Already Joined",
+        description: "You have already joined this tournament.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    console.log("Attempting to join tournament", { 
+      tournamentId: id, 
+      userId: currentUser.uid,
+      isJoining
+    });
+    
+    if (isJoining) return;
+    
+    setIsJoining(true);
+    try {
+      console.log("Calling joinTournament function");
+      const result = await joinTournament(id);
+      console.log("Join tournament result", result);
+      
+      toast({
+        title: "Success",
+        description: "You have successfully joined the tournament!",
+      });
+      onRefresh();
+    } catch (error) {
+      console.error("Failed to join tournament:", error);
+      toast({
+        title: "Error",
+        description: (error as Error).message || "Failed to join the tournament.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsJoining(false);
+    }
+  };
 
   const handleSetRoomDetails = async () => {
     if (!id || !tournament) return;
@@ -117,6 +188,7 @@ const TournamentDetailsContent: React.FC<TournamentProps> = ({
           tournament={tournament} 
           progressPercentage={progressPercentage}
           spotsLeft={spotsLeft}
+          onJoin={handleJoinTournament}
         />
       </div>
 

@@ -12,10 +12,11 @@ import {
   limit, 
   serverTimestamp,
   Timestamp,
-  DocumentReference
+  DocumentReference,
+  FirestoreError
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage, auth, mockServerTimestamp } from "./firebase";
+import { db, storage, auth } from "./firebase";
 import { TournamentFormData } from "@/pages/TournamentCreate";
 
 // Tournament type definition
@@ -40,7 +41,7 @@ export interface Tournament {
   banner_image_url: string | null;
   host_id: string;
   status: "active" | "ongoing" | "completed" | "cancelled";
-  created_at: Timestamp | string; // Updated to handle string for mock data
+  created_at: Timestamp;
   participants: string[];
   filled_spots: number;
   room_id?: string | null;
@@ -55,27 +56,101 @@ export const createTournament = async (tournamentData: Omit<TournamentFormData, 
       throw new Error("You must be logged in to create a tournament");
     }
     
+    // Verify authentication state
+    console.log("Current user ID:", currentUser.uid);
+    
+    // Validate required fields
+    const requiredFields = [
+      'name', 'description', 'mode', 'max_players', 'start_date', 
+      'map', 'room_type', 'entry_fee', 'prize_distribution', 'rules'
+    ];
+    
+    const missingFields = requiredFields.filter(field => !tournamentData[field]);
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required tournament fields: ${missingFields.join(', ')}`);
+    }
+    
+    // Check if date is valid
+    if (new Date(tournamentData.start_date).toString() === 'Invalid Date') {
+      throw new Error('Invalid start date format');
+    }
+    
+    // Check if prize distribution adds up to 100%
+    const prizeTotal = Object.values(tournamentData.prize_distribution).reduce((sum, value) => sum + value, 0);
+    if (prizeTotal !== 100) {
+      throw new Error(`Prize distribution total must be 100%. Current total: ${prizeTotal}%`);
+    }
+    
     // Prepare tournament data
     const tournament = {
       ...tournamentData,
       host_id: currentUser.uid,
       status: "active" as const,
-      created_at: mockServerTimestamp(),
+      created_at: serverTimestamp(),
       participants: [],
       filled_spots: 0,
+      banner_image_url: tournamentData.banner_image_url || null,
     };
     
-    // Add to Firestore
-    const docRef = await addDoc(collection(db, "tournaments"), tournament);
+    console.log("Creating tournament:", tournament.name);
     
-    // Return the created tournament with its ID
-    return {
-      id: docRef.id,
-      ...tournament,
-    };
+    // Verify Firestore connection
+    try {
+      // Attempt to get a document from the tournaments collection
+      const testRef = doc(db, "tournaments", "test-doc-id");
+      await getDoc(testRef);
+      console.log("Firestore connection verified successfully");
+    } catch (connectionError) {
+      console.error("Firestore connection test failed:", connectionError);
+      // Continue anyway - this is just a test
+    }
+
+    // Add to Firestore with better error handling
+    try {
+      // Add to Firestore with specific collection reference
+      const tournamentsCollection = collection(db, "tournaments");
+      const docRef = await addDoc(tournamentsCollection, tournament);
+      console.log("Tournament created with ID:", docRef.id);
+      
+      // Return the created tournament with its ID
+      return {
+        id: docRef.id,
+        ...tournament,
+        created_at: Timestamp.now(), // Convert serverTimestamp to Timestamp for the return value
+      };
+    } catch (docError) {
+      console.error("Document creation error:", docError);
+      
+      if ((docError as FirestoreError).code === 'permission-denied') {
+        throw new Error("Permission denied: You don't have access to create tournaments. Please check if you're properly logged in.");
+      } else {
+        throw docError; // Re-throw for other errors
+      }
+    }
   } catch (error) {
     console.error("Error creating tournament:", error);
-    throw error;
+    
+    // Handle different types of errors with specific messages
+    if (error instanceof FirestoreError) {
+      switch (error.code) {
+        case 'permission-denied':
+          throw new Error("Permission denied: Please make sure you're logged in and have the right permissions.");
+        case 'unavailable':
+          throw new Error("Firebase service is currently unavailable. Please try again later.");
+        case 'unauthenticated':
+          throw new Error("Authentication error: Please log out and log back in.");
+        case 'not-found':
+          throw new Error("Database error: Collection not found.");
+        default:
+          throw new Error(`Firebase error: ${error.message}`);
+      }
+    }
+    
+    if (error instanceof Error) {
+      throw new Error(`Failed to create tournament: ${error.message}`);
+    }
+    
+    throw new Error("Failed to create tournament: Unknown error");
   }
 };
 
@@ -91,21 +166,18 @@ export const uploadTournamentBanner = async (file: File): Promise<string> => {
     const fileName = `tournament-${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
     const filePath = `tournament-images/${fileName}`;
     
-    try {
-      // Upload to Firebase Storage
-      const storageRef = ref(storage, filePath);
-      const uploadResult = await uploadBytes(storageRef, file);
-      
-      // Get download URL from real Firebase
-      return await getDownloadURL(storageRef);
-    } catch (e) {
-      console.warn("Using mock upload:", e);
-      // Fallback for mock implementation
-      return `https://placehold.co/600x400?text=${encodeURIComponent(file.name)}`;
-    }
+    // Upload to Firebase Storage
+    const storageRef = ref(storage, filePath);
+    await uploadBytes(storageRef, file);
+    
+    // Get download URL
+    return await getDownloadURL(storageRef);
   } catch (error) {
     console.error("Error uploading tournament banner:", error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`Failed to upload tournament banner: ${error.message}`);
+    }
+    throw new Error("Failed to upload tournament banner: Unknown error");
   }
 };
 
@@ -186,32 +258,51 @@ export const updateTournamentStatus = async (id: string, status: Tournament["sta
 
 // Join tournament (for participants)
 export const joinTournament = async (tournamentId: string) => {
+  console.log("joinTournament function called with ID:", tournamentId);
   try {
     const currentUser = auth.currentUser;
+    console.log("Current user:", currentUser?.uid);
     if (!currentUser) {
       throw new Error("You must be logged in to join a tournament");
     }
     
     // Get the tournament
+    console.log("Fetching tournament data");
     const tournament = await getTournamentById(tournamentId);
+    console.log("Tournament data:", tournament);
+    
+    if (!tournament) {
+      throw new Error("Tournament not found");
+    }
     
     // Check if the tournament is full
+    console.log("Checking if tournament is full:", {
+      filledSpots: tournament.filled_spots,
+      maxPlayers: tournament.max_players
+    });
     if (tournament.filled_spots >= tournament.max_players) {
       throw new Error("Tournament is full");
     }
     
     // Check if the user is already a participant
+    console.log("Checking if user is already a participant:", {
+      participants: tournament.participants,
+      userId: currentUser.uid,
+      includes: tournament.participants.includes(currentUser.uid)
+    });
     if (tournament.participants.includes(currentUser.uid)) {
       throw new Error("You have already joined this tournament");
     }
     
     // Update the tournament
+    console.log("Updating tournament with new participant");
     const docRef = doc(db, "tournaments", tournamentId);
     await updateDoc(docRef, {
       participants: [...tournament.participants, currentUser.uid],
       filled_spots: tournament.filled_spots + 1,
     });
     
+    console.log("Tournament joined successfully");
     return { success: true };
   } catch (error) {
     console.error("Error joining tournament:", error);

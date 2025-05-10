@@ -16,7 +16,8 @@ interface OrganizerData {
 const TournamentSidebar: React.FC<TournamentDetailsSidebarProps> = ({
   tournament,
   progressPercentage,
-  spotsLeft
+  spotsLeft,
+  onJoin
 }) => {
   const [organizer, setOrganizer] = useState<OrganizerData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -92,6 +93,7 @@ const TournamentSidebar: React.FC<TournamentDetailsSidebarProps> = ({
         <Button 
           className="w-full bg-gaming-primary hover:bg-gaming-primary/90" 
           disabled={tournament.status !== 'active' || spotsLeft <= 0}
+          onClick={onJoin}
         >
           {tournament.status !== 'active' ? `Registration ${tournament.status}` : spotsLeft <= 0 ? 'Tournament Full' : 'Join Tournament'}
         </Button>

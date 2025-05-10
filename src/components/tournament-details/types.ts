@@ -19,6 +19,7 @@ export interface TournamentDetailsSidebarProps {
   tournament: Tournament;
   progressPercentage: number;
   spotsLeft: number;
+  onJoin: () => void;
 }
 
 export interface RoomDetailsProps {

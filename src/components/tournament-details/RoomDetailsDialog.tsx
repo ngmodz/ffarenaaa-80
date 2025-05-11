@@ -24,11 +24,11 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay />
+    <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
         className
       )}
       {...props}
@@ -75,16 +75,16 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
-                className="grid grid-cols-4 items-center gap-4"
+                className="space-y-2"
               >
-                <Label htmlFor="roomId" className="text-right text-gaming-muted">
+                <Label htmlFor="roomId" className="text-gaming-muted">
                   Room ID
                 </Label>
                 <Input
                   id="roomId"
                   value={roomId}
                   onChange={(e) => setRoomId(e.target.value)}
-                  className="col-span-3 bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
+                  className="w-full bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
                   placeholder="Enter Room ID"
                   style={{ color: 'white' }}
                 />
@@ -94,16 +94,16 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="grid grid-cols-4 items-center gap-4"
+                className="space-y-2"
               >
-                <Label htmlFor="roomPassword" className="text-right text-gaming-muted">
+                <Label htmlFor="roomPassword" className="text-gaming-muted">
                   Password
                 </Label>
                 <Input
                   id="roomPassword"
                   value={roomPassword}
                   onChange={(e) => setRoomPassword(e.target.value)}
-                  className="col-span-3 bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
+                  className="w-full bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
                   placeholder="Enter Room Password"
                   style={{ color: 'white' }}
                 />

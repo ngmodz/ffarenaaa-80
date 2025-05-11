@@ -201,6 +201,58 @@ export const getTournaments = async () => {
   }
 };
 
+// Get tournaments hosted by the current user
+export const getHostedTournaments = async () => {
+  try {
+    const currentUser = auth.currentUser;
+    console.log("Current user in getHostedTournaments:", currentUser?.uid);
+    
+    if (!currentUser) {
+      console.error("No authenticated user found");
+      throw new Error("You must be logged in to view your hosted tournaments");
+    }
+
+    // Create a query to get tournaments hosted by the current user
+    console.log("Creating query for host_id:", currentUser.uid);
+    const q = query(
+      collection(db, "tournaments"),
+      where("host_id", "==", currentUser.uid),
+      orderBy("created_at", "desc"),
+      limit(100) // Add a limit to comply with security rules
+    );
+    
+    console.log("Executing query...");
+    const querySnapshot = await getDocs(q);
+    console.log("Query executed, found", querySnapshot.docs.length, "documents");
+    
+    // Map the document data to Tournament objects
+    const hostedTournaments = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      console.log("Tournament found:", doc.id, data.name);
+      return {
+        id: doc.id,
+        ...data,
+      } as Tournament;
+    });
+    
+    console.log("Returning", hostedTournaments.length, "hosted tournaments");
+    return hostedTournaments;
+  } catch (error) {
+    console.error("Error getting hosted tournaments:", error);
+    if (error instanceof FirestoreError) {
+      switch (error.code) {
+        case 'permission-denied':
+          throw new Error("Permission denied: Please make sure you're logged in and have the right permissions.");
+        case 'unavailable':
+          throw new Error("Firebase service is currently unavailable. Please try again later.");
+        default:
+          throw new Error(`Firebase error: ${error.message}`);
+      }
+    }
+    throw error;
+  }
+};
+
 // Get tournaments by status
 export const getTournamentsByStatus = async (status: Tournament["status"]) => {
   try {
@@ -240,6 +292,42 @@ export const getTournamentById = async (id: string) => {
   } catch (error) {
     console.error("Error getting tournament:", error);
     throw error;
+  }
+};
+
+// Delete tournament by ID
+export const deleteTournament = async (id: string) => {
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("You must be logged in to delete a tournament");
+    }
+    
+    // Get the tournament to verify ownership
+    const tournament = await getTournamentById(id);
+    
+    if (!tournament) {
+      throw new Error("Tournament not found");
+    }
+    
+    // Verify the current user is the host
+    if (tournament.host_id !== currentUser.uid) {
+      throw new Error("You can only delete tournaments that you host");
+    }
+    
+    // Delete the tournament
+    const docRef = doc(db, "tournaments", id);
+    await deleteDoc(docRef);
+    
+    return { success: true, message: "Tournament deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting tournament:", error);
+    
+    if (error instanceof Error) {
+      throw new Error(`Failed to delete tournament: ${error.message}`);
+    }
+    
+    throw new Error("Failed to delete tournament: Unknown error");
   }
 };
 

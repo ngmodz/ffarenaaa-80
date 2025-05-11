@@ -3,6 +3,7 @@ import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import TournamentDetails from "./pages/TournamentDetails";
 import TournamentCreate from "./pages/TournamentCreate";
+import HostedTournaments from "./pages/HostedTournaments";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import TermsAndPolicy from "./pages/TermsAndPolicy";
@@ -34,6 +35,9 @@ function App() {
           } />
           <Route path="/tournament/create" element={<TournamentCreate />} />
           <Route path="/tournament/:id" element={<TournamentDetails />} />
+          <Route path="/tournaments" element={
+            currentUser ? <HostedTournaments /> : <Navigate to="/auth" replace />
+          } />
           <Route path="/wallet" element={
             currentUser ? <Wallet /> : <Navigate to="/auth" replace />
           } />

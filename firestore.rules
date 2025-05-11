@@ -62,6 +62,16 @@ service cloud.firestore {
                      resource.data.host_id == request.auth.uid);
     }
     
+    // Important: Allow users to list tournaments they host
+    match /tournaments {
+      allow list: if request.auth != null && 
+                  request.query.limit <= 100 && 
+                  request.query.where.size() > 0 && 
+                  request.query.where[0][0] == 'host_id' && 
+                  request.query.where[0][1] == '==' && 
+                  request.query.where[0][2] == request.auth.uid;
+    }
+    
     // Tournament drafts
     match /tournament_drafts/{draftId} {
       allow read: if request.auth != null && resource.data.host_id == request.auth.uid;

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   Dialog,
-  DialogContent as BaseDialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -21,27 +20,6 @@ import { Wallet as WalletType, updateWalletBalance, addTransaction } from "@/lib
 import { motion, AnimatePresence } from "framer-motion";
 import React from "react";
 import TransactionSuccessDialog from "./TransactionSuccessDialog";
-
-// Custom DialogContent without close button
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay className="bg-black/50 backdrop-blur-sm" />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
-DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 interface WithdrawDialogProps {
   isOpen: boolean;
@@ -175,189 +153,194 @@ const WithdrawDialog = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto max-w-md mx-auto sm:max-w-md p-0 border-0">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="w-full bg-gradient-to-b from-gaming-card to-gaming-bg text-gaming-text rounded-lg shadow-lg border border-gaming-primary/20 backdrop-blur-sm overflow-hidden"
+        <DialogPortal>
+          <DialogOverlay className="bg-black/50 backdrop-blur-sm" />
+          <DialogPrimitive.Content
+            className="fixed left-[50%] top-[50%] z-50 w-full max-w-md translate-x-[-50%] translate-y-[-50%]"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 -mr-10 -mt-10 rounded-full bg-gaming-primary/5 blur-xl"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 -ml-8 -mb-8 rounded-full bg-gaming-accent/5 blur-lg"></div>
-            
-            <div className="relative p-6">
-              <DialogHeader className="mb-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <WalletCards className="h-5 w-5 text-gaming-primary" />
-                  <DialogTitle className="text-gaming-text text-xl font-bold">Withdraw Funds</DialogTitle>
-                </div>
-                <DialogDescription className="text-gaming-muted">
-                  Withdraw funds from your wallet to your UPI ID.
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-5 py-4">
-                <motion.div 
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="bg-gaming-bg/50 p-4 rounded-lg border border-gaming-border/30 shadow-sm"
-                >
-                  <div className="flex justify-between">
-                    <span className="text-gaming-muted">Available Balance:</span>
-                    <span className="text-gaming-accent font-semibold">
-                      ₹{wallet?.balance.toFixed(2) || "0.00"}
-                    </span>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="w-full bg-gradient-to-b from-gaming-card to-gaming-bg text-gaming-text rounded-lg shadow-lg border border-gaming-primary/20 overflow-hidden backdrop-blur-sm max-w-md max-h-[90vh]"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 -mr-10 -mt-10 rounded-full bg-gaming-primary/5 blur-xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 -ml-8 -mb-8 rounded-full bg-gaming-accent/5 blur-lg"></div>
+              
+              <div className="relative p-6">
+                <DialogHeader className="mb-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <WalletCards className="h-5 w-5 text-gaming-primary" />
+                    <DialogTitle className="text-gaming-text text-xl font-bold">Withdraw Funds</DialogTitle>
                   </div>
-                </motion.div>
+                  <DialogDescription className="text-gaming-muted">
+                    Withdraw funds from your wallet to your UPI ID.
+                  </DialogDescription>
+                </DialogHeader>
 
-                <motion.div 
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.15 }}
-                  className="space-y-2"
-                >
-                  <Label className="text-gaming-text text-sm">Withdrawal Method</Label>
-                  <RadioGroup
-                    value={withdrawalMethod}
-                    onValueChange={(value) => setWithdrawalMethod(value as "upi" | "bank")}
-                    className="flex space-x-4"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem 
-                        value="upi" 
-                        id="upi-withdraw" 
-                        className="border-gaming-primary text-gaming-primary focus:ring-offset-gaming-bg"
-                      />
-                      <Label htmlFor="upi-withdraw" className="text-gaming-text cursor-pointer">UPI</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem 
-                        value="bank" 
-                        id="bank-withdraw" 
-                        className="border-gaming-primary text-gaming-primary focus:ring-offset-gaming-bg" 
-                      />
-                      <Label htmlFor="bank-withdraw" className="text-gaming-text cursor-pointer">Bank Transfer</Label>
-                    </div>
-                  </RadioGroup>
-                </motion.div>
-
-                {withdrawalMethod === "upi" && (
+                <div className="space-y-5 py-4">
                   <motion.div 
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-gaming-bg/50 p-4 rounded-lg border border-gaming-border/30 shadow-sm"
+                  >
+                    <div className="flex justify-between">
+                      <span className="text-gaming-muted">Available Balance:</span>
+                      <span className="text-gaming-accent font-semibold">
+                        ₹{wallet?.balance.toFixed(2) || "0.00"}
+                      </span>
+                    </div>
+                  </motion.div>
+
+                  <motion.div 
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.15 }}
                     className="space-y-2"
                   >
-                    <Label htmlFor="upiId" className="text-gaming-text text-sm">UPI ID</Label>
+                    <Label className="text-gaming-text text-sm">Withdrawal Method</Label>
+                    <RadioGroup
+                      value={withdrawalMethod}
+                      onValueChange={(value) => setWithdrawalMethod(value as "upi" | "bank")}
+                      className="flex space-x-4"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem 
+                          value="upi" 
+                          id="upi-withdraw" 
+                          className="border-gaming-primary text-gaming-primary focus:ring-offset-gaming-bg"
+                        />
+                        <Label htmlFor="upi-withdraw" className="text-gaming-text cursor-pointer">UPI</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem 
+                          value="bank" 
+                          id="bank-withdraw" 
+                          className="border-gaming-primary text-gaming-primary focus:ring-offset-gaming-bg" 
+                        />
+                        <Label htmlFor="bank-withdraw" className="text-gaming-text cursor-pointer">Bank Transfer</Label>
+                      </div>
+                    </RadioGroup>
+                  </motion.div>
+
+                  {withdrawalMethod === "upi" && (
+                    <motion.div 
+                      initial={{ y: 10, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-2"
+                    >
+                      <Label htmlFor="upiId" className="text-gaming-text text-sm">UPI ID</Label>
+                      <Input
+                        id="upiId"
+                        type="text"
+                        placeholder="e.g., yourname@upi"
+                        value={upiId}
+                        onChange={handleUpiIdChange}
+                        className="bg-gaming-bg/70 text-gaming-text border-gaming-border/50 focus:border-gaming-primary focus:ring-gaming-primary/20"
+                      />
+                    </motion.div>
+                  )}
+
+                  {withdrawalMethod === "bank" && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-gaming-bg/80 p-4 rounded-lg border border-gaming-primary/10 text-center"
+                    >
+                      <p className="text-gaming-muted">Bank withdrawal is currently under development.</p>
+                      <p className="text-gaming-muted text-sm">Please use UPI for now.</p>
+                    </motion.div>
+                  )}
+
+                  <motion.div 
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="space-y-2"
+                  >
+                    <Label htmlFor="amount" className="text-gaming-text text-sm">Amount (₹)</Label>
                     <Input
-                      id="upiId"
+                      id="amount"
                       type="text"
-                      placeholder="e.g., yourname@upi"
-                      value={upiId}
-                      onChange={handleUpiIdChange}
+                      placeholder="Enter amount to withdraw"
+                      value={amount}
+                      onChange={handleAmountChange}
                       className="bg-gaming-bg/70 text-gaming-text border-gaming-border/50 focus:border-gaming-primary focus:ring-gaming-primary/20"
                     />
+                    <AnimatePresence>
+                      {error && (
+                        <motion.p 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="text-destructive text-sm mt-1"
+                        >
+                          {error}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
-                )}
 
-                {withdrawalMethod === "bank" && (
                   <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="bg-gaming-bg/80 p-4 rounded-lg border border-gaming-primary/10 text-center"
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.25 }}
+                    className="bg-gaming-bg/50 p-4 rounded-lg border border-gaming-border/30 mt-2"
                   >
-                    <p className="text-gaming-muted">Bank withdrawal is currently under development.</p>
-                    <p className="text-gaming-muted text-sm">Please use UPI for now.</p>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gaming-muted">Amount:</span>
+                      <span className="text-gaming-text">₹{amount || "0"}</span>
+                    </div>
+                    <div className="border-t border-gaming-border/30 my-2"></div>
+                    <div className="flex justify-between text-sm font-semibold">
+                      <span className="text-gaming-muted">To be received:</span>
+                      <span className="text-gaming-accent">₹{amount || "0"}</span>
+                    </div>
                   </motion.div>
-                )}
+                </div>
 
-                <motion.div 
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="space-y-2"
-                >
-                  <Label htmlFor="amount" className="text-gaming-text text-sm">Amount (₹)</Label>
-                  <Input
-                    id="amount"
-                    type="text"
-                    placeholder="Enter amount to withdraw"
-                    value={amount}
-                    onChange={handleAmountChange}
-                    className="bg-gaming-bg/70 text-gaming-text border-gaming-border/50 focus:border-gaming-primary focus:ring-gaming-primary/20"
-                  />
-                  <AnimatePresence>
-                    {error && (
-                      <motion.p 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="text-destructive text-sm mt-1"
-                      >
-                        {error}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-
-                <motion.div 
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.25 }}
-                  className="bg-gaming-bg/50 p-4 rounded-lg border border-gaming-border/30 mt-2"
-                >
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gaming-muted">Amount:</span>
-                    <span className="text-gaming-text">₹{amount || "0"}</span>
-                  </div>
-                  <div className="border-t border-gaming-border/30 my-2"></div>
-                  <div className="flex justify-between text-sm font-semibold">
-                    <span className="text-gaming-muted">To be received:</span>
-                    <span className="text-gaming-accent">₹{amount || "0"}</span>
-                  </div>
-                </motion.div>
-              </div>
-
-              <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
-                <motion.div 
-                  whileHover={{ scale: isLoading ? 1 : 1.03 }}
-                  whileTap={{ scale: isLoading ? 1 : 0.97 }}
-                  className="w-full sm:w-auto order-1 sm:order-1"
-                >
-                  <Button
-                    onClick={handleSubmit}
-                    className={`transition-all duration-300 w-full ${
-                      isLoading ? 
-                      "bg-gray-700 text-gray-300" : 
-                      "bg-gradient-to-r from-gaming-accent to-[#ff7e33] hover:from-gaming-accent/90 hover:to-[#ff7e33]/90 hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] text-white font-medium"
-                    }`}
-                    disabled={isLoading}
+                <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
+                  <motion.div 
+                    whileHover={{ scale: isLoading ? 1 : 1.03 }}
+                    whileTap={{ scale: isLoading ? 1 : 0.97 }}
+                    className="w-full sm:w-auto order-1 sm:order-1"
                   >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      "Withdraw"
-                    )}
+                    <Button
+                      onClick={handleSubmit}
+                      className={`transition-all duration-300 w-full ${
+                        isLoading ? 
+                        "bg-gray-700 text-gray-300" : 
+                        "bg-gradient-to-r from-gaming-accent to-[#ff7e33] hover:from-gaming-accent/90 hover:to-[#ff7e33]/90 hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] text-white font-medium"
+                      }`}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        "Withdraw"
+                      )}
+                    </Button>
+                  </motion.div>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    className="bg-transparent border-gaming-border/50 text-gaming-text hover:bg-gaming-bg/80 hover:text-gaming-text/80 transition-all duration-200 w-full sm:w-auto order-2 sm:order-2"
+                  >
+                    Cancel
                   </Button>
-                </motion.div>
-                
-                <Button
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  className="bg-transparent border-gaming-border/50 text-gaming-text hover:bg-gaming-bg/80 hover:text-gaming-text/80 transition-all duration-200 w-full sm:w-auto order-2 sm:order-2"
-                >
-                  Cancel
-                </Button>
-              </DialogFooter>
-            </div>
-          </motion.div>
-        </DialogContent>
+                </DialogFooter>
+              </div>
+            </motion.div>
+          </DialogPrimitive.Content>
+        </DialogPortal>
       </Dialog>
       
       <TransactionSuccessDialog

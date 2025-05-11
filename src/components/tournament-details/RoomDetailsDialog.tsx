@@ -42,8 +42,9 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
               id="roomId"
               value={roomId}
               onChange={(e) => setRoomId(e.target.value)}
-              className="col-span-3 bg-gaming-card-deep border-gaming-border focus:ring-gaming-primary text-white"
+              className="col-span-3 bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
               placeholder="Enter Room ID"
+              style={{ color: 'white' }}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -54,12 +55,13 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
               id="roomPassword"
               value={roomPassword}
               onChange={(e) => setRoomPassword(e.target.value)}
-              className="col-span-3 bg-gaming-card-deep border-gaming-border focus:ring-gaming-primary text-white"
+              className="col-span-3 bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
               placeholder="Enter Room Password"
+              style={{ color: 'white' }}
             />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="mt-2">
           <DialogClose asChild>
             <Button type="button" variant="outline" className="text-white border-gaming-muted hover:bg-gaming-muted/20">
               Cancel

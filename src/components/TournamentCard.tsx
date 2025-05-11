@@ -5,6 +5,10 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { TournamentType, TournamentStatus } from "@/components/home/types";
 import { format, parseISO } from 'date-fns';
+import { joinTournament } from "@/lib/tournamentService";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 // Array of banner images to randomly assign to tournaments
 const bannerImages = [
@@ -25,6 +29,8 @@ interface TournamentCardProps {
 }
 
 const TournamentCard = ({ tournament }: TournamentCardProps) => {
+  const [isJoining, setIsJoining] = useState(false);
+  
   const {
     id,
     title,
@@ -82,6 +88,23 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
   const spotsLeft = totalSpots - filledSpots;
   const isFullyBooked = spotsLeft === 0;
 
+  // Handle join tournament action
+  const handleJoinTournament = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation to tournament details
+    
+    try {
+      setIsJoining(true);
+      const result = await joinTournament(id);
+      if (result.success) {
+        toast.success(result.message);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to join tournament");
+    } finally {
+      setIsJoining(false);
+    }
+  };
+
   return (
     <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col max-w-full mx-auto">
       {/* Main Content with Banner Image and Overlay Details */}
@@ -134,6 +157,20 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
             <span>{filledSpots}/{totalSpots} Players</span>
           </div>
         </div>
+        
+        {/* Join button */}
+        {status === "active" && !isFullyBooked && (
+          <div className="mt-3">
+            <Button 
+              variant="default" 
+              className="w-full bg-gaming-accent hover:bg-gaming-accent/90 text-white"
+              disabled={isJoining}
+              onClick={handleJoinTournament}
+            >
+              {isJoining ? "Joining..." : "Join Tournament"}
+            </Button>
+          </div>
+        )}
       </div>
     </Card>
   );

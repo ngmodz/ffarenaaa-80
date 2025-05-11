@@ -51,7 +51,7 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto max-w-md mx-auto sm:max-w-md p-0 border-0">
+      <DialogContent className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto max-w-[90%] sm:max-w-md mx-auto p-0 border-0">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -62,20 +62,20 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
           <div className="absolute top-0 right-0 w-32 h-32 -mr-10 -mt-10 rounded-full bg-gaming-primary/5 blur-xl"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 -ml-8 -mb-8 rounded-full bg-gaming-accent/5 blur-lg"></div>
           
-          <div className="relative p-6">
+          <div className="relative p-4 sm:p-6">
             <DialogHeader>
-              <DialogTitle className="text-white text-xl font-bold">Set Custom Room Details</DialogTitle>
-              <DialogDescription className="text-gaming-muted">
+              <DialogTitle className="text-white text-lg sm:text-xl font-bold">Set Custom Room Details</DialogTitle>
+              <DialogDescription className="text-gaming-muted text-sm sm:text-base">
                 Enter the Room ID and Password for this tournament. This will be visible to joined participants.
               </DialogDescription>
             </DialogHeader>
             
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-3 sm:gap-4 py-3 sm:py-4">
               <motion.div 
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
-                className="space-y-2"
+                className="space-y-1.5 sm:space-y-2"
               >
                 <Label htmlFor="roomId" className="text-gaming-muted">
                   Room ID
@@ -84,7 +84,7 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
                   id="roomId"
                   value={roomId}
                   onChange={(e) => setRoomId(e.target.value)}
-                  className="w-full bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
+                  className="w-full bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500 h-9 sm:h-10 text-sm sm:text-base"
                   placeholder="Enter Room ID"
                   style={{ color: 'white' }}
                 />
@@ -94,7 +94,7 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="space-y-2"
+                className="space-y-1.5 sm:space-y-2"
               >
                 <Label htmlFor="roomPassword" className="text-gaming-muted">
                   Password
@@ -103,14 +103,14 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
                   id="roomPassword"
                   value={roomPassword}
                   onChange={(e) => setRoomPassword(e.target.value)}
-                  className="w-full bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500"
+                  className="w-full bg-[#111827] border-gaming-border focus:ring-gaming-primary text-white placeholder:text-gray-500 h-9 sm:h-10 text-sm sm:text-base"
                   placeholder="Enter Room Password"
                   style={{ color: 'white' }}
                 />
               </motion.div>
             </div>
             
-            <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
+            <DialogFooter className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
               <motion.div 
                 whileHover={{ scale: isSaving ? 1 : 1.03 }}
                 whileTap={{ scale: isSaving ? 1 : 0.97 }}
@@ -120,9 +120,9 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
                   type="button" 
                   onClick={onSave}
                   disabled={isSaving}
-                  className="transition-all duration-300 w-full bg-[#22C55E] text-white hover:opacity-90 hover:shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                  className="transition-all duration-300 w-full text-sm sm:text-base h-9 sm:h-10 bg-[#22C55E] text-white hover:opacity-90 hover:shadow-[0_0_15px_rgba(34,197,94,0.3)]"
                 >
-                  {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {isSaving ? <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" /> : null}
                   Save Details
                 </Button>
               </motion.div>
@@ -131,7 +131,7 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="bg-transparent border-gaming-border/50 text-white hover:bg-gaming-bg/80 hover:text-white/80 transition-all duration-200 w-full sm:w-auto order-2 sm:order-2"
+                  className="bg-transparent border-gaming-border/50 text-white hover:bg-gaming-bg/80 hover:text-white/80 transition-all duration-200 w-full sm:w-auto order-2 sm:order-2 text-sm sm:text-base h-9 sm:h-10"
                 >
                   Cancel
                 </Button>

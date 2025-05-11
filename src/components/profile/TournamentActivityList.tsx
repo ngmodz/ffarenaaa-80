@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -111,7 +110,7 @@ const TournamentActivityList = ({ tournaments, type }: TournamentActivityListPro
                         <span className="text-[#A0AEC0]">Prize: </span>
                         <span className="text-white">₹{tournament.prizeMoney}</span>
                       </div>
-                      {tournament.position && (
+                      {tournament.position && tournament.prize > 0 && (
                         <div className="flex items-center text-sm">
                           <Trophy size={14} className="mr-1 text-[#FFD700]" />
                           <span className="text-[#FFD700] font-bold">#{tournament.position}</span>
@@ -133,7 +132,7 @@ const TournamentActivityList = ({ tournaments, type }: TournamentActivityListPro
                     </div>
                   )}
                   
-                  {type === 'winnings' && (
+                  {type === 'winnings' && tournament.prize > 0 && (
                     <div className="mt-3 flex justify-between items-center">
                       <div className="flex items-center text-sm">
                         <Trophy size={14} className="mr-1.5 text-[#FFD700]" />
@@ -229,7 +228,7 @@ const TournamentActivityList = ({ tournaments, type }: TournamentActivityListPro
                     <TableCell>₹{tournament.entryFee}</TableCell>
                     <TableCell>₹{tournament.prizeMoney}</TableCell>
                     <TableCell>
-                      {tournament.position ? (
+                      {tournament.position && tournament.prize > 0 ? (
                         <span className="text-[#FFD700] font-bold">#{tournament.position}</span>
                       ) : (
                         <span className="text-[#A0AEC0]">-</span>
@@ -263,7 +262,7 @@ const TournamentActivityList = ({ tournaments, type }: TournamentActivityListPro
                   </>
                 )}
                 
-                {type === 'winnings' && (
+                {type === 'winnings' && tournament.prize > 0 && (
                   <>
                     <TableCell>
                       <div className="flex items-center">

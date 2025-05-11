@@ -182,53 +182,58 @@ const EntryAndPrizesForm = ({ formData, updateFormData, nextStep, prevStep }: En
             )}
             
             <div className="space-y-6">
-              {["1st", "2nd", "3rd", "4th", "5th"].map((position) => (
-                <FormField
-                  key={position}
-                  control={form.control}
-                  name={`prize_distribution.${position}` as any}
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex justify-between items-center mb-2">
-                        <FormLabel className="text-base font-medium">{position} Place</FormLabel>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-gaming-accent font-semibold">{field.value}%</span>
-                          <span className="text-gaming-muted text-sm">
-                            ₹{getPrizeAmount(field.value)}
-                          </span>
+              {["1st", "2nd", "3rd", "4th", "5th"].map((position) => {
+                const prizeDistribution = form.watch("prize_distribution");
+                const fieldValue = prizeDistribution[position as keyof typeof prizeDistribution];
+                if (fieldValue === 0) return null;
+                return (
+                  <FormField
+                    key={position}
+                    control={form.control}
+                    name={`prize_distribution.${position}` as any}
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex justify-between items-center mb-2">
+                          <FormLabel className="text-base font-medium">{position} Place</FormLabel>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gaming-accent font-semibold">{field.value}%</span>
+                            <span className="text-gaming-muted text-sm">
+                              ₹{getPrizeAmount(field.value)}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <FormControl>
-                        <div className="flex items-center space-x-2">
-                          <Slider
-                            defaultValue={[field.value]}
-                            max={100}
-                            step={1}
-                            className="flex-1 accent-gaming-primary"
-                            onValueChange={(vals) => {
-                              const newValue = vals[0];
-                              field.onChange(newValue);
-                              adjustOtherPrizes(`${position}`, newValue);
-                            }}
-                          />
-                          <Input 
-                            type="number" 
-                            className="bg-gaming-card text-white w-16" 
-                            min={0}
-                            max={100}
-                            value={field.value}
-                            onChange={(e) => {
-                              const newValue = Number(e.target.value);
-                              field.onChange(newValue);
-                              adjustOtherPrizes(`${position}`, newValue);
-                            }}
-                          />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              ))}
+                        <FormControl>
+                          <div className="flex items-center space-x-2">
+                            <Slider
+                              defaultValue={[field.value]}
+                              max={100}
+                              step={1}
+                              className="flex-1 accent-gaming-primary"
+                              onValueChange={(vals) => {
+                                const newValue = vals[0];
+                                field.onChange(newValue);
+                                adjustOtherPrizes(`${position}`, newValue);
+                              }}
+                            />
+                            <Input 
+                              type="number" 
+                              className="bg-gaming-card text-white w-16" 
+                              min={0}
+                              max={100}
+                              value={field.value}
+                              onChange={(e) => {
+                                const newValue = Number(e.target.value);
+                                field.onChange(newValue);
+                                adjustOtherPrizes(`${position}`, newValue);
+                              }}
+                            />
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                );
+              })}
             </div>
           </div>
           

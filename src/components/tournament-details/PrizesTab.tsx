@@ -30,6 +30,7 @@ const sortPositions = (a: string, b: string): number => {
 const PrizesTab: React.FC<PrizesTabProps> = ({ tournament }) => {
   // Sort prizes by position
   const sortedPrizes = Object.entries(tournament.prize_distribution || {})
+    .filter(([_, percentage]) => percentage > 0) // Only include positions with prize > 0
     .sort(([posA], [posB]) => sortPositions(posA, posB));
     
   return (

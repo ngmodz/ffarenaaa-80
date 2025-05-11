@@ -62,10 +62,10 @@ const config = {
           primary: "#9b87f5", // Purple for primary buttons
           secondary: "#7E69AB", // Lighter purple for secondary elements
           accent: "#f97316", // Orange for accent elements
-          bg: "#0A0A0A", // Near-black background
+          bg: "#1B1F2D", // Updated background color
           text: "#FFFFFF", // White for primary text
           muted: "#888888", // Gray for secondary text
-          card: "#121212", // Dark gray for cards
+          card: "#151926", // Updated card color to complement the background
           border: "#2A2A2A", // Border color
           error: "#EF4444", // Red for warnings/errors
         },

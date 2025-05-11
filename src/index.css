@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
+    --background: 225 20% 14.5%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 225 20% 11.5%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 225 20% 11.5%;
     --popover-foreground: 0 0% 98%;
     --primary: 270 64% 75%;
     --primary-foreground: 240 5.9% 10%;
@@ -24,7 +24,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 270 64% 75%;
     --radius: 0.75rem;
-    --sidebar-background: 240 10% 3.9%;
+    --sidebar-background: 225 20% 14.5%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 270 64% 75%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -51,7 +51,7 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #121212 inset !important;
+    -webkit-box-shadow: 0 0 0 30px #1B1F2D inset !important;
     -webkit-text-fill-color: #FFFFFF !important;
     transition: background-color 5000s ease-in-out 0s;
     caret-color: #FFFFFF;
@@ -59,9 +59,9 @@
 
   /* Firefox autofill */
   input:autofill {
-    background-color: #121212 !important;
+    background-color: #1B1F2D !important;
     color: #FFFFFF !important;
-    box-shadow: 0 0 0 30px #121212 inset !important;
+    box-shadow: 0 0 0 30px #1B1F2D inset !important;
   }
 }
 

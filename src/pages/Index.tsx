@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -95,13 +94,6 @@ const Index = () => {
             <span className="text-gaming-primary">Freefire</span> Tournaments
           </h1>
           <p className="text-[#A0A0A0] text-sm">Join competitive tournaments and win real rewards</p>
-        </div>
-        <div className="mt-4 sm:mt-0">
-          <Link to="/tournament/create">
-            <Button className="bg-gaming-primary hover:bg-gaming-primary/90 text-white">
-              Create Tournament
-            </Button>
-          </Link>
         </div>
       </div>
       

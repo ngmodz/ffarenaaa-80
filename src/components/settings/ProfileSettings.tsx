@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { User, Edit } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -56,7 +57,8 @@ const ProfileSettings = () => {
         <div className="p-4 md:p-6">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-6">
             <AvatarDisplay
-              user={userProfile}
+              userProfile={userProfile}
+              currentUser={currentUser}
               className="w-20 h-20 rounded-full bg-[#2A2A2A] border-2 border-gaming-primary/50"
             />
             

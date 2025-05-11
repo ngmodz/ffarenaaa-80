@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getAvatarLetter } from "@/components/ui/UserAvatar";
@@ -43,4 +44,4 @@ export function AvatarDisplay({
   );
 }
 
-export default AvatarDisplay; 
+export default AvatarDisplay;

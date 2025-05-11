@@ -209,7 +209,7 @@ export const getHostedTournaments = async () => {
     
     if (!currentUser) {
       console.error("No authenticated user found");
-      throw new Error("You must be logged in to view your hosted tournaments");
+      return []; // Return empty array instead of throwing an error
     }
 
     // Create a query to get tournaments hosted by the current user
@@ -222,34 +222,44 @@ export const getHostedTournaments = async () => {
     );
     
     console.log("Executing query...");
-    const querySnapshot = await getDocs(q);
-    console.log("Query executed, found", querySnapshot.docs.length, "documents");
     
-    // Map the document data to Tournament objects
-    const hostedTournaments = querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      console.log("Tournament found:", doc.id, data.name);
-      return {
-        id: doc.id,
-        ...data,
-      } as Tournament;
-    });
-    
-    console.log("Returning", hostedTournaments.length, "hosted tournaments");
-    return hostedTournaments;
+    try {
+      const querySnapshot = await getDocs(q);
+      console.log("Query executed, found", querySnapshot.docs.length, "documents");
+      
+      // Map the document data to Tournament objects
+      const hostedTournaments = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        console.log("Tournament found:", doc.id, data.name);
+        return {
+          id: doc.id,
+          ...data,
+        } as Tournament;
+      });
+      
+      console.log("Returning", hostedTournaments.length, "hosted tournaments");
+      return hostedTournaments;
+    } catch (queryError) {
+      console.error("Error executing query:", queryError);
+      return []; // Return empty array on query error
+    }
   } catch (error) {
     console.error("Error getting hosted tournaments:", error);
     if (error instanceof FirestoreError) {
       switch (error.code) {
         case 'permission-denied':
-          throw new Error("Permission denied: Please make sure you're logged in and have the right permissions.");
+          console.error("Permission denied: The user doesn't have access to tournaments");
+          return []; // Return empty array instead of throwing
         case 'unavailable':
-          throw new Error("Firebase service is currently unavailable. Please try again later.");
+          console.error("Firebase service is currently unavailable");
+          return []; // Return empty array instead of throwing
         default:
-          throw new Error(`Firebase error: ${error.message}`);
+          console.error(`Firebase error: ${error.message}`);
+          return []; // Return empty array instead of throwing
       }
     }
-    throw error;
+    // Return empty array for any other errors
+    return [];
   }
 };
 

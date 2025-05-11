@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,21 @@ import { useTournament } from "@/contexts/TournamentContext";
 
 const HostedTournaments = () => {
   const [tournaments, setTournaments] = useState<TournamentType[]>([]);
+  const [localLoading, setLocalLoading] = useState(false);
   const { toast } = useToast();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { hostedTournaments, isLoadingHostedTournaments, refreshHostedTournaments } = useTournament();
+  const loadingTimeoutRef = useRef<number | null>(null);
+  
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, []);
   
   // Verify authentication on component mount
   useEffect(() => {
@@ -28,49 +39,80 @@ const HostedTournaments = () => {
       return;
     }
     
+    // Set local loading state
+    setLocalLoading(true);
+    
+    // Set a safety timeout to exit loading state
+    loadingTimeoutRef.current = window.setTimeout(() => {
+      console.log("Safety timeout triggered - forcing loading state to false");
+      setLocalLoading(false);
+    }, 8000) as unknown as number; // 8 second timeout
+    
     // Refresh tournaments when component mounts and user is authenticated
     if (currentUser && refreshHostedTournaments) {
-      refreshHostedTournaments().catch(error => {
-        console.error("Failed to refresh tournaments:", error);
-      });
+      refreshHostedTournaments()
+        .catch(error => {
+          console.error("Failed to refresh tournaments:", error);
+        })
+        .finally(() => {
+          // Clear the timeout since we finished refreshing
+          if (loadingTimeoutRef.current) {
+            clearTimeout(loadingTimeoutRef.current);
+            loadingTimeoutRef.current = null;
+          }
+          setLocalLoading(false);
+        });
     }
   }, [currentUser, navigate, toast, refreshHostedTournaments]);
   
   // Format tournaments for the TournamentList component
   useEffect(() => {
     try {
-      if (Array.isArray(hostedTournaments) && hostedTournaments.length > 0) {
-        const formattedTournaments: TournamentType[] = hostedTournaments.map(tournament => {
-          // Safely calculate prize total, handling potential undefined values
-          const prizeTotal = tournament.prize_distribution ? 
-            Object.values(tournament.prize_distribution).reduce((total, amount) => total + amount, 0) : 0;
-            
-          return {
-            id: tournament.id || "",
-            title: tournament.name || "Unnamed Tournament",
-            mode: tournament.mode || "Unknown",
-            entryFee: tournament.entry_fee || 0,
-            prizeMoney: prizeTotal,
-            date: tournament.start_date || "",
-            time: tournament.start_date ? new Date(tournament.start_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "",
-            totalSpots: tournament.max_players || 0,
-            filledSpots: tournament.filled_spots || 0,
-            status: tournament.status === 'active' ? 'active' : 
-                    tournament.status === 'ongoing' ? 'ongoing' : 
-                    tournament.status === 'completed' ? 'completed' : 'active',
-            isPremium: (tournament.entry_fee || 0) > 100 // Just an example condition for premium
-          };
-        });
-        
-        setTournaments(formattedTournaments);
+      if (Array.isArray(hostedTournaments)) {
+        if (hostedTournaments.length > 0) {
+          const formattedTournaments: TournamentType[] = hostedTournaments.map(tournament => {
+            // Safely calculate prize total, handling potential undefined values
+            const prizeTotal = tournament.prize_distribution ? 
+              Object.values(tournament.prize_distribution).reduce((total, amount) => total + amount, 0) : 0;
+              
+            return {
+              id: tournament.id || "",
+              title: tournament.name || "Unnamed Tournament",
+              mode: tournament.mode || "Unknown",
+              entryFee: tournament.entry_fee || 0,
+              prizeMoney: prizeTotal,
+              date: tournament.start_date || "",
+              time: tournament.start_date ? new Date(tournament.start_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "",
+              totalSpots: tournament.max_players || 0,
+              filledSpots: tournament.filled_spots || 0,
+              status: tournament.status === 'active' ? 'active' : 
+                      tournament.status === 'ongoing' ? 'ongoing' : 
+                      tournament.status === 'completed' ? 'completed' : 'active',
+              isPremium: (tournament.entry_fee || 0) > 100 // Just an example condition for premium
+            };
+          });
+          
+          setTournaments(formattedTournaments);
+        } else {
+          // Empty array of tournaments - set tournaments to empty array
+          setTournaments([]);
+        }
       } else {
+        // hostedTournaments is not an array - set tournaments to empty array
         setTournaments([]);
       }
+      
+      // Once we have processed the tournaments, we can clear the local loading state
+      setLocalLoading(false);
     } catch (error) {
       console.error("Error formatting tournaments:", error);
       setTournaments([]);
+      setLocalLoading(false);
     }
   }, [hostedTournaments]);
+  
+  // Determine if we're in a loading state (either local or from context)
+  const isLoading = localLoading || isLoadingHostedTournaments;
   
   return (
     <div className="w-full px-4 sm:px-6 md:px-8 pt-4 sm:pt-6">
@@ -93,7 +135,7 @@ const HostedTournaments = () => {
       
       {/* Tournament List */}
       <div className="mb-6">
-        {isLoadingHostedTournaments ? (
+        {isLoading ? (
           <div className="text-center py-10">
             <p className="text-[#A0A0A0]">Loading your tournaments...</p>
           </div>

@@ -107,7 +107,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
 
   return (
     <Link to={`/tournament/${id}`} className="block h-full">
-      <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col max-w-full mx-auto">
+      <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#242839] h-full flex flex-col max-w-full mx-auto">
         {/* Main Content with Banner Image and Overlay Details */}
         <div className="relative w-full aspect-[5/3]">
           {/* Banner Image */}

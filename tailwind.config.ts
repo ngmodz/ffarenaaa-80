@@ -62,7 +62,7 @@ const config = {
           primary: "#9b87f5", // Purple for primary buttons
           secondary: "#7E69AB", // Lighter purple for secondary elements
           accent: "#f97316", // Orange for accent elements
-          bg: "#242839", // Updated background color
+          bg: "#1B1F2D", // Updated background color
           text: "#FFFFFF", // White for primary text
           muted: "#888888", // Gray for secondary text
           card: "#151926", // Updated card color to complement the background

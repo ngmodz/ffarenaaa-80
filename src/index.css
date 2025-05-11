@@ -51,7 +51,7 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #242839 inset !important;
+    -webkit-box-shadow: 0 0 0 30px #1B1F2D inset !important;
     -webkit-text-fill-color: #FFFFFF !important;
     transition: background-color 5000s ease-in-out 0s;
     caret-color: #FFFFFF;
@@ -59,9 +59,9 @@
 
   /* Firefox autofill */
   input:autofill {
-    background-color: #242839 !important;
+    background-color: #1B1F2D !important;
     color: #FFFFFF !important;
-    box-shadow: 0 0 0 30px #242839 inset !important;
+    box-shadow: 0 0 0 30px #1B1F2D inset !important;
   }
 }
 

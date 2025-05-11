@@ -113,9 +113,9 @@ service cloud.firestore {
         request.resource.data.userId == request.auth.uid
       );
       
-      // No updates or deletions
+      // No updates, but allow deletions for own transactions
       allow update: if false;
-      allow delete: if false;
+      allow delete: if request.auth != null && resource.data.userId == request.auth.uid;
     }
     
     // Important: Allow users to list their own transactions

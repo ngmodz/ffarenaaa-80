@@ -39,8 +39,6 @@ export type TournamentFormData = {
 
   // Step 4: Rules & Media
   rules: string;
-  banner_image?: File;
-  banner_image_url?: string;
 };
 
 const TournamentCreate = () => {

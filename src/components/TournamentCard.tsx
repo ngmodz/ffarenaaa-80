@@ -36,13 +36,10 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
     filledSpots,
     status,
     isPremium = false,
-    bannerImage
   } = tournament;
   
-  // If no banner is specified, use the tournament ID to consistently select a banner
+  // Use the tournament ID to generate a consistent index for banner image
   const getBannerImage = () => {
-    if (bannerImage) return bannerImage;
-    
     // Use the tournament ID to generate a consistent index
     const idSum = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const index = idSum % bannerImages.length;
@@ -84,112 +81,61 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
   
   const spotsLeft = totalSpots - filledSpots;
   const isFullyBooked = spotsLeft === 0;
-  
-  // Get button text based on tournament status
-  const getButtonText = () => {
-    if (status === 'active' && !isFullyBooked) return 'Join Tournament';
-    if (status === 'ongoing') return 'View Results';
-    if (status === 'completed') return 'View Results';
-    if (isFullyBooked) return 'Fully Booked';
-    return 'Join Tournament';
-  };
 
-  // Determine button style based on status
-  const getButtonStyle = () => {
-    if (status === 'ongoing') return "bg-gaming-accent hover:bg-gaming-accent/90";
-    if (status === 'completed' || isFullyBooked) return "bg-gray-500 hover:bg-gray-600";
-    return "bg-gaming-primary hover:bg-gaming-primary/90";
-  };
-  
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0] }}
-      whileHover={{ 
-        scale: 1.02,
-        transition: { duration: 0.3 } 
-      }}
-      className="h-full w-full"
-    >
-      <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col max-w-full mx-auto">
-        {/* Main Content with Banner Image and Overlay Details */}
-        <div className="relative w-full aspect-[5/3]">
-          {/* Banner Image */}
-          <img 
-            src={getBannerImage()} 
-            alt={title}
-            className="w-full h-full object-cover"
-          />
-          
-          {/* Prize and Entry Overlay - Top */}
-          <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5">
-            {/* Prize Money */}
-            <div className="flex items-center bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-              <span className="text-gaming-accent">₹{prizeMoney}</span>
-            </div>
-            
-            {/* Status Badge */}
-            <div className={cn(
-              "text-xs font-bold px-1.5 py-0.5 rounded text-white",
-              statusBgColor
-            )}>
-              {statusText}
-            </div>
+    <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col max-w-full mx-auto">
+      {/* Main Content with Banner Image and Overlay Details */}
+      <div className="relative w-full aspect-[5/3]">
+        {/* Banner Image */}
+        <img 
+          src={getBannerImage()} 
+          alt={title}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Prize and Entry Overlay - Top */}
+        <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5">
+          {/* Prize Money */}
+          <div className="flex items-center bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+            <span className="text-gaming-accent">₹{prizeMoney}</span>
           </div>
           
-          {/* Entry Fee - Bottom right */}
-          <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-            ₹{entryFee} Entry
+          {/* Status Badge */}
+          <div className={cn(
+            "text-xs font-bold px-1.5 py-0.5 rounded text-white",
+            statusBgColor
+          )}>
+            {statusText}
           </div>
         </div>
         
-        {/* Tournament Title and Details */}
-        <div className="p-2.5 flex-1 flex flex-col">
-          {/* Title */}
-          <h3 className="font-bold text-white text-sm mb-1.5 line-clamp-1">{title}</h3>
-          
-          {/* Details - Date, Time, Participants */}
-          <div className="space-y-1 text-xs text-gray-300 mb-2">
-            <div className="flex items-center">
-              <Calendar size={12} className="mr-1" />
-              <span>{formatDate(date)} • {time}</span>
-            </div>
-            
-            <div className="flex items-center">
-              <Users size={12} className="mr-1" />
-              <span>{filledSpots}/{totalSpots} Participants</span>
-            </div>
+        {/* Entry Fee - Bottom right */}
+        <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+          ₹{entryFee} Entry
+        </div>
+      </div>
+      
+      {/* Tournament Title and Details */}
+      <div className="p-3 flex-grow">
+        <h3 className="font-semibold text-white mb-2">{title}</h3>
+        
+        {/* Tournament Info */}
+        <div className="space-y-1.5 text-sm text-gray-400">
+          <div className="flex items-center">
+            <Calendar size={14} className="mr-1.5" />
+            <span>{formatDate(date)}</span>
           </div>
-          
-          {/* Progress bar for filled spots */}
-          <div className="mb-2">
-            <div className="w-full h-1 bg-[#2A2A2A] rounded-full overflow-hidden">
-              <div 
-                className={cn(
-                  "h-full rounded-full",
-                  isPremium ? "bg-gradient-to-r from-gaming-primary to-gaming-accent" : "bg-gaming-primary"
-                )}
-                style={{ width: `${Math.max((filledSpots / totalSpots) * 100, 5)}%` }}
-              />
-            </div>
+          <div className="flex items-center">
+            <Clock size={14} className="mr-1.5" />
+            <span>{time}</span>
           </div>
-          
-          {/* Action Button */}
-          <div className="mt-auto">
-            <Link 
-              to={`/tournament/${id}`}
-              className={cn(
-                "block w-full py-1.5 text-center rounded-md text-white font-medium text-xs transition-colors",
-                getButtonStyle()
-              )}
-            >
-              {getButtonText()}
-            </Link>
+          <div className="flex items-center">
+            <Users size={14} className="mr-1.5" />
+            <span>{filledSpots}/{totalSpots} Players</span>
           </div>
         </div>
-      </Card>
-    </motion.div>
+      </div>
+    </Card>
   );
 };
 

@@ -6,7 +6,7 @@ import { ChevronLeft, CalendarIcon, Users, Trophy, MapPin, Settings, AlertTriang
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { createTournament, uploadTournamentBanner } from "@/lib/tournamentService";
+import { createTournament } from "@/lib/tournamentService";
 import { toast } from "sonner";
 import { auth } from "@/lib/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
@@ -144,24 +144,8 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       // Notify user that the tournament is being created
       toast.info("Creating your tournament...");
       
-      // If there's a new image file, upload it to Firebase Storage
-      let bannerImageUrl = formData.banner_image_url;
-      if (formData.banner_image instanceof File) {
-        toast.info("Uploading tournament banner...");
-        bannerImageUrl = await uploadTournamentBanner(formData.banner_image);
-      }
-      
-      // Create tournament data
-      const tournamentData = {
-        ...formData,
-        banner_image_url: bannerImageUrl,
-      };
-      
-      // Remove the banner_image field as it's not needed in Firestore
-      delete tournamentData.banner_image;
-      
       // Create the tournament in Firestore
-      const result = await createTournament(tournamentData);
+      const result = await createTournament(formData);
       
       // Success!
       setSuccess(true);
@@ -239,18 +223,7 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       <div className="bg-gaming-card-dark rounded-md p-6">
         {/* Tournament Header */}
         <div className="relative rounded-md overflow-hidden h-40 mb-4">
-          {formData.banner_image_url ? (
-            <>
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent z-10"></div>
-              <img 
-                src={formData.banner_image_url} 
-                alt={formData.name} 
-                className="w-full h-full object-cover"
-              />
-            </>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-r from-gaming-primary/30 to-gaming-accent/30"></div>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-r from-gaming-primary/30 to-gaming-accent/30"></div>
           
           <div className="absolute bottom-4 left-4 z-20">
             <h3 className="text-xl font-bold text-white">{formData.name}</h3>

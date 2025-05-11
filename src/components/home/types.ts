@@ -1,4 +1,3 @@
-
 export type TournamentStatus = 'active' | 'ongoing' | 'completed' | 'cancelled';
 
 export interface TournamentType {
@@ -13,5 +12,4 @@ export interface TournamentType {
   filledSpots: number;
   status: TournamentStatus;
   isPremium: boolean;
-  bannerImage?: string; // Added banner image URL
 }

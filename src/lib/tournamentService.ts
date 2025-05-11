@@ -38,7 +38,6 @@ export interface Tournament {
     [key: string]: number;
   };
   rules: string;
-  banner_image_url: string | null;
   host_id: string;
   status: "active" | "ongoing" | "completed" | "cancelled";
   created_at: Timestamp;
@@ -89,68 +88,20 @@ export const createTournament = async (tournamentData: Omit<TournamentFormData, 
       created_at: serverTimestamp(),
       participants: [],
       filled_spots: 0,
-      banner_image_url: tournamentData.banner_image_url || null,
     };
     
     console.log("Creating tournament:", tournament.name);
     
-    // Verify Firestore connection
-    try {
-      // Attempt to get a document from the tournaments collection
-      const testRef = doc(db, "tournaments", "test-doc-id");
-      await getDoc(testRef);
-      console.log("Firestore connection verified successfully");
-    } catch (connectionError) {
-      console.error("Firestore connection test failed:", connectionError);
-      // Continue anyway - this is just a test
-    }
-
-    // Add to Firestore with better error handling
-    try {
-      // Add to Firestore with specific collection reference
-      const tournamentsCollection = collection(db, "tournaments");
-      const docRef = await addDoc(tournamentsCollection, tournament);
-      console.log("Tournament created with ID:", docRef.id);
-      
-      // Return the created tournament with its ID
-      return {
-        id: docRef.id,
-        ...tournament,
-        created_at: Timestamp.now(), // Convert serverTimestamp to Timestamp for the return value
-      };
-    } catch (docError) {
-      console.error("Document creation error:", docError);
-      
-      if ((docError as FirestoreError).code === 'permission-denied') {
-        throw new Error("Permission denied: You don't have access to create tournaments. Please check if you're properly logged in.");
-      } else {
-        throw docError; // Re-throw for other errors
-      }
-    }
+    // Add tournament to Firestore
+    const docRef = await addDoc(collection(db, "tournaments"), tournament);
+    
+    return {
+      id: docRef.id,
+      ...tournament,
+    };
   } catch (error) {
     console.error("Error creating tournament:", error);
-    
-    // Handle different types of errors with specific messages
-    if (error instanceof FirestoreError) {
-      switch (error.code) {
-        case 'permission-denied':
-          throw new Error("Permission denied: Please make sure you're logged in and have the right permissions.");
-        case 'unavailable':
-          throw new Error("Firebase service is currently unavailable. Please try again later.");
-        case 'unauthenticated':
-          throw new Error("Authentication error: Please log out and log back in.");
-        case 'not-found':
-          throw new Error("Database error: Collection not found.");
-        default:
-          throw new Error(`Firebase error: ${error.message}`);
-      }
-    }
-    
-    if (error instanceof Error) {
-      throw new Error(`Failed to create tournament: ${error.message}`);
-    }
-    
-    throw new Error("Failed to create tournament: Unknown error");
+    throw error;
   }
 };
 

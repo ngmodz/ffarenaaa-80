@@ -182,8 +182,14 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
         // Success!
         setSuccess(true);
         
-        // Update the toast rather than creating a new one
-        toast.success("Tournament created successfully!", { id: toastId });
+        // Update the toast with a well-formatted success message
+        toast.success("Tournament created successfully!", { 
+          id: toastId,
+          position: "top-center",
+          className: "mobile-toast-success",
+          duration: 3000,
+          description: "Redirecting to tournament page..."
+        });
         
         // Refresh the tournaments list
         await refreshHostedTournaments();
@@ -195,7 +201,12 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       } catch (innerError) {
         // Update the toast with the error message
         const errorMessage = innerError instanceof Error ? innerError.message : "Failed to create tournament. Please try again.";
-        toast.error(errorMessage, { id: toastId });
+        toast.error(errorMessage, { 
+          id: toastId,
+          position: "top-center",
+          className: "mobile-toast-error",
+          duration: 4000
+        });
         throw innerError;
       }
     } catch (error) {
@@ -224,16 +235,6 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-      
-      {success && (
-        <Alert className="mb-6 bg-green-500/20 border-green-500 text-green-500">
-          <CheckCircle2 className="h-4 w-4" />
-          <AlertTitle>Success!</AlertTitle>
-          <AlertDescription>
-            Your tournament has been created successfully! Redirecting to tournament page...
-          </AlertDescription>
         </Alert>
       )}
       

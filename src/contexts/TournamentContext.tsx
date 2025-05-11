@@ -5,7 +5,7 @@ import { useToast } from '@/components/ui/use-toast';
 
 interface TournamentContextType {
   hostedTournaments: Tournament[];
-  refreshHostedTournaments: (showToastOnError?: boolean) => Promise<void>;
+  refreshHostedTournaments: () => Promise<void>;
   isLoadingHostedTournaments: boolean;
 }
 
@@ -34,7 +34,7 @@ export const TournamentProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const refreshHostedTournaments = useCallback(async (showToastOnError = false) => {
+  const refreshHostedTournaments = useCallback(async () => {
     if (!currentUser) {
       setIsLoadingHostedTournaments(false);
       setHostedTournaments([]);
@@ -67,13 +67,11 @@ export const TournamentProvider = ({ children }: { children: ReactNode }) => {
       setHostedTournaments(Array.isArray(fetchedTournaments) ? fetchedTournaments : []);
     } catch (error) {
       console.error("Error fetching hosted tournaments:", error);
-      if (showToastOnError) {
-        toast({
-          title: "Error loading tournaments",
-          description: "There was a problem loading your hosted tournaments.",
-          variant: "destructive"
-        });
-      }
+      toast({
+        title: "Error loading tournaments",
+        description: "There was a problem loading your hosted tournaments.",
+        variant: "destructive"
+      });
       // Set empty array on error to prevent using stale data
       setHostedTournaments([]);
     } finally {
@@ -89,7 +87,7 @@ export const TournamentProvider = ({ children }: { children: ReactNode }) => {
   // Load hosted tournaments when the user changes
   useEffect(() => {
     if (currentUser) {
-      refreshHostedTournaments(true).catch(err => {
+      refreshHostedTournaments().catch(err => {
         console.error("Failed to refresh tournaments in useEffect:", err);
         setIsLoadingHostedTournaments(false);
         setHostedTournaments([]);

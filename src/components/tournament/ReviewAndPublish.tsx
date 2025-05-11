@@ -172,21 +172,32 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       
       setIsSubmitting(true);
       
-      // Create the tournament in Firestore (don't show toast here)
-      const result = await createTournament(formData);
+      // Single toast notification for the process
+      const toastId = toast.loading("Creating your tournament...");
       
-      // Success! - Single toast notification here
-      setSuccess(true);
-      toast.success("Tournament created successfully! Redirecting...");
-      
-      // Refresh the tournaments list but don't show additional toast on error
-      await refreshHostedTournaments(false);
-      
-      // Redirect after a delay
-      setTimeout(() => {
-        navigate(`/tournament/${result.id}`);
-      }, 2000);
-      
+      try {
+        // Create the tournament in Firestore
+        const result = await createTournament(formData);
+        
+        // Success!
+        setSuccess(true);
+        
+        // Update the toast rather than creating a new one
+        toast.success("Tournament created successfully!", { id: toastId });
+        
+        // Refresh the tournaments list
+        await refreshHostedTournaments();
+        
+        // Redirect after a delay
+        setTimeout(() => {
+          navigate(`/tournament/${result.id}`);
+        }, 2000);
+      } catch (innerError) {
+        // Update the toast with the error message
+        const errorMessage = innerError instanceof Error ? innerError.message : "Failed to create tournament. Please try again.";
+        toast.error(errorMessage, { id: toastId });
+        throw innerError;
+      }
     } catch (error) {
       console.error("Error creating tournament:", error);
       const errorMessage = error instanceof Error ? error.message : "Failed to create tournament. Please try again.";
@@ -198,7 +209,6 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
         await refreshAuthentication();
       } else {
         setError(errorMessage);
-        toast.error(errorMessage);
       }
     } finally {
       setIsSubmitting(false);

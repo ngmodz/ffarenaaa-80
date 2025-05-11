@@ -196,7 +196,7 @@ const TournamentDetailsContent: React.FC<TournamentProps> = ({
   };
 
   const handleGoHome = () => {
-    navigate('/home');
+    navigate('/tournaments');
   };
 
   try {
@@ -248,7 +248,7 @@ const TournamentDetailsContent: React.FC<TournamentProps> = ({
 
     return (
       <>
-        <Link to="/home" className="inline-flex items-center text-gaming-muted hover:text-gaming-text mb-4">
+        <Link to="/tournaments" className="inline-flex items-center text-gaming-muted hover:text-gaming-text mb-4">
           <ArrowLeft size={18} className="mr-1" /> Back to tournaments
         </Link>
         

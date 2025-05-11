@@ -84,7 +84,7 @@ const MobileNavbar = ({ currentPath }: MobileNavbarProps) => {
       icon: <Trophy size={18} />, 
       label: "Tournaments", 
       to: "/tournaments", 
-      isActive: currentPath.startsWith("/tournaments"),
+      isActive: currentPath === "/tournaments",
       isHighlighted: false
     },
     { 

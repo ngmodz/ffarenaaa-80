@@ -1,3 +1,4 @@
+
 import { Calendar, Clock, Trophy, Users, Coins } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -5,6 +6,20 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { TournamentType } from "@/components/home/types";
 import { format, parseISO } from 'date-fns';
+
+// Array of banner images to randomly assign to tournaments
+const bannerImages = [
+  "https://iili.io/3v8Y6nS.jpg", // photo 1627856013091
+  "https://iili.io/3v8Yrt2.jpg", // photo 1598550476439
+  "https://iili.io/3v8YUu4.jpg", // photo 1563089145
+  "https://iili.io/3v8Yv8G.jpg", // photo 1560253023
+  "https://iili.io/3v8Ykas.jpg", // photo 1542751371
+  "https://iili.io/3v8YN6X.jpg", // photo 1511512578047
+  "https://iili.io/3v8YjnI.jpg", // photo 1511882150382
+  "https://iili.io/3v8YXZN.jpg", // photo 1550745165
+  "https://iili.io/3v8YWjp.jpg", // photo 1616588589676
+  "https://iili.io/3v8YVuR.jpg", // photo 1603481546238
+];
 
 interface TournamentCardProps {
   tournament: TournamentType;
@@ -22,8 +37,19 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
     filledSpots,
     mode,
     status,
-    isPremium = false
+    isPremium = false,
+    bannerImage
   } = tournament;
+  
+  // If no banner is specified, use the tournament ID to consistently select a banner
+  const getBannerImage = () => {
+    if (bannerImage) return bannerImage;
+    
+    // Use the tournament ID to generate a consistent index
+    const idSum = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const index = idSum % bannerImages.length;
+    return bannerImages[index];
+  };
   
   const statusColors = {
     active: "bg-blue-500",
@@ -42,50 +68,15 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
     }
   };
 
-  // Format time properly
-  const formatTime = (timeStr: string) => {
-    return timeStr || 'TBD';
-  };
-  
-  // Get card gradient based on mode and premium status
-  const getCardGradient = () => {
-    if (isPremium) {
-      // Premium tournaments get special gradients
-      if (status === 'ongoing') {
-        return "bg-gradient-to-br from-[#1E1A20] via-[#2A1A22] to-[#2D1A1A] border-gaming-accent border-opacity-70";
-      }
-      return "bg-gradient-to-br from-[#1A1A28] via-[#1E1A2A] to-[#231A2D] border-gaming-accent border-opacity-70";
+  // Get status text for display
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "ongoing": return "LIVE NOW";
+      case "active": return "UPCOMING";
+      case "cancelled": return "CANCELLED";
+      case "completed": return "COMPLETED";
+      default: return status.toUpperCase();
     }
-    
-    // Regular tournaments get gradients based on mode
-    switch (mode.toLowerCase()) {
-      case "solo":
-        return "bg-gradient-to-br from-[#1A1A20] via-[#1A1A24] to-[#1A1F2A]";
-      case "duo":
-        return "bg-gradient-to-br from-[#1A201A] via-[#1A2420] to-[#1A2A20]";
-      case "squad":
-        return "bg-gradient-to-br from-[#201A1A] via-[#241A1A] to-[#2A1A1A]";
-      default:
-        return "bg-[#1A1A1A]";
-    }
-  };
-  
-  // Get progress bar color based on status and fill rate
-  const getProgressBarColor = () => {
-    if (isFullyBooked) return "bg-red-500";
-    
-    if (isPremium) {
-      return status === 'ongoing' 
-        ? "bg-gradient-to-r from-gaming-accent via-gaming-accent to-gaming-primary" 
-        : "bg-gradient-to-r from-gaming-primary via-[#a990ff] to-[#b69dff]";
-    }
-    
-    // Different colors based on fill rate
-    const fillRate = filledSpots / totalSpots;
-    if (fillRate > 0.75) return "bg-gradient-to-r from-gaming-primary to-blue-400";
-    if (fillRate > 0.5) return "bg-gradient-to-r from-gaming-primary to-purple-400";
-    if (fillRate > 0.25) return "bg-gradient-to-r from-gaming-primary to-indigo-400";
-    return "bg-gaming-primary";
   };
   
   // Get mode badge color
@@ -95,16 +86,6 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
       case "duo": return "bg-green-500/20 text-green-400";
       case "squad": return "bg-red-500/20 text-red-400";
       default: return "bg-gray-500/20 text-gray-400";
-    }
-  };
-  
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "ongoing": return "LIVE NOW";
-      case "active": return "UPCOMING";
-      case "cancelled": return "CANCELLED";
-      case "completed": return "COMPLETED";
-      default: return status.toUpperCase();
     }
   };
   
@@ -126,117 +107,94 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
       className="h-full w-full"
     >
       <Card className={cn(
-        "overflow-hidden border border-[#333333] transition-all duration-300 flex flex-col h-full w-full transform rounded-lg",
-        getCardGradient()
+        "overflow-hidden border border-[#333333] transition-all duration-300 flex flex-col h-full transform rounded-lg",
+        "bg-[#1A1A1A]"
       )}>
-        {/* Card Header */}
-        <div className="px-4 pt-4 pb-2 border-b border-[#333333]/50">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-bold text-base sm:text-lg text-white line-clamp-1">{title}</h3>
-            </div>
-            <motion.div 
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className={cn(
-                "text-2xs font-bold sm:text-xs px-2 py-1 rounded-md text-white",
-                statusColors[status]
-              )}
-            >
-              {getStatusText(status)}
-            </motion.div>
+        {/* Card Top Info Section */}
+        <div className="p-3 flex justify-between items-center">
+          {/* Mode Badge */}
+          <div className={cn(
+            "text-xs font-bold px-2 py-0.5 rounded-md",
+            getModeBadgeColor()
+          )}>
+            {mode.toUpperCase()}
           </div>
           
-          {/* Badge Row */}
-          <div className="flex flex-wrap gap-2 mt-2">
-            {isPremium && (
-              <div className="bg-gaming-accent/20 text-gaming-accent text-xs font-bold px-2 py-1 rounded-md inline-block">
-                PREMIUM
-              </div>
-            )}
-            
-            <div className={cn(
-              "text-xs font-bold px-2 py-1 rounded-md inline-block",
-              getModeBadgeColor()
-            )}>
-              {mode.toUpperCase()}
-            </div>
+          {/* Status Badge */}
+          <div className={cn(
+            "text-2xs font-bold px-2 py-0.5 rounded-md text-white",
+            statusColors[status]
+          )}>
+            {getStatusText(status)}
           </div>
         </div>
         
-        {/* Card Body */}
-        <div className="p-4 flex-1 flex flex-col">
-          {/* Tournament Details - 2 column grid */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            {/* Left column */}
-            <div className="space-y-3">
-              {/* Prize Pool */}
-              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
-                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Prize Pool</span>
-                <div className="flex items-center">
-                  <Trophy size={16} className={cn(
-                    isPremium ? "text-gaming-accent" : "text-gaming-primary", 
-                    "mr-1.5"
-                  )} />
-                  <span className={cn(
-                    "font-bold text-sm sm:text-base",
-                    isPremium ? "text-gaming-accent" : "text-gaming-primary"
-                  )}>₹{prizeMoney}</span>
-                </div>
-              </div>
-              
-              {/* Date */}
-              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
-                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Date</span>
-                <div className="flex items-center text-xs text-[#E0E0E0]">
-                  <Calendar size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
-                  <span className="text-sm font-medium">{formatDate(date)}</span>
-                </div>
-              </div>
-              
-              {/* Max Players */}
-              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
-                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Max Players</span>
-                <div className="flex items-center text-xs text-[#E0E0E0]">
-                  <Users size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
-                  <span className="text-sm font-medium">{totalSpots}</span>
-                </div>
-              </div>
+        {/* Tournament Banner Image - 16:9 ratio */}
+        <div className="w-full relative aspect-video">
+          <img 
+            src={getBannerImage()} 
+            alt={title}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Premium badge overlay if premium */}
+          {isPremium && (
+            <div className="absolute top-3 left-3 bg-gaming-accent/90 text-white text-xs font-bold px-2 py-1 rounded-md">
+              PREMIUM
+            </div>
+          )}
+          
+          {/* Title overlay at bottom of image */}
+          <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-2">
+            <h3 className="font-bold text-sm text-white truncate">{title}</h3>
+          </div>
+        </div>
+        
+        {/* Card Body - Tournament Details */}
+        <div className="p-3 flex-1 flex flex-col">
+          {/* Tournament Details - 2 rows */}
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            {/* Entry Fee */}
+            <div className="flex items-center">
+              <Coins size={14} className="text-[#D0D0D0] mr-1" />
+              <span className="text-[#D0D0D0]">₹{entryFee}</span>
             </div>
             
-            {/* Right column */}
-            <div className="space-y-3">
-              {/* Entry Fee */}
-              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
-                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Entry Fee</span>
-                <div className="flex items-center">
-                  <Coins size={16} className="mr-1.5 text-[#D0D0D0]" />
-                  <span className="font-bold text-sm sm:text-base text-[#D0D0D0]">₹{entryFee}</span>
-                </div>
-              </div>
-              
-              {/* Time */}
-              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
-                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Time</span>
-                <div className="flex items-center text-xs text-[#E0E0E0]">
-                  <Clock size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
-                  <span className="text-sm font-medium">{formatTime(time)}</span>
-                </div>
-              </div>
+            {/* Prize Pool */}
+            <div className="flex items-center justify-end">
+              <Trophy size={14} className={cn(isPremium ? "text-gaming-accent" : "text-gaming-primary", "mr-1")} />
+              <span className={cn(isPremium ? "text-gaming-accent" : "text-gaming-primary")}>₹{prizeMoney}</span>
+            </div>
+            
+            {/* Date */}
+            <div className="flex items-center mt-1.5">
+              <Calendar size={14} className="text-[#C0C0C0] mr-1" />
+              <span className="text-xs text-[#E0E0E0]">{formatDate(date)}</span>
+            </div>
+            
+            {/* Time */}
+            <div className="flex items-center justify-end mt-1.5">
+              <Clock size={14} className="text-[#C0C0C0] mr-1" />
+              <span className="text-xs text-[#E0E0E0]">{time || "TBD"}</span>
             </div>
           </div>
           
           {/* Participants Progress */}
-          <div className="mb-4 p-3 bg-[#1E1E1E] rounded-md">
-            <div className="flex items-center justify-between text-xs mb-2">
-              <span className="text-[#A0A0A0] uppercase tracking-wider font-medium">Participants</span>
-              <span className="font-bold text-white text-sm">{filledSpots}/{totalSpots}</span>
+          <div className="my-3">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <div className="flex items-center">
+                <Users size={14} className="text-[#C0C0C0] mr-1" />
+                <span className="text-[#A0A0A0]">Participants</span>
+              </div>
+              <span className="font-medium text-white">{filledSpots}/{totalSpots}</span>
             </div>
             
-            <div className="w-full h-2.5 bg-[#2A2A2A] rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-[#2A2A2A] rounded-full overflow-hidden">
               <div 
-                className={cn("h-full rounded-full", getProgressBarColor())}
+                className={cn(
+                  "h-full rounded-full",
+                  isPremium ? "bg-gradient-to-r from-gaming-primary to-gaming-accent" : "bg-gaming-primary"
+                )}
                 style={{ width: `${Math.max((filledSpots / totalSpots) * 100, 5)}%` }}
               />
             </div>
@@ -247,7 +205,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
             <Link 
               to={`/tournament/${id}`}
               className={cn(
-                "block w-full py-3 text-center rounded-md text-white font-medium text-sm transition-colors",
+                "block w-full py-2 text-center rounded-md text-white font-medium text-sm transition-colors",
                 status === 'active' && !isFullyBooked
                   ? "bg-gaming-primary hover:bg-gaming-primary/90" 
                   : status === 'ongoing'
@@ -256,9 +214,9 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
               )}
             >
               {status === 'active' && !isFullyBooked
-                ? 'Join Tournament'
+                ? 'Join Now'
                 : status === 'ongoing'
-                  ? 'Watch Now'
+                  ? 'Watch Live'
                   : status === 'completed'
                     ? 'View Results'
                     : isFullyBooked 

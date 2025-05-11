@@ -1,13 +1,12 @@
+
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import TournamentFilters from "@/components/home/TournamentFilters";
 import FeaturedTournament from "@/components/home/FeaturedTournament";
 import TournamentList from "@/components/home/TournamentList";
 import { TournamentType } from "@/components/home/types";
-import { getTournaments, Tournament } from "@/lib/tournamentService";
+import { getTournaments } from "@/lib/tournamentService";
 
 const Index = () => {
   const [filter, setFilter] = useState("all");
@@ -87,14 +86,22 @@ const Index = () => {
     tournaments.find(t => t.status === 'ongoing') || 
     tournaments[0];
   
-  return <div className="w-full px-4 sm:px-6 md:px-8">
-      {/* Header - Centered on mobile */}
-      <div className="mb-4 text-center sm:text-left sm:flex sm:justify-between sm:items-center">
+  return (
+    <div className="w-full px-4 sm:px-6 lg:px-8 pb-6">
+      {/* Header Section */}
+      <div className="mb-6 text-center sm:text-left sm:flex sm:justify-between sm:items-center pt-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold mb-2 text-white mx-0 my-[11px]">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-white">
             <span className="text-gaming-primary">Freefire</span> Tournaments
           </h1>
           <p className="text-[#A0A0A0] text-sm">Join competitive tournaments and win real rewards</p>
+        </div>
+        <div className="mt-4 sm:mt-0">
+          <Link to="/tournament/create">
+            <Button className="bg-gaming-primary hover:bg-gaming-primary/90 text-white">
+              Create Tournament
+            </Button>
+          </Link>
         </div>
       </div>
       
@@ -113,7 +120,7 @@ const Index = () => {
       
       {/* Tournament List */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">All Tournaments</h2>
           <Link to="/tournaments/archive" className="text-xs text-gaming-primary hover:text-gaming-primary/90">
             View Archive
@@ -128,7 +135,8 @@ const Index = () => {
           <TournamentList tournaments={displayedTournaments} />
         )}
       </div>
-  </div>;
+    </div>
+  );
 };
 
 export default Index;

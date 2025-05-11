@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -115,7 +116,7 @@ const HostedTournaments = () => {
   const isLoading = localLoading || isLoadingHostedTournaments;
   
   return (
-    <div className="w-full px-4 sm:px-6 md:px-8 pt-4 sm:pt-6">
+    <div className="w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-6">
       {/* Header with back button */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center">
@@ -162,4 +163,4 @@ const HostedTournaments = () => {
   );
 };
 
-export default HostedTournaments; 
+export default HostedTournaments;

@@ -25,12 +25,14 @@ import { db } from "@/lib/firebase";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogOverlay,
+  DialogPortal
 } from "@/components/ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 // Interface for Transaction data
 interface Transaction {
@@ -728,68 +730,71 @@ const TransactionHistory = ({ userId, refreshTrigger = 0 }: TransactionHistoryPr
       
       {/* Confirmation Dialog */}
       <Dialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
-        <DialogContent className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto max-w-md mx-auto sm:max-w-md p-0 border-0">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="w-full bg-gradient-to-b from-gaming-card to-gaming-bg text-gaming-text rounded-lg shadow-lg border border-gaming-primary/20 backdrop-blur-sm overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 -mr-10 -mt-10 rounded-full bg-gaming-primary/5 blur-xl"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 -ml-8 -mb-8 rounded-full bg-gaming-accent/5 blur-lg"></div>
-            
-            <div className="relative p-6">
-              <DialogHeader className="mb-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <Trash2 className="h-5 w-5 text-rose-500" />
-                  <DialogTitle className="text-gaming-text text-xl font-bold">Clear Transaction History</DialogTitle>
-                </div>
-                <DialogDescription className="text-gaming-muted">
-                  This action cannot be undone. This will permanently delete all your transaction records from the database.
-                </DialogDescription>
-              </DialogHeader>
+        <DialogPortal>
+          <DialogOverlay className="bg-black/50 backdrop-blur-sm" />
+          <DialogPrimitive.Content className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto max-w-md mx-auto sm:max-w-md p-0 border-0">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="w-full bg-gradient-to-b from-gaming-card to-gaming-bg text-gaming-text rounded-lg shadow-lg border border-gaming-primary/20 backdrop-blur-sm overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 -mr-10 -mt-10 rounded-full bg-gaming-primary/5 blur-xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 -ml-8 -mb-8 rounded-full bg-gaming-accent/5 blur-lg"></div>
               
-              <div className="py-4">
-                <p className="text-sm text-gaming-muted">
-                  Are you sure you want to clear your entire transaction history?
-                </p>
-              </div>
+              <div className="relative p-6">
+                <DialogHeader className="mb-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Trash2 className="h-5 w-5 text-rose-500" />
+                    <DialogTitle className="text-gaming-text text-xl font-bold">Clear Transaction History</DialogTitle>
+                  </div>
+                  <DialogDescription className="text-gaming-muted">
+                    This action cannot be undone. This will permanently delete all your transaction records from the database.
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="py-4">
+                  <p className="text-sm text-gaming-muted">
+                    Are you sure you want to clear your entire transaction history?
+                  </p>
+                </div>
 
-              <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setClearDialogOpen(false)}
-                  className="bg-transparent border-gaming-border/50 text-gaming-text hover:bg-gaming-bg/80 hover:text-gaming-text/80 transition-all duration-200 w-full sm:w-auto order-2 sm:order-2"
-                  disabled={clearingHistory}
-                >
-                  Cancel
-                </Button>
-                <motion.div 
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full sm:w-auto order-1 sm:order-1"
-                >
+                <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
                   <Button
-                    variant="destructive"
-                    onClick={clearTransactionHistory}
-                    className="bg-rose-500 hover:bg-rose-600 hover:shadow-[0_0_15px_rgba(244,63,94,0.3)] text-white font-medium transition-all duration-300 w-full"
+                    variant="outline"
+                    onClick={() => setClearDialogOpen(false)}
+                    className="bg-transparent border-gaming-border/50 text-gaming-text hover:bg-gaming-bg/80 hover:text-gaming-text/80 transition-all duration-200 w-full sm:w-auto order-2 sm:order-2"
                     disabled={clearingHistory}
                   >
-                    {clearingHistory ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Clearing...
-                      </>
-                    ) : (
-                      "Clear All Transactions"
-                    )}
+                    Cancel
                   </Button>
-                </motion.div>
-              </DialogFooter>
-            </div>
-          </motion.div>
-        </DialogContent>
+                  <motion.div 
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="w-full sm:w-auto order-1 sm:order-1"
+                  >
+                    <Button
+                      variant="destructive"
+                      onClick={clearTransactionHistory}
+                      className="bg-rose-500 hover:bg-rose-600 hover:shadow-[0_0_15px_rgba(244,63,94,0.3)] text-white font-medium transition-all duration-300 w-full"
+                      disabled={clearingHistory}
+                    >
+                      {clearingHistory ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Clearing...
+                        </>
+                      ) : (
+                        "Clear All Transactions"
+                      )}
+                    </Button>
+                  </motion.div>
+                </DialogFooter>
+              </div>
+            </motion.div>
+          </DialogPrimitive.Content>
+        </DialogPortal>
       </Dialog>
     </div>
   );

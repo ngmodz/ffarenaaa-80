@@ -159,6 +159,38 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
           <UserAvatar />
         </div>
         */}
+        
+        {/* Create Tournament Button */}
+        <div className="px-3 mb-4 mt-auto">
+          <Link
+            to="/tournament/create"
+            className={cn(
+              "flex items-center justify-center px-3 py-2.5 rounded-md transition-all duration-300 bg-gaming-accent text-white shadow-glow-accent",
+              !isHovered && "justify-center"
+            )}
+          >
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="flex items-center justify-center"
+            >
+              <Plus size={20} />
+            </motion.div>
+            <AnimatePresence>
+              {isHovered && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0, x: -10 }}
+                  animate={{ opacity: 1, width: "auto", x: 0 }}
+                  exit={{ opacity: 0, width: 0, x: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="ml-2 text-sm font-medium overflow-hidden whitespace-nowrap"
+                >
+                  Create Tournament
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </Link>
+        </div>
       </div>
     </motion.div>
   );

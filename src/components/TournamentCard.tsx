@@ -1,9 +1,10 @@
-import { Calendar, Clock, Trophy, Users } from "lucide-react";
+import { Calendar, Clock, Trophy, Users, Coins } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { TournamentType } from "@/components/home/types";
+import { format, parseISO } from 'date-fns';
 
 interface TournamentCardProps {
   tournament: TournamentType;
@@ -29,6 +30,21 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
     ongoing: "bg-gaming-accent animate-pulse",
     completed: "bg-gray-500",
     cancelled: "bg-gray-500"
+  };
+  
+  // Format date properly
+  const formatDate = (dateStr: string) => {
+    try {
+      const parsedDate = parseISO(dateStr);
+      return format(parsedDate, 'dd MMM yyyy');
+    } catch (error) {
+      return dateStr; // Return original if parsing fails
+    }
+  };
+
+  // Format time properly
+  const formatTime = (timeStr: string) => {
+    return timeStr || 'TBD';
   };
   
   // Get card gradient based on mode and premium status
@@ -101,7 +117,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0] }}
       whileHover={{ 
-        scale: 1.03, 
+        scale: 1.02, 
         boxShadow: isPremium 
           ? "0 0 20px rgba(249, 115, 22, 0.3)" 
           : "0 0 15px rgba(155, 135, 245, 0.3)",
@@ -110,122 +126,147 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
       className="h-full w-full"
     >
       <Card className={cn(
-        "overflow-hidden border border-[#333333] transition-all duration-300 flex flex-col h-full w-full transform p-4 rounded-lg",
+        "overflow-hidden border border-[#333333] transition-all duration-300 flex flex-col h-full w-full transform rounded-lg",
         getCardGradient()
       )}>
-        {/* Header with status and mode badges */}
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="font-bold text-sm sm:text-base text-white line-clamp-1">{title}</h3>
-          <motion.div 
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
-            className={cn(
-              "text-2xs font-bold sm:text-xs px-2 py-1 rounded-md text-white",
-              statusColors[status]
+        {/* Card Header */}
+        <div className="px-4 pt-4 pb-2 border-b border-[#333333]/50">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-base sm:text-lg text-white line-clamp-1">{title}</h3>
+            </div>
+            <motion.div 
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className={cn(
+                "text-2xs font-bold sm:text-xs px-2 py-1 rounded-md text-white",
+                statusColors[status]
+              )}
+            >
+              {getStatusText(status)}
+            </motion.div>
+          </div>
+          
+          {/* Badge Row */}
+          <div className="flex flex-wrap gap-2 mt-2">
+            {isPremium && (
+              <div className="bg-gaming-accent/20 text-gaming-accent text-xs font-bold px-2 py-1 rounded-md inline-block">
+                PREMIUM
+              </div>
             )}
-          >
-            {getStatusText(status)}
-          </motion.div>
-        </div>
-        
-        {/* Badge Row */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          {isPremium && (
-            <div className="bg-gaming-accent/20 text-gaming-accent text-xs font-bold px-2 py-1 rounded-md inline-block">
-              PREMIUM
-            </div>
-          )}
-          
-          <div className={cn(
-            "text-xs font-bold px-2 py-1 rounded-md inline-block",
-            getModeBadgeColor()
-          )}>
-            {mode.toUpperCase()}
-          </div>
-        </div>
-        
-        {/* Main Content */}
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          {/* Prize Pool */}
-          <div className="flex flex-col">
-            <span className="text-[#A0A0A0] text-xs">Prize Pool</span>
-            <div className="flex items-center">
-              <Trophy size={16} className={cn(
-                isPremium ? "text-gaming-accent" : "text-gaming-primary", 
-                "mr-1.5"
-              )} />
-              <span className={cn(
-                "font-bold text-sm sm:text-base",
-                isPremium ? "text-gaming-accent" : "text-gaming-primary"
-              )}>₹{prizeMoney}</span>
-            </div>
-          </div>
-          
-          {/* Entry Fee */}
-          <div className="flex flex-col">
-            <span className="text-[#A0A0A0] text-xs">Entry Fee</span>
-            <span className="font-bold text-sm sm:text-base text-[#D0D0D0]">₹{entryFee}</span>
-          </div>
-          
-          {/* Date & Time */}
-          <div className="flex flex-col">
-            <span className="text-[#A0A0A0] text-xs">Start Date</span>
-            <div className="flex text-xs items-center text-[#E0E0E0]">
-              <Calendar size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
-              <span className="truncate">{date}</span>
-            </div>
-          </div>
-          
-          {/* Mode & Participants */}
-          <div className="flex flex-col">
-            <span className="text-[#A0A0A0] text-xs">Max Players</span>
-            <div className="flex items-center text-xs text-[#E0E0E0]">
-              <Users size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
-              <span className="truncate">{totalSpots}</span>
+            
+            <div className={cn(
+              "text-xs font-bold px-2 py-1 rounded-md inline-block",
+              getModeBadgeColor()
+            )}>
+              {mode.toUpperCase()}
             </div>
           </div>
         </div>
         
-        {/* Participants Progress */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between text-xs text-[#A0A0A0] mb-1">
-            <span>Participants</span>
-            <span>{filledSpots}/{totalSpots}</span>
+        {/* Card Body */}
+        <div className="p-4 flex-1 flex flex-col">
+          {/* Tournament Details - 2 column grid */}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {/* Left column */}
+            <div className="space-y-3">
+              {/* Prize Pool */}
+              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
+                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Prize Pool</span>
+                <div className="flex items-center">
+                  <Trophy size={16} className={cn(
+                    isPremium ? "text-gaming-accent" : "text-gaming-primary", 
+                    "mr-1.5"
+                  )} />
+                  <span className={cn(
+                    "font-bold text-sm sm:text-base",
+                    isPremium ? "text-gaming-accent" : "text-gaming-primary"
+                  )}>₹{prizeMoney}</span>
+                </div>
+              </div>
+              
+              {/* Date */}
+              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
+                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Date</span>
+                <div className="flex items-center text-xs text-[#E0E0E0]">
+                  <Calendar size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
+                  <span className="text-sm font-medium">{formatDate(date)}</span>
+                </div>
+              </div>
+              
+              {/* Max Players */}
+              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
+                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Max Players</span>
+                <div className="flex items-center text-xs text-[#E0E0E0]">
+                  <Users size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
+                  <span className="text-sm font-medium">{totalSpots}</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right column */}
+            <div className="space-y-3">
+              {/* Entry Fee */}
+              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
+                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Entry Fee</span>
+                <div className="flex items-center">
+                  <Coins size={16} className="mr-1.5 text-[#D0D0D0]" />
+                  <span className="font-bold text-sm sm:text-base text-[#D0D0D0]">₹{entryFee}</span>
+                </div>
+              </div>
+              
+              {/* Time */}
+              <div className="flex justify-between items-center gap-2 bg-[#1A1A1A] p-2 rounded-md">
+                <span className="text-[#A0A0A0] text-xs uppercase tracking-wider font-medium">Time</span>
+                <div className="flex items-center text-xs text-[#E0E0E0]">
+                  <Clock size={14} className="mr-1.5 flex-shrink-0 text-[#C0C0C0]" />
+                  <span className="text-sm font-medium">{formatTime(time)}</span>
+                </div>
+              </div>
+            </div>
           </div>
           
-          <div className="w-full h-1.5 bg-[#2A2A2A] rounded-full overflow-hidden">
-            <div 
-              className={cn("h-full rounded-full", getProgressBarColor())}
-              style={{ width: `${(filledSpots / totalSpots) * 100}%` }}
-            />
+          {/* Participants Progress */}
+          <div className="mb-4 p-3 bg-[#1E1E1E] rounded-md">
+            <div className="flex items-center justify-between text-xs mb-2">
+              <span className="text-[#A0A0A0] uppercase tracking-wider font-medium">Participants</span>
+              <span className="font-bold text-white text-sm">{filledSpots}/{totalSpots}</span>
+            </div>
+            
+            <div className="w-full h-2.5 bg-[#2A2A2A] rounded-full overflow-hidden">
+              <div 
+                className={cn("h-full rounded-full", getProgressBarColor())}
+                style={{ width: `${Math.max((filledSpots / totalSpots) * 100, 5)}%` }}
+              />
+            </div>
           </div>
-        </div>
-        
-        {/* Action Button */}
-        <div className="mt-auto pt-2">
-          <Link 
-            to={`/tournament/${id}`}
-            className={cn(
-              "block w-full py-2 text-center rounded-md text-white font-medium text-sm transition-colors",
-              status === 'active' && !isFullyBooked
-                ? "bg-gaming-primary hover:bg-gaming-primary/90" 
+          
+          {/* Action Button */}
+          <div className="mt-auto">
+            <Link 
+              to={`/tournament/${id}`}
+              className={cn(
+                "block w-full py-3 text-center rounded-md text-white font-medium text-sm transition-colors",
+                status === 'active' && !isFullyBooked
+                  ? "bg-gaming-primary hover:bg-gaming-primary/90" 
+                  : status === 'ongoing'
+                    ? "bg-gaming-accent hover:bg-gaming-accent/90"
+                    : "bg-[#505050] hover:bg-[#606060]"
+              )}
+            >
+              {status === 'active' && !isFullyBooked
+                ? 'Join Tournament'
                 : status === 'ongoing'
-                  ? "bg-gaming-accent hover:bg-gaming-accent/90"
-                  : "bg-[#505050] hover:bg-[#606060]"
-            )}
-          >
-            {status === 'active' && !isFullyBooked
-              ? 'Join Tournament'
-              : status === 'ongoing'
-                ? 'Watch Now'
-                : status === 'completed'
-                  ? 'View Results'
-                  : isFullyBooked 
-                    ? 'Fully Booked'
-                    : 'View Details'
-            }
-          </Link>
+                  ? 'Watch Now'
+                  : status === 'completed'
+                    ? 'View Results'
+                    : isFullyBooked 
+                      ? 'Fully Booked'
+                      : 'View Details'
+              }
+            </Link>
+          </div>
         </div>
       </Card>
     </motion.div>

@@ -50,7 +50,7 @@ const HostedTournaments = () => {
     
     // Refresh tournaments when component mounts and user is authenticated
     if (currentUser && refreshHostedTournaments) {
-      refreshHostedTournaments()
+      refreshHostedTournaments(true)
         .catch(error => {
           console.error("Failed to refresh tournaments:", error);
         })

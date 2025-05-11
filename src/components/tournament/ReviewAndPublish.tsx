@@ -172,18 +172,15 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       
       setIsSubmitting(true);
       
-      // Notify user that the tournament is being created
-      toast.info("Creating your tournament...");
-      
-      // Create the tournament in Firestore
+      // Create the tournament in Firestore (don't show toast here)
       const result = await createTournament(formData);
       
-      // Success!
+      // Success! - Single toast notification here
       setSuccess(true);
-      toast.success("Tournament created successfully!");
+      toast.success("Tournament created successfully! Redirecting...");
       
-      // Refresh the tournaments list
-      await refreshHostedTournaments();
+      // Refresh the tournaments list but don't show additional toast on error
+      await refreshHostedTournaments(false);
       
       // Redirect after a delay
       setTimeout(() => {

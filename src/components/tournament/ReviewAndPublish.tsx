@@ -10,6 +10,7 @@ import { createTournament, uploadTournamentBanner } from "@/lib/tournamentServic
 import { toast } from "sonner";
 import { auth } from "@/lib/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
+import { useTournament } from "@/contexts/TournamentContext";
 
 interface ReviewAndPublishProps {
   formData: TournamentFormData;
@@ -22,6 +23,7 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [authVerified, setAuthVerified] = useState(false);
+  const { refreshHostedTournaments } = useTournament();
   
   // Verify authentication status on component mount
   useEffect(() => {
@@ -164,6 +166,9 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       // Success!
       setSuccess(true);
       toast.success("Tournament created successfully!");
+      
+      // Refresh the tournaments list
+      await refreshHostedTournaments();
       
       // Redirect after a delay
       setTimeout(() => {

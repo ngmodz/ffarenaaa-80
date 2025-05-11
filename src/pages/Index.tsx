@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import TournamentFilters from "@/components/home/TournamentFilters";
-import FeaturedTournament from "@/components/home/FeaturedTournament";
 import TournamentList from "@/components/home/TournamentList";
 import { TournamentType } from "@/components/home/types";
 import { getTournaments } from "@/lib/tournamentService";
@@ -79,12 +78,6 @@ const Index = () => {
     });
   }
   
-  // Find a featured tournament (preference for ongoing premium tournaments)
-  const featuredTournament = tournaments.find(t => t.isPremium && t.status === 'ongoing') || 
-    tournaments.find(t => t.isPremium) || 
-    tournaments.find(t => t.status === 'ongoing') || 
-    tournaments[0];
-  
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 pb-6">
       {/* Header Section */}
@@ -104,11 +97,6 @@ const Index = () => {
         sortBy={sortBy}
         setSortBy={setSortBy}
       />
-      
-      {/* Featured Tournament */}
-      {!loading && filter !== "completed" && featuredTournament && (
-        <FeaturedTournament tournament={featuredTournament} />
-      )}
       
       {/* Tournament List */}
       <div className="mb-6">

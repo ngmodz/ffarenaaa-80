@@ -25,8 +25,7 @@ const Index = () => {
           title: tournament.name,
           mode: tournament.mode,
           entryFee: tournament.entry_fee,
-          prizeMoney: tournament.prize_distribution ? 
-            Object.values(tournament.prize_distribution).reduce((total, amount) => total + amount, 0) : 0,
+          prizeMoney: tournament.entry_fee * tournament.max_players,
           date: tournament.start_date,
           time: new Date(tournament.start_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           totalSpots: tournament.max_players,

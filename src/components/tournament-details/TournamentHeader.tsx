@@ -22,7 +22,7 @@ const TournamentHeader: React.FC<TournamentHeaderProps> = ({
   const formattedTime = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   // Calculate prize pool (example calculation)
-  const prizePool = tournament.entry_fee * tournament.max_players * 0.8;
+  const prizePool = tournament.entry_fee * tournament.max_players;
 
   // Status color mapping
   const getStatusColor = (status: string) => {

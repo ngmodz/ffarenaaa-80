@@ -42,13 +42,25 @@ const ProfileTabs = ({
           const joined = allTournaments.filter(tournament => 
             tournament.participants && tournament.participants.includes(currentUser.uid)
           );
-          setJoinedTournaments(joined);
+          
+          // Transform joined tournaments to include the correct prize money calculation
+          const joinedTransformed = joined.map(tournament => ({
+            ...tournament,
+            prizeMoney: tournament.entry_fee * tournament.max_players
+          }));
+          setJoinedTournaments(joinedTransformed);
           
           // Filter hosted tournaments (where user is the host)
           const hosted = allTournaments.filter(tournament => 
             tournament.host_id === currentUser.uid
           );
-          setHostedTournaments(hosted);
+          
+          // Transform hosted tournaments to include the correct prize money calculation
+          const hostedTransformed = hosted.map(tournament => ({
+            ...tournament,
+            prizeMoney: tournament.entry_fee * tournament.max_players
+          }));
+          setHostedTournaments(hostedTransformed);
           
           // Filter winnings (tournaments where user participated and has a position)
           // Note: This is a simplified version, as we don't have a dedicated winnings collection yet
@@ -58,8 +70,9 @@ const ProfileTabs = ({
               id: tournament.id,
               title: tournament.name,
               date: tournament.start_date,
-              prize: tournament.prize_distribution ? 
-                Object.values(tournament.prize_distribution)[0] : 0,
+              prize: (tournament.entry_fee * tournament.max_players) * 
+                (tournament.prize_distribution ? 
+                 Object.values(tournament.prize_distribution)[0] / 100 : 0),
               position: 1 // Placeholder - in a real app, would come from a results collection
             }));
           setWinnings(userWinnings);

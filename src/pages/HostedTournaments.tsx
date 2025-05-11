@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -81,7 +80,7 @@ const HostedTournaments = () => {
               title: tournament.name || "Unnamed Tournament",
               mode: tournament.mode || "Unknown",
               entryFee: tournament.entry_fee || 0,
-              prizeMoney: prizeTotal,
+              prizeMoney: (tournament.entry_fee || 0) * (tournament.max_players || 0),
               date: tournament.start_date || "",
               time: tournament.start_date ? new Date(tournament.start_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "",
               totalSpots: tournament.max_players || 0,

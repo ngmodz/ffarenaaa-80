@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { TournamentType } from "@/components/home/types";
+import { TournamentType, TournamentStatus } from "@/components/home/types";
 import { format, parseISO } from 'date-fns';
 
 // Array of banner images to randomly assign to tournaments
@@ -52,6 +52,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
   
   // Get status text and color for display
   const getStatusInfo = () => {
+    // Explicitly handle known status values
     switch (status) {
       case "ongoing": 
         return { text: "LIVE NOW", bgColor: "bg-gaming-accent" };
@@ -62,10 +63,9 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
       case "cancelled": 
         return { text: "CANCELLED", bgColor: "bg-gray-500" };
       default: 
-        // Fix: Ensure we have a string before calling toUpperCase
-        // Use type guard to check if status is a string
+        // For any other status (string or otherwise), return a safe default
         return { 
-          text: typeof status === 'string' ? status.toUpperCase() : "UNKNOWN", 
+          text: "UNKNOWN", 
           bgColor: "bg-blue-500" 
         };
     }

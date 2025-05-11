@@ -1,4 +1,4 @@
-import { Calendar, Clock, Users } from "lucide-react";
+import { Calendar, Clock, Users, Trophy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
@@ -121,7 +121,8 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
           <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5 transition-opacity duration-300">
             {/* Prize Money */}
             <div className="flex items-center bg-black/60 backdrop-blur-sm text-white text-xs font-bold px-1.5 py-0.5 rounded transition-all duration-300 group-hover:bg-black/80">
-              <span className="text-purple-400">₹{prizeMoney}</span>
+              <Trophy size={12} className="mr-1 text-gaming-accent" />
+              <span className="text-gaming-accent">₹{prizeMoney}</span>
             </div>
             
             {/* Status Badge */}
@@ -135,7 +136,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
           </div>
           
           {/* Entry Fee - Bottom right */}
-          <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded transition-all duration-300 group-hover:bg-purple-700 group-hover:shadow-md group-hover:shadow-purple-500/20 group-hover:scale-105">
+          <div className="absolute bottom-1.5 right-1.5 bg-gaming-accent text-white text-xs font-bold px-1.5 py-0.5 rounded transition-all duration-300 group-hover:bg-gaming-accent/90 group-hover:shadow-md group-hover:shadow-purple-500/20 group-hover:scale-105">
             ₹{entryFee} Entry
           </div>
         </div>
@@ -165,7 +166,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
             <div className="mt-3">
               <Button 
                 variant="default" 
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform group-hover:scale-[1.02] group-hover:shadow-md group-hover:shadow-purple-500/20"
+                className="w-full bg-gaming-accent hover:bg-gaming-accent/90 text-white transition-all duration-300 transform group-hover:scale-[1.02] group-hover:shadow-md group-hover:shadow-purple-500/20"
                 disabled={isJoining}
                 onClick={handleJoinTournament}
               >

@@ -31,7 +31,7 @@ const FeaturedTournament = ({ tournament }: FeaturedTournamentProps) => {
   
   const getStatusText = (status: string) => {
     switch (status) {
-      case "ongoing": return "LIVE NOW";
+      case "ongoing": return "LIVE";
       case "active": return "UPCOMING";
       case "cancelled": return "CANCELLED";
       case "completed": return "COMPLETED";
@@ -70,54 +70,50 @@ const FeaturedTournament = ({ tournament }: FeaturedTournamentProps) => {
         />
         
         {/* Overlay gradient for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
         
-        {/* Tournament details overlay */}
-        <div className="absolute inset-0 p-4 flex flex-col justify-between">
-          {/* Top row with badges */}
-          <div className="flex flex-wrap gap-2">
+        {/* Tournament details overlay - Now aligned to the left */}
+        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+          {/* Badge container at the top */}
+          <div className="absolute top-4 left-4 flex flex-wrap gap-2">
             {tournament.isPremium && (
-              <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+              <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
                 PREMIUM
               </div>
             )}
-            <div className={`text-white text-xs px-2 py-1 rounded-md flex items-center ${
-              getStatusColor(tournament.status)
-            }`}>
-              {tournament.status === 'ongoing' && (
+            {tournament.status === 'ongoing' && (
+              <div className={`text-white text-xs px-2 py-1 rounded flex items-center ${
+                getStatusColor(tournament.status)
+              }`}>
                 <span className="w-1.5 h-1.5 bg-white rounded-full mr-1 animate-pulse"></span>
-              )}
-              {getStatusText(tournament.status)}
-            </div>
+                {getStatusText(tournament.status)}
+              </div>
+            )}
           </div>
           
-          {/* Bottom section with title and details */}
-          <div>
-            <h3 className="text-2xl font-bold text-white mb-2">{tournament.title}</h3>
+          {/* Bottom section with title and details - Left aligned */}
+          <div className="max-w-lg">
+            <h3 className="text-3xl font-bold text-white mb-1">{tournament.title}</h3>
             
-            <div className="grid grid-cols-3 gap-4 mb-3">
-              <div className="flex items-center text-white">
-                <Trophy size={16} className="mr-1.5 text-gaming-accent" />
-                <span className="font-bold text-gaming-accent">₹{tournament.prizeMoney}</span>
+            <div className="flex items-center gap-4 mb-3">
+              <div className="flex items-center text-gaming-accent">
+                <Trophy size={16} className="mr-1.5" />
+                <span className="font-bold">₹{tournament.prizeMoney} Prize Pool</span>
               </div>
               
-              <div className="flex items-center text-white">
-                <Calendar size={16} className="mr-1.5 text-[#C0C0C0]" />
-                <span className="text-sm">{tournament.date}</span>
-              </div>
-              
-              <div className="flex items-center text-white">
-                <Users size={16} className="mr-1.5 text-[#C0C0C0]" />
-                <span className="text-sm">{tournament.filledSpots}/{tournament.totalSpots}</span>
-              </div>
+              {tournament.mode && (
+                <div className="bg-black/40 text-white text-xs px-2 py-1 rounded-md">
+                  {tournament.mode}
+                </div>
+              )}
             </div>
             
             {/* Action button */}
-            <Link to={`/tournament/${tournament.id}`}>
+            <Link to={`/tournament/${tournament.id}`} className="inline-block">
               <Button 
                 className={tournament.status === 'ongoing' 
-                  ? "bg-gaming-accent hover:bg-gaming-accent/90" 
-                  : "bg-gaming-primary hover:bg-gaming-primary/90"
+                  ? "bg-gaming-accent hover:bg-gaming-accent/90 text-white font-medium" 
+                  : "bg-gaming-primary hover:bg-gaming-primary/90 text-white font-medium"
                 }
               >
                 {tournament.status === 'ongoing' ? 'Watch Live' : tournament.status === 'active' ? 'Join Tournament' : 'View Details'}

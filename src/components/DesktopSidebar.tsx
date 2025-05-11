@@ -26,14 +26,13 @@ const SidebarItem = ({ icon, label, to, isActive = false, isCollapsed, delay = 0
     <Link
       to={to}
       className={cn(
-        "flex items-center px-3 py-3 rounded-md transition-all duration-300",
+        "flex items-center px-3 py-3 rounded-md transition-all duration-300 ease-in-out",
         isActive ? "bg-gaming-primary/20 text-gaming-primary" : "text-gaming-muted hover:text-gaming-text hover:bg-gaming-card/80",
-        "my-1"
+        "my-1",
+        "hover:-translate-y-1 hover:scale-[1.02]"
       )}
     >
       <motion.div 
-        whileHover={{ scale: 1.1, rotate: isActive ? 0 : 5 }}
-        whileTap={{ scale: 0.9 }}
         className="flex items-center justify-center w-8 h-8 transition-all duration-300"
       >
         {icon}
@@ -165,13 +164,12 @@ const DesktopSidebar = ({ currentPath, onHoverChange }: DesktopSidebarProps) => 
           <Link
             to="/tournament/create"
             className={cn(
-              "flex items-center justify-center px-3 py-2.5 rounded-md transition-all duration-300 bg-gaming-accent text-white shadow-glow-accent",
-              !isHovered && "justify-center"
+              "flex items-center justify-center px-3 py-2.5 rounded-md transition-all duration-300 ease-in-out bg-gaming-accent text-white shadow-glow-accent",
+              !isHovered && "justify-center",
+              "hover:-translate-y-1 hover:scale-[1.02]"
             )}
           >
             <motion.div
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
               className="flex items-center justify-center"
             >
               <Plus size={20} />

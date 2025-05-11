@@ -107,54 +107,55 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
 
   return (
     <Link to={`/tournament/${id}`} className="block h-full">
-      <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#242839] h-full flex flex-col max-w-full mx-auto">
+      <Card className="overflow-hidden border border-[#333333] transition-all duration-300 ease-in-out rounded-lg bg-[#242839] h-full flex flex-col max-w-full mx-auto hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/20 hover:-translate-y-1 hover:scale-[1.02] group">
         {/* Main Content with Banner Image and Overlay Details */}
-        <div className="relative w-full aspect-[5/3]">
+        <div className="relative w-full aspect-[5/3] overflow-hidden">
           {/* Banner Image */}
           <img 
             src={getBannerImage()} 
             alt={title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
           />
           
           {/* Prize and Entry Overlay - Top */}
-          <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5">
+          <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5 transition-opacity duration-300">
             {/* Prize Money */}
-            <div className="flex items-center bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-              <span className="text-gaming-accent">₹{prizeMoney}</span>
+            <div className="flex items-center bg-black/60 backdrop-blur-sm text-white text-xs font-bold px-1.5 py-0.5 rounded transition-all duration-300 group-hover:bg-black/80">
+              <span className="text-purple-400">₹{prizeMoney}</span>
             </div>
             
             {/* Status Badge */}
             <div className={cn(
-              "text-xs font-bold px-1.5 py-0.5 rounded text-white",
-              statusBgColor
+              "text-xs font-bold px-1.5 py-0.5 rounded text-white transition-all duration-300",
+              statusBgColor,
+              "group-hover:shadow-md group-hover:shadow-purple-500/20 group-hover:scale-105"
             )}>
               {statusText}
             </div>
           </div>
           
           {/* Entry Fee - Bottom right */}
-          <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+          <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded transition-all duration-300 group-hover:bg-purple-700 group-hover:shadow-md group-hover:shadow-purple-500/20 group-hover:scale-105">
             ₹{entryFee} Entry
           </div>
         </div>
         
         {/* Tournament Title and Details */}
         <div className="p-3 flex-grow">
-          <h3 className="font-semibold text-white mb-2">{title}</h3>
+          <h3 className="font-semibold text-white mb-2 transition-colors duration-300 group-hover:text-purple-400">{title}</h3>
           
           {/* Tournament Info */}
           <div className="space-y-1.5 text-sm text-gray-400">
-            <div className="flex items-center">
-              <Calendar size={14} className="mr-1.5" />
+            <div className="flex items-center transition-transform duration-300 hover:translate-x-1">
+              <Calendar size={14} className="mr-1.5 transition-colors duration-300 group-hover:text-purple-400" />
               <span>{formatDate(date)}</span>
             </div>
-            <div className="flex items-center">
-              <Clock size={14} className="mr-1.5" />
+            <div className="flex items-center transition-transform duration-300 hover:translate-x-1">
+              <Clock size={14} className="mr-1.5 transition-colors duration-300 group-hover:text-purple-400" />
               <span>{time}</span>
             </div>
-            <div className="flex items-center">
-              <Users size={14} className="mr-1.5" />
+            <div className="flex items-center transition-transform duration-300 hover:translate-x-1">
+              <Users size={14} className="mr-1.5 transition-colors duration-300 group-hover:text-purple-400" />
               <span>{filledSpots}/{totalSpots} Players</span>
             </div>
           </div>
@@ -164,7 +165,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
             <div className="mt-3">
               <Button 
                 variant="default" 
-                className="w-full bg-gaming-accent hover:bg-gaming-accent/90 text-white"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform group-hover:scale-[1.02] group-hover:shadow-md group-hover:shadow-purple-500/20"
                 disabled={isJoining}
                 onClick={handleJoinTournament}
               >

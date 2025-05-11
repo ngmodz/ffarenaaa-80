@@ -101,9 +101,6 @@ const Index = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">All Tournaments</h2>
-          <Link to="/tournaments/archive" className="text-xs text-gaming-primary hover:text-gaming-primary/90">
-            View Archive
-          </Link>
         </div>
         
         {loading ? (

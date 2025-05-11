@@ -1,4 +1,3 @@
-
 import { Calendar, Clock, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -113,9 +112,9 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
       }}
       className="h-full w-full"
     >
-      <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col">
+      <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col max-w-full mx-auto">
         {/* Main Content with Banner Image and Overlay Details */}
-        <div className="relative w-full aspect-video">
+        <div className="relative w-full aspect-[5/3]">
           {/* Banner Image */}
           <img 
             src={getBannerImage()} 
@@ -124,15 +123,15 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
           />
           
           {/* Prize and Entry Overlay - Top */}
-          <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-2">
+          <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5">
             {/* Prize Money */}
-            <div className="flex items-center bg-black/60 text-white text-sm font-bold px-2 py-1 rounded">
+            <div className="flex items-center bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded">
               <span className="text-gaming-accent">₹{prizeMoney}</span>
             </div>
             
             {/* Status Badge */}
             <div className={cn(
-              "text-xs font-bold px-2 py-1 rounded text-white",
+              "text-xs font-bold px-1.5 py-0.5 rounded text-white",
               statusBgColor
             )}>
               {statusText}
@@ -140,32 +139,32 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
           </div>
           
           {/* Entry Fee - Bottom right */}
-          <div className="absolute bottom-2 right-2 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded">
+          <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">
             ₹{entryFee} Entry
           </div>
         </div>
         
         {/* Tournament Title and Details */}
-        <div className="p-3 flex-1 flex flex-col">
+        <div className="p-2.5 flex-1 flex flex-col">
           {/* Title */}
-          <h3 className="font-bold text-white mb-2">{title}</h3>
+          <h3 className="font-bold text-white text-sm mb-1.5 line-clamp-1">{title}</h3>
           
           {/* Details - Date, Time, Participants */}
-          <div className="space-y-1.5 text-sm text-gray-300 mb-3">
+          <div className="space-y-1 text-xs text-gray-300 mb-2">
             <div className="flex items-center">
-              <Calendar size={14} className="mr-1.5" />
+              <Calendar size={12} className="mr-1" />
               <span>{formatDate(date)} • {time}</span>
             </div>
             
             <div className="flex items-center">
-              <Users size={14} className="mr-1.5" />
+              <Users size={12} className="mr-1" />
               <span>{filledSpots}/{totalSpots} Participants</span>
             </div>
           </div>
           
           {/* Progress bar for filled spots */}
-          <div className="mb-3">
-            <div className="w-full h-1.5 bg-[#2A2A2A] rounded-full overflow-hidden">
+          <div className="mb-2">
+            <div className="w-full h-1 bg-[#2A2A2A] rounded-full overflow-hidden">
               <div 
                 className={cn(
                   "h-full rounded-full",
@@ -181,7 +180,7 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
             <Link 
               to={`/tournament/${id}`}
               className={cn(
-                "block w-full py-2 text-center rounded-md text-white font-medium text-sm transition-colors",
+                "block w-full py-1.5 text-center rounded-md text-white font-medium text-xs transition-colors",
                 getButtonStyle()
               )}
             >

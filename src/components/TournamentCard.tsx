@@ -106,73 +106,75 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
   };
 
   return (
-    <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col max-w-full mx-auto">
-      {/* Main Content with Banner Image and Overlay Details */}
-      <div className="relative w-full aspect-[5/3]">
-        {/* Banner Image */}
-        <img 
-          src={getBannerImage()} 
-          alt={title}
-          className="w-full h-full object-cover"
-        />
-        
-        {/* Prize and Entry Overlay - Top */}
-        <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5">
-          {/* Prize Money */}
-          <div className="flex items-center bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-            <span className="text-gaming-accent">₹{prizeMoney}</span>
+    <Link to={`/tournament/${id}`} className="block h-full">
+      <Card className="overflow-hidden border border-[#333333] transition-all rounded-lg bg-[#1A1A1A] h-full flex flex-col max-w-full mx-auto">
+        {/* Main Content with Banner Image and Overlay Details */}
+        <div className="relative w-full aspect-[5/3]">
+          {/* Banner Image */}
+          <img 
+            src={getBannerImage()} 
+            alt={title}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Prize and Entry Overlay - Top */}
+          <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-1.5">
+            {/* Prize Money */}
+            <div className="flex items-center bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+              <span className="text-gaming-accent">₹{prizeMoney}</span>
+            </div>
+            
+            {/* Status Badge */}
+            <div className={cn(
+              "text-xs font-bold px-1.5 py-0.5 rounded text-white",
+              statusBgColor
+            )}>
+              {statusText}
+            </div>
           </div>
           
-          {/* Status Badge */}
-          <div className={cn(
-            "text-xs font-bold px-1.5 py-0.5 rounded text-white",
-            statusBgColor
-          )}>
-            {statusText}
+          {/* Entry Fee - Bottom right */}
+          <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+            ₹{entryFee} Entry
           </div>
         </div>
         
-        {/* Entry Fee - Bottom right */}
-        <div className="absolute bottom-1.5 right-1.5 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-          ₹{entryFee} Entry
+        {/* Tournament Title and Details */}
+        <div className="p-3 flex-grow">
+          <h3 className="font-semibold text-white mb-2">{title}</h3>
+          
+          {/* Tournament Info */}
+          <div className="space-y-1.5 text-sm text-gray-400">
+            <div className="flex items-center">
+              <Calendar size={14} className="mr-1.5" />
+              <span>{formatDate(date)}</span>
+            </div>
+            <div className="flex items-center">
+              <Clock size={14} className="mr-1.5" />
+              <span>{time}</span>
+            </div>
+            <div className="flex items-center">
+              <Users size={14} className="mr-1.5" />
+              <span>{filledSpots}/{totalSpots} Players</span>
+            </div>
+          </div>
+          
+          {/* Join button */}
+          {status === "active" && !isFullyBooked && (
+            <div className="mt-3">
+              <Button 
+                variant="default" 
+                className="w-full bg-gaming-accent hover:bg-gaming-accent/90 text-white"
+                disabled={isJoining}
+                onClick={handleJoinTournament}
+              >
+                {isJoining ? "Joining..." : "Join Tournament"}
+              </Button>
+            </div>
+          )}
         </div>
-      </div>
-      
-      {/* Tournament Title and Details */}
-      <div className="p-3 flex-grow">
-        <h3 className="font-semibold text-white mb-2">{title}</h3>
-        
-        {/* Tournament Info */}
-        <div className="space-y-1.5 text-sm text-gray-400">
-          <div className="flex items-center">
-            <Calendar size={14} className="mr-1.5" />
-            <span>{formatDate(date)}</span>
-          </div>
-          <div className="flex items-center">
-            <Clock size={14} className="mr-1.5" />
-            <span>{time}</span>
-          </div>
-          <div className="flex items-center">
-            <Users size={14} className="mr-1.5" />
-            <span>{filledSpots}/{totalSpots} Players</span>
-          </div>
-        </div>
-        
-        {/* Join button */}
-        {status === "active" && !isFullyBooked && (
-          <div className="mt-3">
-            <Button 
-              variant="default" 
-              className="w-full bg-gaming-accent hover:bg-gaming-accent/90 text-white"
-              disabled={isJoining}
-              onClick={handleJoinTournament}
-            >
-              {isJoining ? "Joining..." : "Join Tournament"}
-            </Button>
-          </div>
-        )}
-      </div>
-    </Card>
+      </Card>
+    </Link>
   );
 };
 

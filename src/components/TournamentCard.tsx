@@ -62,7 +62,12 @@ const TournamentCard = ({ tournament }: TournamentCardProps) => {
       case "cancelled": 
         return { text: "CANCELLED", bgColor: "bg-gray-500" };
       default: 
-        return { text: status ? status.toUpperCase() : "UNKNOWN", bgColor: "bg-blue-500" };
+        // Fix: Ensure we have a string before calling toUpperCase
+        // Use type guard to check if status is a string
+        return { 
+          text: typeof status === 'string' ? status.toUpperCase() : "UNKNOWN", 
+          bgColor: "bg-blue-500" 
+        };
     }
   };
   

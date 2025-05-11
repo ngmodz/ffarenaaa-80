@@ -12,6 +12,20 @@ import { auth } from "@/lib/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useTournament } from "@/contexts/TournamentContext";
 
+// Array of banner images to randomly assign to tournaments
+const bannerImages = [
+  "https://iili.io/3v8Y6nS.jpg", // photo 1627856013091
+  "https://iili.io/3v8Yrt2.jpg", // photo 1598550476439
+  "https://iili.io/3v8YUu4.jpg", // photo 1563089145
+  "https://iili.io/3v8Yv8G.jpg", // photo 1560253023
+  "https://iili.io/3v8Ykas.jpg", // photo 1542751371
+  "https://iili.io/3v8YN6X.jpg", // photo 1511512578047
+  "https://iili.io/3v8YjnI.jpg", // photo 1511882150382
+  "https://iili.io/3v8YXZN.jpg", // photo 1550745165
+  "https://iili.io/3v8YWjp.jpg", // photo 1616588589676
+  "https://iili.io/3v8YVuR.jpg", // photo 1603481546238
+];
+
 interface ReviewAndPublishProps {
   formData: TournamentFormData;
   prevStep: () => void;
@@ -24,6 +38,16 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
   const [success, setSuccess] = useState(false);
   const [authVerified, setAuthVerified] = useState(false);
   const { refreshHostedTournaments } = useTournament();
+  // Generate a truly random banner index when component mounts 
+  // Use useEffect to ensure it's random on each render
+  const [selectedBannerIndex, setSelectedBannerIndex] = useState(0);
+  
+  useEffect(() => {
+    // Generate a random index between 0 and bannerImages.length-1
+    const randomIndex = Math.floor(Math.random() * bannerImages.length);
+    setSelectedBannerIndex(randomIndex);
+    console.log("Selected random banner index:", randomIndex);
+  }, []);
   
   // Verify authentication status on component mount
   useEffect(() => {
@@ -223,7 +247,15 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
       <div className="bg-gaming-card-dark rounded-md p-6">
         {/* Tournament Header */}
         <div className="relative rounded-md overflow-hidden h-40 mb-4">
-          <div className="absolute inset-0 bg-gradient-to-r from-gaming-primary/30 to-gaming-accent/30"></div>
+          {/* Banner Image */}
+          <img 
+            src={bannerImages[selectedBannerIndex]}
+            alt={formData.name}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Overlay for text visibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent z-10"></div>
           
           <div className="absolute bottom-4 left-4 z-20">
             <h3 className="text-xl font-bold text-white">{formData.name}</h3>

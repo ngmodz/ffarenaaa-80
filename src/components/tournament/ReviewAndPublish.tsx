@@ -49,6 +49,13 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
     console.log("Selected random banner index:", randomIndex);
   }, []);
   
+  // Function to change the banner image
+  const changeBannerImage = () => {
+    const newIndex = (selectedBannerIndex + 1) % bannerImages.length;
+    setSelectedBannerIndex(newIndex);
+    console.log("Changed banner index to:", newIndex);
+  };
+  
   // Verify authentication status on component mount
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -256,6 +263,15 @@ const ReviewAndPublish = ({ formData, prevStep }: ReviewAndPublishProps) => {
           
           {/* Overlay for text visibility */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent z-10"></div>
+          
+          {/* New Banner Change Button */}
+          <Button
+            type="button"
+            onClick={changeBannerImage}
+            className="absolute top-2 right-2 z-20 bg-black/60 hover:bg-black/80 text-white text-xs px-3 py-1 rounded-md"
+          >
+            Change Banner
+          </Button>
           
           <div className="absolute bottom-4 left-4 z-20">
             <h3 className="text-xl font-bold text-white">{formData.name}</h3>

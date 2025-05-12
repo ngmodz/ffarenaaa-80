@@ -12,6 +12,7 @@ const Layout = () => {
   const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
   const isTermsPage = currentPath === "/terms-and-privacy";
+  const isSettingsPage = currentPath === "/settings";
 
   // Listen for hover state changes from the sidebar
   const handleSidebarHover = (hovered: boolean) => {
@@ -49,8 +50,18 @@ const Layout = () => {
           damping: 30
         }}
       >
-        {/* Adjusted bottom padding for terms page */}
-        <div className={`px-0 min-h-screen w-full mx-auto ${isMobile ? (isTermsPage ? 'pb-12' : 'pb-28') : 'pb-4'}`}>
+        {/* Adjusted bottom padding for terms page and settings page */}
+        <div className={`px-0 min-h-screen w-full mx-auto ${
+          isMobile 
+            ? (isTermsPage 
+                ? 'pb-12' 
+                : isSettingsPage 
+                  ? 'pb-0' 
+                  : 'pb-28') 
+            : isSettingsPage 
+              ? 'pb-0' 
+              : 'pb-4'
+        }`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

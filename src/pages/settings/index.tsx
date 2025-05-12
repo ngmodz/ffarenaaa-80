@@ -94,11 +94,11 @@ const Settings = () => {
   ];
 
   return (
-    <div className="container-padding py-4 min-h-screen">
+    <div className="container-padding py-4 h-full max-h-screen overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-6 max-w-3xl mx-auto"
+        className="space-y-4 max-w-3xl mx-auto"
       >
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Settings</h1>
@@ -116,7 +116,7 @@ const Settings = () => {
           <SettingsList options={settingsOptions} />
           
           <button 
-            className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-colors"
+            className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-all hover:-translate-y-1 hover:shadow-lg duration-200"
             onClick={handleLogout}
           >
             <div className="h-10 w-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-500">

@@ -244,6 +244,7 @@ const DeleteAccount = () => {
           variant="destructive" 
           size="sm"
           onClick={() => setShowDeleteConfirm(true)}
+          className="transition-all hover:-translate-y-1 hover:shadow-lg duration-200"
         >
           Delete
         </Button>

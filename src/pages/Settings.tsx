@@ -391,7 +391,7 @@ const Settings = () => {
           
           {/* Delete Account Button */}
           <button 
-            className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-colors"
+            className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-all hover:-translate-y-1 hover:shadow-lg duration-200"
             onClick={() => setShowDeleteConfirm(true)}
           >
             <div className="h-10 w-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-500">
@@ -404,7 +404,7 @@ const Settings = () => {
           </button>
           
           <button 
-            className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-colors"
+            className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-all hover:-translate-y-1 hover:shadow-lg duration-200"
             onClick={handleLogout}
           >
             <div className="h-10 w-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-500">

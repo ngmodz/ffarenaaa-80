@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ChevronRight } from "lucide-react";
 
@@ -12,7 +11,7 @@ interface SettingsItemProps {
 const SettingsItem = ({ icon, title, description, onClick }: SettingsItemProps) => {
   return (
     <button 
-      className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-colors"
+      className="w-full flex items-center gap-4 p-4 text-left hover:bg-gaming-bg/50 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-102 hover:shadow-lg"
       onClick={onClick}
     >
       <div className="h-10 w-10 rounded-full flex items-center justify-center bg-gaming-primary/20">

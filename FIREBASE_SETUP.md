@@ -8,12 +8,12 @@ This guide will help you set up Firebase Firestore for storing user data in your
 2. A Firebase project (already created with the following config):
    ```javascript
    const firebaseConfig = {
-     apiKey: "YOUR_API_KEY", // Replace with your Firebase API Key, preferably using environment variables.
-     authDomain: "YOUR_AUTH_DOMAIN", // Replace with your Firebase Auth Domain, preferably using environment variables.
-     projectId: "YOUR_PROJECT_ID", // Replace with your Firebase Project ID, preferably using environment variables.
-     storageBucket: "YOUR_STORAGE_BUCKET", // Replace with your Firebase Storage Bucket, preferably using environment variables.
-     messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Replace with your Firebase Messaging Sender ID, preferably using environment variables.
-     appId: "YOUR_APP_ID" // Replace with your Firebase App ID, preferably using environment variables.
+     apiKey: "YOUR_FIREBASE_API_KEY", // Replace with your Firebase API Key, preferably using environment variables.
+     authDomain: "YOUR_FIREBASE_AUTH_DOMAIN", // Replace with your Firebase Auth Domain, preferably using environment variables.
+     projectId: "YOUR_FIREBASE_PROJECT_ID", // Replace with your Firebase Project ID, preferably using environment variables.
+     storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET", // Replace with your Firebase Storage Bucket, preferably using environment variables.
+     messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID", // Replace with your Firebase Messaging Sender ID, preferably using environment variables.
+     appId: "YOUR_FIREBASE_APP_ID" // Replace with your Firebase App ID, preferably using environment variables.
    };
    ```
 

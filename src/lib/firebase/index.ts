@@ -5,14 +5,15 @@ import { getAuth, onAuthStateChanged, signOut as firebaseSignOut, createUserWith
   signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, User as FirebaseUser, sendPasswordResetEmail } from 'firebase/auth';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
-// Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyB8rpTnmKUQ9wi9OzvnHDm5EJ55LzlOx8Q",
-  authDomain: "freefire-tournaments-ba2a6.firebaseapp.com",
-  projectId: "freefire-tournaments-ba2a6",
-  storageBucket: "freefire-tournaments-ba2a6.firebasestorage.app",
-  messagingSenderId: "605081354961",
-  appId: "1:605081354961:web:9cfda0d8e1d537c5223bf0"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
